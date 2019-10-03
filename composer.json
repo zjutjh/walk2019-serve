@@ -9,10 +9,11 @@
     "license": "MIT",
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
         "fideloper/proxy": "^4.0",
+        "guzzlehttp/guzzle": "^6.0",
         "laravel/framework": "^6.1",
-        "laravel/tinker": "^1.0",
-        "guzzlehttp/guzzle": "~6.0"
+        "laravel/tinker": "^1.0"
     },
     "require-dev": {
         "facade/ignition": "^1.4",
@@ -39,6 +40,9 @@
         "classmap": [
             "database/seeds",
             "database/factories"
+        ],
+        "files": [
+            "app/Helpers/functions.php"
         ]
     },
     "autoload-dev": {

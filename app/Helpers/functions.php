@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 
 /**
  *  api json response
- * @param $code 状态码
+ * @param int $code 状态码
  * @param string $msg 状态信息
  * @param null $data 返回数据
  * @return JsonResponse
@@ -24,7 +24,23 @@ function StandardJsonResponse($code, $msg = '', $data = null) {
     return response()->json($json);
 }
 
+/**
+ * 标准成功响应
+ * @param null $data
+ * @return JsonResponse
+ */
+function StandardSuccessJsonResponse($data = null) {
+    return StandardJsonResponse(1, "Success", $data);
+}
 
+/**
+ * 标准失败响应
+ * @param null $data
+ * @return JsonResponse
+ */
+function StandardFailJsonResponse($data = null) {
+    return StandardJsonResponse(-1, "Fail", $data);
+}
 /**
  * 用身份证获取性别
  * @param string $iid

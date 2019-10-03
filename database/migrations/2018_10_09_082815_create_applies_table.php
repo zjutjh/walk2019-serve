@@ -1,10 +1,9 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateYxAppliesTable extends Migration
+class CreateAppliesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -28,6 +27,6 @@ class CreateYxAppliesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('yx_applies');
+        Schema::dropIfExists('applies');
     }
 }
