@@ -2,9 +2,9 @@
 
 namespace App\Notifications;
 
+use App\WxTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
 
@@ -12,9 +12,13 @@ class Wechat extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public function __construct()
+    private $openid;
+    private $data;
+
+    public function __construct($openid, $data = WxTemplate::Test)
     {
-        //
+        $this->openid = $openid;
+        $this->data = $data;
     }
 
     public function via($notifiable)
@@ -24,13 +28,7 @@ class Wechat extends Notification implements ShouldQueue
 
     public function toWechat($notifiable)
     {
-        $data = [
-            'first' => 'Test First',
-            'keyword1' => 'keyword1',
-            'keyword2' => 'keyword2',
-            'keyword3' => ['keyword3', '#000000'],
-            'remark' => ['Test remark', '#fdfdfd'],
-        ];
+        $data = $this->data;
 
         return [
             'openid' => $this->openid,

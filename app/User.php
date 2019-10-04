@@ -2,16 +2,17 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 /**
  * @property mixed openid
  * @property null yx_group_id
+ * @property  group_id
  * @method static where(string $string, $captain_id)
  */
-class User extends Authenticatable
+class User extends Model
 {
 
     use Notifiable;
@@ -23,12 +24,9 @@ class User extends Authenticatable
         'openid', 'sex', 'id_card', 'height', 'birthday', 'sid'
     ];
 
-    protected $appends = [
-        'state'
-    ];
 
     protected $fillable = [
-        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid'
+        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid','logo','identity','state','group_id'
     ];
 
     /**
@@ -48,7 +46,7 @@ class User extends Authenticatable
      */
     public function group()
     {
-        return $this->belongsTo('App\Group', 'yx_group_id');
+        return $this->belongsTo('App\Group', 'group_id');
     }
 
 
@@ -67,8 +65,8 @@ class User extends Authenticatable
      */
     public function leaveGroup()
     {
-        $this->yx_group_id = null;
-        $this->state()->update(['state' => 1]);
+        $this->group_id = null;
+        $this->update(['state' => 1]);
         return parent::save();
     }
 
@@ -84,7 +82,6 @@ class User extends Authenticatable
         $this->attributes['id_card'] = md5(strtoupper($value));
     }
 
-    public function getStateAttribute(){}
     /**
      * 加入队伍
      * @param $groupId
@@ -92,8 +89,8 @@ class User extends Authenticatable
      */
     public function addGroup($groupId)
     {
-        $this->yx_group_id = $groupId;
-        $this->state()->update(['state' => 4]);
+        $this->group_id = $groupId;
+        $this->update(['state' => 4]);
         return parent::save();
     }
 

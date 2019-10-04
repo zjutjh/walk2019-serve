@@ -12,17 +12,18 @@ class ApplyController extends Controller
 {
     /**
      * 查询申请者列表
+     * @param Request $request
      * @return JsonResponse
      */
-    public function getApplyList()
+    public function getApplyList(Request $request)
     {
-        $groupId = User::current()->yx_group_id;
+        $groupId = User::current()->group_id;
         $applyModels = Apply::where('apply_team_id', $groupId)->get();
         $userId = [];
         foreach ($applyModels as $applyModel) {
             $userId[] = $applyModel->apply_id;
         }
-
+        $pageSize = $request->get('page_size')!==null ? $request->get('page_size') : 15;
         $applyUsers = User::find($userId);
         return StandardJsonResponse(1, '请求成功', $applyUsers);
     }
@@ -47,7 +48,7 @@ class ApplyController extends Controller
     public function doApply(Request $request)
     {
         $user = User::current();
-        $groupId = $request->get('groupId');
+        $groupId = $request->get('group_id');
         $group = Group::where('id', $groupId)->first();
 
         if ($group->members >= $group->capacity)

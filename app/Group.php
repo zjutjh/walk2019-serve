@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Group extends Model
 {
     protected $fillable = [
-        'name', 'capacity', 'description', 'route', 'captain_id'
+        'name', 'capacity', 'description', 'route', 'captain_id','logo'
     ];
 
     /**
@@ -31,7 +31,12 @@ class Group extends Model
     public function members() {
         return $this->hasMany('App\User');
     }
-
+    /**
+     * 获取队员
+     */
+    public function getMembersAttribute() {
+        return $this->members()->count();
+    }
     /**
      * 获取队伍数量
      * @return mixed
@@ -56,7 +61,8 @@ class Group extends Model
             $apply->delete();
         }
         foreach ($members as $member) {
-            $member->yx_group_id = null;
+            $member->group_id = null;
+            $member->state =1;
             // Todo:: notify
             $member->save();
         }

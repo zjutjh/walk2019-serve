@@ -17,8 +17,8 @@ class CheckFinish
     public function handle($request, Closure $next)
     {
 
-       if( env('IsEnd')==1){
-           return ;
+       if( config('api.system.IsEnd')===true){
+           return StandardFailJsonResponse("Over");
        }
         return $next($request);
     }

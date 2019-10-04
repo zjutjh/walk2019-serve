@@ -31,12 +31,12 @@ class WXLoginController extends Controller
         $code = $request->get('code');
         $openid = $this->getWxOpenid($code);
 
-        if (!isset($openid)) {
+        if (!isset($openid))
             return StandardJsonResponse(-1, 'Failed');
-        }
-        if (!$openid) {
+
+        if (!$openid)
             return StandardJsonResponse(-1, 'Failed');
-        }
+
         session(['openid' => $openid]);
         $openid=$request->session()->get('openid');
         return StandardJsonResponse(1, 'Success',$openid);

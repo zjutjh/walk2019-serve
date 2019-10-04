@@ -15,7 +15,7 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('队伍名称');
-            $table->string('logo')->comment('队伍Logo');
+            $table->string('logo',1000)->nullable()->comment('队伍Logo');
             $table->tinyInteger('capacity')->comment('队伍人数');
             $table->text('description')->comment('队伍简介');
             $table->integer('captain_id')->comment('队长id');

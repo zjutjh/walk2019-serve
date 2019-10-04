@@ -16,10 +16,10 @@ class IndexController extends Controller
      */
     public function indexInfo() {
         $indexInfo = [
-          'end_time' => env('EndTime'),
-          'is_end'=> env('IsEnd'),
+          'end_time' => config('api.system.EndTime'),
+          'is_end'=> config('api.system.IsEnd'),
           'apply_count' => User::getUserCount(),
-          'team_count' => Group::getTeamCount()
+          'group_count' => Group::getTeamCount()
         ];
 
         return StandardJsonResponse(1, 'Success', $indexInfo);

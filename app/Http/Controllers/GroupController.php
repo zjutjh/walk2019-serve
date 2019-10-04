@@ -19,7 +19,7 @@ class GroupController extends Controller
     public function groupLists(Request $request)
     {
         $groupListInfo = $request->all();
-        $pageSize = $groupListInfo['page_size'] ? $groupListInfo['page_size'] : 15;
+        $pageSize = $groupListInfo['page_size']!==null ? $groupListInfo['page_size'] : 15;
         $groups = Group::orderBy('id', 'desc')->paginate($pageSize);
         return StandardJsonResponse(1, 'Success', $groups);
     }
@@ -32,10 +32,11 @@ class GroupController extends Controller
     public function searchTeam(Request $request)
     {
         $query_string = $request->get('query_string');
-        if (!$query_string) {
+        if (!$query_string)
             return $this->groupLists();
-        }
-        $groups = Group::where('name', 'like', "%{$query_string}%")->orWhere('id', $query_string)->paginate(15);
+
+        $pageSize = $request->get('page_size')!==null ? $request->get('page_size') : 15;
+        $groups = Group::where('name', 'like', "%{$query_string}%")->orWhere('id', $query_string)->paginate($pageSize);
         return StandardJsonResponse(1, '搜索成功', $groups);
     }
 
@@ -72,12 +73,12 @@ class GroupController extends Controller
         $user = User::current();
 
         // Todo:: 验证
-        if (!!$user->yx_group_id)
+        if (!!$user->group_id)
             return StandardJsonResponse(-1, '你已经拥有队伍');
 
         $groupInfo['captain_id'] = $user->id;
         $group = Group::create($groupInfo);
-        $user->yx_group_id = $group->id;
+        $user->group_id = $group->id;
         $user->state = 3;
         $user->save();
         // Todo:: notify
@@ -97,7 +98,7 @@ class GroupController extends Controller
             $Group->save();
             return StandardJsonResponse(1, 'Success');
         }
-        return StandardJsonResponse(-1, 'Failed');
+        return StandardFailJsonResponse();
     }
 
 
@@ -128,9 +129,8 @@ class GroupController extends Controller
     {
         $user = User::current();
         $group = $user->group()->first();
-        if ($group->is_sumbit) {
-            return StandardJsonResponse(1, 'Failed');
-        }
+        if ($group->is_sumbit)
+            return StandardFailJsonResponse();
         $user->leaveGroup();
         // Todo:: notify
         return StandardJsonResponse(1, 'Success');
@@ -145,7 +145,7 @@ class GroupController extends Controller
     public function submitGroup(Request $request)
     {
         $user = User::current();
-        if ($user->state()->first()->state != 3)
+        if ($user->state != 3)
             return StandardJsonResponse(-1, '你没有权限');
 
         $group = $user->group()->first();
@@ -154,11 +154,11 @@ class GroupController extends Controller
 
         $max_team_num = 0;
         if ($group->select_route === "屏峰小和山全程毅行")
-            $max_team_num = env('PF_Full_Max');
+            $max_team_num = config('PF_Full_Max');
         else if ($group->select_route === "屏峰小和山半程毅行")
-            $max_team_num = env('PF_Half_Max');
+            $max_team_num = config('PF_Half_Max');
         else if ($group->select_route === "朝晖京杭大运河毅行")
-            $max_team_num = env('ZH_Full_Max');
+            $max_team_num = config('ZH_Full_Max');
 
         if (Group::where('select_route', $group->select_route)->where('is_submit', true)->count() >= $max_team_num)
             return StandardJsonResponse(-1, '今日队伍已满');
@@ -186,9 +186,9 @@ class GroupController extends Controller
             $group->is_lock = false;
             $group->save();
             // Todo:: notify
-            return StandardJsonResponse(1, 'Success');
+            return StandardSuccessJsonResponse();
         }
-        return StandardJsonResponse(-1, 'Failed');
+        return StandardFailJsonResponse();
     }
 
 
@@ -205,7 +205,7 @@ class GroupController extends Controller
         $members = $user->group()->first()->members()->get();
 
         // Todo:: notify
-        return StandardJsonResponse(1, '踢出队伍');
+        return StandardSuccessJsonResponse();
     }
 
 }

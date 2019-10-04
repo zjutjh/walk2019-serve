@@ -17,7 +17,7 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable();
             $table->string('email')->nullable();
             $table->enum('sex', ['男', '女'])->nullable();
-            $table->string('logo')->comment('Logo');
+            $table->string('logo',1000)->nullable()->comment('Logo');
             $table->enum('campus', ['屏峰', '朝晖'])->comment('校区');
             $table->string('phone')->nullable()->comment('电话号码');
             $table->string('id_card')->nullable()->comment('身份证');
