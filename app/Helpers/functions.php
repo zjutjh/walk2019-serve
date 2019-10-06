@@ -6,16 +6,15 @@
  * Time: 15:42
  */
 
-use Illuminate\Http\JsonResponse;
 
 /**
  *  api json response
- * @param int $code 状态码
+ * @param $code 状态码
  * @param string $msg 状态信息
  * @param null $data 返回数据
- * @return JsonResponse
+ * @return \Illuminate\Http\JsonResponse
  */
-function StandardJsonResponse($code, $msg = '', $data = null) {
+function template($code, $msg = '', $data = null) {
     $json = [
         'code' => $code,
         'msg' => $msg,
@@ -25,22 +24,22 @@ function StandardJsonResponse($code, $msg = '', $data = null) {
 }
 
 /**
- * 标准成功响应
- * @param null $data
- * @return JsonResponse
+ *  api json response
+ * @param $code 状态码
+ * @param string $msg 状态信息
+ * @param null $data 返回数据
+ * @return \Illuminate\Http\JsonResponse
  */
-function StandardSuccessJsonResponse($data = null) {
-    return StandardJsonResponse(1, "Success", $data);
+function RJM($code, $msg = '', $data = null) {
+    $json = [
+        'code' => $code,
+        'msg' => $msg,
+        'data' => $data
+    ];
+    return response()->json($json);
 }
 
-/**
- * 标准失败响应
- * @param null $data
- * @return JsonResponse
- */
-function StandardFailJsonResponse($data = null) {
-    return StandardJsonResponse(-1, "Fail", $data);
-}
+
 /**
  * 用身份证获取性别
  * @param string $iid
