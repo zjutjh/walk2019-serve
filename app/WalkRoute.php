@@ -5,18 +5,21 @@ namespace App;
 use App\WalkTime;
 use Illuminate\Database\Eloquent\Model;
 
-class WalkPath extends Model
+/**
+ * @method static orderBy(string $string, string $string1)
+ */
+class WalkRoute extends Model
 {
     /**
      * 数据表名
      */
-    protected $table = 'walk_path';
-    
+    protected $table = 'walk_route';
+
     /**
      * 可填充字段
      * @return int
      */
-    protected $fillable = ['name','limit_campus','campus_from','capacity'];
+    protected $fillable = ['name', 'limit_campus', 'campus_from', 'capacity'];
 
     public function supportCampus($campus){
         if($this->limit_campus === 'all'){
@@ -43,7 +46,7 @@ class WalkPath extends Model
 
         foreach ($walkTimes as $item) {
             $capacity = $item->getCapacityOf($this->id);
-            if(!is_null($capacity)){
+            if (!is_null($capacity)) {
                 $temp = [
                     'begin' => $item->begin,
                     'end' => $item->end,
@@ -64,10 +67,10 @@ class WalkPath extends Model
         }));
 
         foreach ($result1 as $value) {
-            $capacity = $value -> capacity;
-            if ($capacityCaculate +  int($value->capacity) > $capacityThisPath) {
+            $capacity = $value->capacity;
+            if ($capacityCaculate + int($value->capacity) > $capacityThisPath) {
                 $remain = $capacityThisPath - $capacityCaculate;
-                if ($remain > 0){
+                if ($remain > 0) {
                     $value->capacity = $remain;
                     $capacityCaculate = $capacityThisPath;
                 } else {
@@ -80,8 +83,8 @@ class WalkPath extends Model
         $capacityRemainCaculate = 0;
 
         $autoCount = $result2->count();
-        foreach ($result2 as $index=>$value) {
-            if ($index < $autoCount - 1){
+        foreach ($result2 as $index => $value) {
+            if ($index < $autoCount - 1) {
                 $eachCount = $capacityRemain / $autoCount;
                 $value->$capacity = $eachCount;
                 $capacityRemainCaculate += $eachCount;
@@ -91,8 +94,8 @@ class WalkPath extends Model
         }
 
         $result = array();
-        foreach (array_merge($result1, $result2) as $item){
-            if ($item->capacity > 0){
+        foreach (array_merge($result1, $result2) as $item) {
+            if ($item->capacity > 0) {
                 $result[] = $item;
             }
         }
@@ -120,17 +123,25 @@ class WalkPath extends Model
     /**
      * 所有的容量(队伍数)
      */
-    public static function capacityAll() {
-        $capacity = array_sum(WalkPath::select('capacity')->get());
+    public static function capacityAll()
+    {
+        try {
+            //$capacity = array_sum(WalkRoute::select('capacity')->get());
+        } finally {
+            $capacity = 0;
+        }
+
+
     }
 
     /**
      * 计算各个路线在出发时间段的限制人数和剩余人数等配置项
      * 详情请见\doc\sqldesign
      */
-    public static function caculateConfig() {
-        $walk_paths = WalkPath::get();
-        return map($walk_paths, function($item) {
+    public static function caculateConfig()
+    {
+        $walk_paths = WalkRoute::get();
+        return map($walk_paths, function ($item) {
             return [
                 'name' => $item->name,
                 'limit_campus' => $item->limit_campus,

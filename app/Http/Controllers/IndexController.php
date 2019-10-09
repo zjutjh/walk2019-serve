@@ -26,11 +26,11 @@ class IndexController extends Controller
         $begin = SignupTime::beginAt();
         $end = SignupTime::endAt();
         if (now() < $begin){
-          $state = 'nostart';
+          $state = -1;//'not_start';
         } else if (now() <= $end){
-          $state = 'doing';
+          $state = 1;// 'doing';
         } else {
-          $state = 'end';
+          $state = 0;//'end';
         }
 
         $indexInfo = [

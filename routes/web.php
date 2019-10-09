@@ -38,11 +38,32 @@ Route::group(['middleware' => ['cor','check.finish']], function() {
     Route::post('/group/unsubmit', 'GroupController@unSubmitGroup');
     Route::post('/group/leave', 'GroupController@leaveGroup');
 
-    Route::post('/apply/list', 'ApplyController@getApplyList');
-    Route::post('/apply/agree', 'ApplyController@agreeMember');
-    Route::post('/apply/refuse', 'ApplyController@refuseMember');
-    Route::post('/apply/do', 'ApplyController@doApply');
-    Route::post('/apply/delete', 'ApplyController@deleteApply');
-    Route::post('/apply/count', 'ApplyController@getApplyCount');
+Route::group(['middleware' => ['check.wechat']], function () {
+    Route::post('/user/info', 'UserController@getMyInfo');
+    Route::post('/route/list', 'RouteController@getRouteList');
+
+    Route::group(['middleware' => ['check.finish']], function () {
+        Route::post('/user/register', 'UserController@register');
+        Route::post('/user/update', 'UserController@updateInfo');
+
+        Route::post('/group/list', 'GroupController@groupLists');
+        Route::post('/group/create', 'GroupController@createGroup');
+        Route::post('/group/break', 'GroupController@breakGroup');
+        Route::post('/group/submit', 'GroupController@submitGroup');
+        Route::post('/group/search', 'GroupController@searchTeam');
+        Route::post('/group/members/list', 'GroupController@getGroupMembers');
+        Route::post('/group/member/delete', 'GroupController@deleteMember');
+        Route::post('/group/info', 'GroupController@getGroupInfo');
+        Route::post('/group/update', 'GroupController@updateGroupInfo');
+        Route::post('/group/unsubmit', 'GroupController@unSubmitGroup');
+        Route::post('/group/leave', 'GroupController@leaveGroup');
+
+        Route::post('/apply/list', 'ApplyController@getApplyList');
+        Route::post('/apply/agree', 'ApplyController@agreeMember');
+        Route::post('/apply/refuse', 'ApplyController@refuseMember');
+        Route::post('/apply/do', 'ApplyController@doApply');
+        Route::post('/apply/delete', 'ApplyController@deleteApply');
+        Route::post('/apply/count', 'ApplyController@getApplyCount');
+    });
 });
 

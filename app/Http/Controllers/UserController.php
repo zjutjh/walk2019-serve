@@ -79,10 +79,10 @@ class UserController extends Controller
     public function getMyInfo(Request $request)
     {
         $user = User::current();
-
-        if ($user === null)
+        if ($user)
+            return StandardSuccessJsonResponse($user);
+        else
             return StandardFailJsonResponse();
-        return StandardSuccessJsonResponse($user);
     }
 
     /**

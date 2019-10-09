@@ -21,7 +21,7 @@ class SignupTime extends Model
      */
     public static function beginAt()
     {
-        return WalkTime::select('begin')->orderBy('begin')->first(); 
+        return WalkTime::select('begin')->orderBy('begin')->first();
     }
 
     /**
@@ -35,15 +35,15 @@ class SignupTime extends Model
      * 计算出各个时间段的报名人数信息
      */
     public static function caculateConfig(){
-        $capacityAll = WalkPath::capacityAll();
+        $capacityAll = WalkRoute::capacityAll();
         $capacityGiven = 0;
         $flag = false;
         $result = array();
 
-        $times1 = WalkPath::where('capacity','<>','auto')->get();
-        
+        $times1 = WalkRoute::where('capacity','<>','auto')->get();
+
         foreach($times1 as $time1){
-            
+
             $currentCapacity = int($time1->capacity);
             if ($capacityGiven + $currentCapacity >= $capactiyAll) {
                 $currentCapacity = $capacityAll - $capacityGiven;
@@ -63,7 +63,7 @@ class SignupTime extends Model
         }
 
         if (!$flag) {
-            $times2 = WalkPath::where('capacity','auto')->get();
+            $times2 = WalkRoute::where('capacity','auto')->get();
             $times2Count = $times2->count();
             $capacityRemain = $capacityAll - $capacityGiven;
             $capacityRemainCaculated = 0;
