@@ -20,6 +20,8 @@ Route::any('/wx/login', 'WXLoginController@wxLogin');
 
 Route::get('/index/info', 'IndexController@indexInfo');
 Route::any('/user/info', 'UserController@getMyInfo');
+
+
 Route::group(['middleware' => ['cor','check.finish']], function() {
     Route::post('/user/register', 'UserController@register');
     Route::post('/user/update', 'UserController@updateInfo');

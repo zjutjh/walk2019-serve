@@ -61,3 +61,10 @@ function iidGetSex(string $iid) {
 function iidGetBirthday(string $iid) {
     return substr($iid, 6, 8);
 }
+
+function map($array, $func){
+    $result = array();
+    foreach($array as $item){
+        $result[] = func($item);
+    }
+}

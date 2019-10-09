@@ -116,7 +116,7 @@ class GroupController extends Controller
             return StandardJsonResponse(-1, '你没有权限删除队伍');
         }
         $group->delete();
-        // Todo:: notify
+        // TODO: notify
         return StandardJsonResponse(1, 'Success');
     }
 
@@ -132,7 +132,7 @@ class GroupController extends Controller
         if ($group->is_sumbit)
             return StandardFailJsonResponse();
         $user->leaveGroup();
-        // Todo:: notify
+        // TODO: notify
         return StandardJsonResponse(1, 'Success');
     }
 

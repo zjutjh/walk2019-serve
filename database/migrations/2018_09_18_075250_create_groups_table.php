@@ -19,7 +19,8 @@ class CreateGroupsTable extends Migration
             $table->tinyInteger('capacity')->comment('队伍人数');
             $table->text('description')->comment('队伍简介');
             $table->integer('captain_id')->comment('队长id');
-            $table->enum('route', ['屏峰小和山半程毅行', '屏峰小和山全程毅行', '朝晖京杭大运河毅行'])->default('屏峰小和山半程毅行')->comment('参加路线');
+            $table->integer('route_id')->comment('毅行路线的id');
+            $table->integer('walk_time_id')->comment('出发时间的id');
             $table->boolean('is_submit')->default(false)->comment('是否提交队伍');
             $table->timestamps();
         });
