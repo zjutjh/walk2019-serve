@@ -17,10 +17,10 @@ Route::get('/', function () {
 Route::get('/oauth', 'WXLoginController@oauth');
 Route::any('/wx/login', 'WXLoginController@wxLogin');
 
-
 Route::get('/index/info', 'IndexController@indexInfo');
 Route::any('/user/info', 'UserController@getMyInfo');
-
+Route::any('/config/signup', 'IndexController@registerConfig');
+Route::any('/config/campus', 'IndexController@campusConfig');
 
 Route::group(['middleware' => ['cor','check.finish']], function() {
     Route::post('/user/register', 'UserController@register');
@@ -31,7 +31,7 @@ Route::group(['middleware' => ['cor','check.finish']], function() {
     Route::post('/group/break', 'GroupController@breakGroup');
     Route::post('/group/submit', 'GroupController@submitGroup');
     Route::post('/group/search', 'GroupController@searchTeam');
-    Route::post('/group/members/list', 'GroupController@getGroupMembers');
+    Route::post('/group/member/list', 'GroupController@getGroupMembers');
     Route::post('/group/member/delete', 'GroupController@deleteMember');
     Route::post('/group/info', 'GroupController@getGroupInfo');
     Route::post('/group/update', 'GroupController@updateGroupInfo');

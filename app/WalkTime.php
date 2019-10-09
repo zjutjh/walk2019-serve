@@ -17,6 +17,7 @@ class WalkTime extends Model
      */
     protected $fillable = ['begin', 'end', 'capacity_array'];
 
+
     /**
      * 获取一个walkpath的容量
      */

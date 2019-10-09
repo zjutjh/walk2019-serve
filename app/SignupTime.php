@@ -4,12 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class RegisterTime extends Model
+class SignupTime extends Model
 {
     /**
      * 数据表名
      */
-    protected $table = 'register_time';
+    protected $table = 'signup_time';
 
     /**
      * 可填充字段
@@ -93,12 +93,13 @@ class RegisterTime extends Model
      * @return array|null
      */
     public static function caculateCurrentConfig(){
-        $config = RegisterTime::caculateConfig();
+        $config = SignupTime::caculateConfig();
         $capacityAll = WalkPath::capacityAll();
         $capacityToNow = 0;
         $groupCountToNow = Group::countSumbitToNow();
         $flag = false;
 
+        $current = null;
         foreach ($config as $i => $time) {
             if (!$flag && now() >= $time -> begin && now() <= $time -> end) {
                 $current = $time;
@@ -112,16 +113,18 @@ class RegisterTime extends Model
         $remainNow = $capacityToNow - $groupCountToNow;
         $remainAll = $capacityToNow - $groupCountToNow;
 
-        return [
-            'begin' => $current -> begin,
-            'end' => $current -> end,
-            'group_count_sumbit' => $groupCountToNow,
-            'group_count' => Group::count(),
-            'remain' => $remainNow,
-            'remain_total' => $remainAll,
-            'capacity' => $capacityAll
-        ];
+        if (is_null($current)) {
+            return null;
+        } else {
+            return [
+                'begin' => $current -> begin,
+                'end' => $current -> end,
+                'group_count_sumbit' => $groupCountToNow,
+                'group_count' => Group::count(),
+                'remain' => $remainNow,
+                'remain_total' => $remainAll,
+                'capacity' => $capacityAll
+            ];
+        }
     }
-
-
 }

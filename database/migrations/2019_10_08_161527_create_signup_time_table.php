@@ -13,7 +13,7 @@ class CreateRegisterTime extends Migration
      */
     public function up()
     {
-        Schema::create('register_time', function (Blueprint $table) {
+        Schema::create('signup_time', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->timestamp('begin')->comment('开始报名时间');
             $table->timestamp('end')->comment('结束报名时间');
@@ -29,6 +29,6 @@ class CreateRegisterTime extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('register_time');
+        Schema::dropIfExists('signup_time');
     }
 }

@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
+use App\Helpers\_state;
 
 /**
  * @property mixed openid
@@ -65,8 +66,14 @@ class User extends Model
      */
     public function leaveGroup()
     {
+        $group = Group::find($this->group_id);
         $this->group_id = null;
-        $this->update(['state' => 1]);
+        $this->update(['state' => _state::no_entered]);
+        //DONE: 在人数不达标时，强制{解锁}队伍
+        if($group->members()->count() < config('info.members_count.least')){
+            notify(_notify::dismiss, $group->id);
+            $group->is_submit=false;
+        }
         return parent::save();
     }
 
@@ -90,7 +97,10 @@ class User extends Model
     public function addGroup($groupId)
     {
         $this->group_id = $groupId;
-        $this->update(['state' => 4]);
+        $this->update(['state' => _state::member]);
+        
+        notify(_notify::add, $this->id);
+        
         return parent::save();
     }
 
@@ -103,7 +113,9 @@ class User extends Model
         $openid = $this->openid;
         $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WECHAT_APPID') . "&secret=" . env('WECHAT_SECRET');
         $access_msg = json_decode(file_get_contents($access_token));
-        var_dump( $access_msg);
+        
+        //var_dump( $access_msg);
+        
         $token = $access_msg->access_token;
         $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
         $subscribe = json_decode(file_get_contents($subscribe_msg));

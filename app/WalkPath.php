@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\WalkTime;
 use Illuminate\Database\Eloquent\Model;
 
 class WalkPath extends Model
@@ -16,6 +17,16 @@ class WalkPath extends Model
      * @return int
      */
     protected $fillable = ['name','limit_campus','campus_from','capacity'];
+
+    public function supportCampus($campus){
+        if($this->limit_campus === 'all'){
+            return true;
+        } elseif ($this->limit_campus === $campus){
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     public function caculateCapacity(){
         /**
@@ -37,6 +48,7 @@ class WalkPath extends Model
                     'begin' => $item->begin,
                     'end' => $item->end,
                     'capacity' => $capacity,
+                    'remain' => $capacity - $item->submitGroupCountOfWalkTime($item->id)
                 ];
 
                 if ($capacity === 'auto') {
@@ -88,11 +100,21 @@ class WalkPath extends Model
         return $result;
     }
 
+    public function capacityGroupCountOfWalkTime($walk_time_id){
+        $walkTime = WalkTime::find($walk_time_id);
+        return $walkTime->getCapacityOf($this->id);
+    }
+
     /**
      * 获取已经提交的队伍在一个线路一个时间段的数量
      */
     public function submitGroupCountOfWalkTime($walk_time_id){
-        //TODO: 编写逻辑 
+        $count = Group::where('is_submit', true)
+            ->where('route_id', $this->id)
+            ->where('walk_time_id', $walk_time_id)
+            ->get()
+            ->count();
+        return $count;
     }
 
     /**
