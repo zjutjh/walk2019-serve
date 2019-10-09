@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Auth;
 
 class UserController extends Controller
 {
@@ -19,9 +18,6 @@ class UserController extends Controller
     {
         $UserInfo = $request->all();
         $openid = $request->session()->get('openid');
-
-        if ($openid === null)
-            return StandardFailJsonResponse();
 
         $user = new User();
         $user->openid = $openid;
@@ -40,9 +36,10 @@ class UserController extends Controller
     public function getMyInfo(Request $request)
     {
         $user = User::current();
-        if ($user === null)
+        if ($user)
+            return StandardSuccessJsonResponse($user);
+        else
             return StandardFailJsonResponse();
-        return StandardSuccessJsonResponse($user);
     }
 
     /**

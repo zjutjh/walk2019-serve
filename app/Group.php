@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 class Group extends Model
 {
     protected $fillable = [
-        'name', 'capacity', 'description', 'route', 'captain_id','logo'
+        'name', 'capacity', 'description', 'route_id', 'captain_id','logo'
     ];
 
     /**

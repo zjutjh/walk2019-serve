@@ -48,7 +48,6 @@ function StandardFailJsonResponse($data = null) {
  */
 function iidGetSex(string $iid) {
     $sex = (int) substr($iid, 16, 1);
-    echo $sex;
     return $sex % 2 == 0 ? '女' : '男';
 }
 

@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->nullable();
             $table->enum('sex', ['男', '女'])->nullable();
             $table->string('logo',1000)->nullable()->comment('Logo');
-            $table->string('campus')->comment('校区');
+            $table->string('campus')->comment('校区')->nullable();
             $table->string('phone')->nullable()->comment('电话号码');
             $table->string('id_card')->nullable()->comment('身份证');
             $table->string('openid',50)->unique()->comment('微信openid');
@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
             $table->integer('group_id')->nullable()->comment('队伍编号');
             $table->tinyInteger('state')->default(0)->comment('0 未报名 1已经报名未组队 2 正在申请队伍 3 有队伍（队长）4 有队伍（队员）5 未填写信息');
             $table->timestamps();
-        
+
         });
     }
 
