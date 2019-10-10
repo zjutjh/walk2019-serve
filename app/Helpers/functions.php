@@ -6,6 +6,7 @@
  * Time: 15:42
  */
 
+use App\Helpers\_notify;
 use Illuminate\Http\JsonResponse;
 
 /**
@@ -71,6 +72,10 @@ function encryptIid(string $iid){
     return $iid;
 }
 
+function notify(_notify $type, $data){
+
+}
+
 /**
  * 验证是否是合法的身份证号码
  */
@@ -92,6 +97,3 @@ function mapdic($array, $func){
     }
 }
 
-function notify(_notify $type, $params=null){
-    //TODO: 实现通知推送
-}

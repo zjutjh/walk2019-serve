@@ -18,12 +18,10 @@ Route::get('/oauth', 'WXLoginController@oauth');
 Route::any('/wx/login', 'WXLoginController@wxLogin');
 
 Route::get('/index/info', 'IndexController@indexInfo');
-Route::any('/config/signup', 'IndexController@registerConfig');
 Route::any('/config/campus', 'IndexController@campusConfig');
-Route::any('/config/walkpath', 'IndexController@walkpathConfig');
-Route::any('/config/school', 'IndexController@schoolConfig');
-Route::any('/config/members_count', 'IndexController@membersCount');
+Route::any('/config/walkroute', 'IndexController@walkrouteConfig');
 
+Route::any('/config/members_count', 'IndexController@membersCount');
 Route::group(['middleware' => ['check.wechat']], function () {
     Route::post('/user/info', 'UserController@getMyInfo');
     Route::post('/route/list', 'RouteController@getRouteList');

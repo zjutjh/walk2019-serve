@@ -35,15 +35,15 @@ class WalkRoute extends Model
         /**
          * 不含auto的时间配置.
          */
-        $result1 = array();
+        $result1 = [];
         /**
          * 包含auto的时间配置.
          */
-        $result2 = array();
-        $walkTimes = WalkTime::cursor();
+        $result2 = [];
+        $walkTimes = WalkTime::all()->sortBy('end');
         $capacityThisPath = $this->capacity;
         $capacityCaculate = 0;
-
+        //dd($walkTimes);
         foreach ($walkTimes as $item) {
             $capacity = $item->getCapacityOf($this->id);
             if (!is_null($capacity)) {
@@ -51,8 +51,11 @@ class WalkRoute extends Model
                     'begin' => $item->begin,
                     'end' => $item->end,
                     'capacity' => $capacity,
-                    'remain' => $capacity - $item->submitGroupCountOfWalkTime($item->id)
+                    'remain' => $capacity - $this->submitGroupCountOfWalkTime($item->id)
                 ];
+
+                dd($temp);
+                //dd($temp);
 
                 if ($capacity === 'auto') {
                     $result2[] = $temp;
@@ -61,10 +64,6 @@ class WalkRoute extends Model
                 }
             }
         }
-
-        $result1 = array_values(array_sort($result1, function ($key, $value) {
-            return $value['end'];
-        }));
 
         foreach ($result1 as $value) {
             $capacity = $value->capacity;
@@ -140,14 +139,16 @@ class WalkRoute extends Model
      */
     public static function caculateConfig()
     {
-        $walk_paths = WalkRoute::get();
-        return map($walk_paths, function ($item) {
-            return [
+        $walkRoutes = WalkRoute::all();
+        //dd($walk_paths);
+        $result = [];
+        foreach($walkRoutes as $item){
+            $result[] = [
                 'name' => $item->name,
                 'limit_campus' => $item->limit_campus,
                 'campus_from' => $item->campus_from,
                 'capacities' => $item->caculateCapacity()
             ];
-        });
+        }
     }
 }

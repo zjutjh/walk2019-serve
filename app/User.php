@@ -98,9 +98,7 @@ class User extends Model
     {
         $this->group_id = $groupId;
         $this->update(['state' => _state::member]);
-        
-        notify(_notify::add, $this->id);
-        
+
         return parent::save();
     }
 
@@ -113,9 +111,9 @@ class User extends Model
         $openid = $this->openid;
         $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WECHAT_APPID') . "&secret=" . env('WECHAT_SECRET');
         $access_msg = json_decode(file_get_contents($access_token));
-        
+
         //var_dump( $access_msg);
-        
+
         $token = $access_msg->access_token;
         $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
         $subscribe = json_decode(file_get_contents($subscribe_msg));

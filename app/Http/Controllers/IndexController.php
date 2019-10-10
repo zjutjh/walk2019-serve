@@ -6,7 +6,7 @@ namespace App\Http\Controllers;
 use App\User;
 use App\Group;
 use App\SignupTime;
-use App\WalkPath;
+use App\WalkRoute;
 use Illuminate\Http\JsonResponse;
 
 class IndexController extends Controller
@@ -48,8 +48,8 @@ class IndexController extends Controller
         return StandardSuccessJsonResponse(SignupTime::caculateConfig());
     }
 
-    public function walkpathConfig() {
-        return StandardSuccessJsonResponse(WalkPath::caculateConfig());
+    public function walkrouteConfig() {
+        return StandardSuccessJsonResponse(WalkRoute::caculateConfig());
     }
 
     public function campusConfig() {

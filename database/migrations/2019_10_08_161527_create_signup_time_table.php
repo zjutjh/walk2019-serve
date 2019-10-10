@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 
 
-class CreateRegisterTimeTable extends Migration
+class CreateSignupTimeTable extends Migration
 {
     /**
      * Run the migrations.

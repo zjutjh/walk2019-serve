@@ -18,9 +18,8 @@ class RouteController extends Controller
      */
     public function getRouteList(Request $request)
     {
-        return StandardJsonResponse(1, '请求成功',  WalkRoute::orderBy('id', 'asc'));
+        return StandardSuccessJsonResponse(WalkRoute::orderBy('id', 'asc'));
     }
-
 
 
 }

@@ -92,7 +92,7 @@ class GroupController extends Controller
         $user->group_id = $group->id;
         $user->state = _state::captain;
         $user->save();
-        
+
         notify(_notify::create, $group->id);
 
         return StandardJsonResponse(1, '创建成功');
@@ -104,16 +104,16 @@ class GroupController extends Controller
         $user = User::current();
         $all = $request->all();
         $group = Group::where('captain_id', $user->id)->first();
-        
+
         // TODO: 表单验证
-        
+
         if ($group !== null) {
             // 验证1: 队伍锁定状态验证
             // 验证2: 人数验证
             // 验证3: 校区验证
             $memberCount = $group->members()->count();
             $walkPath = WalkPath::find('$all->walk_path_id');
-            if ($group->is_submit === true){  
+            if ($group->is_submit === true){
                 //TODO: 给{锁定}取一个好听的名字
                 return StandardJsonResponse(-1, '队伍已锁定');
             }
@@ -152,11 +152,6 @@ class GroupController extends Controller
             return StandardJsonResponse(-1, '你没有权限解散队伍');
         }
 
-        // $members = $group->members();
-        // foreach($members as $member){
-        //     $member->leaveGroup();
-        // }
-        
         /**
          * 先提醒，再删除
          */
@@ -186,7 +181,7 @@ class GroupController extends Controller
         $user->leaveGroup();
 
         notify(_notify::leave, $user->id);
-        
+
         return StandardJsonResponse(1, 'Success');
     }
 
@@ -214,10 +209,10 @@ class GroupController extends Controller
         }
         //校验: 当前报名的线路是否还有余量
         $walkPath = WalkPath::find($group->route_id);
-        $remainCountOfPathAndTime = 
+        $remainCountOfPathAndTime =
             $walkPath->capacityGroupCountOfWalkTime($this->walk_time_id)
              - $walkPath->submitGroupCountOfWalkTime($this->walk_time_id);
-        
+
         // 不再使用不稳定，需要跑数据库的设置了
         // $max_team_num = 0;
         // if ($group->select_route === "屏峰小和山全程毅行")
@@ -251,7 +246,7 @@ class GroupController extends Controller
             $group = $user->group()->first();
             $group->is_lock = false;
             $group->save();
-            
+
             notify(_notify::unsubmit, $group->id);
 
             return StandardSuccessJsonResponse();
