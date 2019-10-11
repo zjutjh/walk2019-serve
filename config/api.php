@@ -13,12 +13,10 @@ return [
         'oauth' => 'https://craim.net/oauth/index.php?url='
     ],
     //TODO: 使用其他方式解决不能动态修改设置的问题
-    
+
     'system' => [
+        'BeginTime'=>env('BeginTime'),
         'EndTime' => env('EndTime'),
-        'IsEnd' => false,
-        'PF_Full_Max' => 1200,
-        'PF_Half_Max' => 1200,
-        'ZH_Full_Max' => 1200
+        'IsEnd' => false
     ]
 ];

@@ -6,8 +6,7 @@ namespace App;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\WalkPath;
-use App\Helpers\_state;
+use App\Helpers\State;
 
 /**
  * @property mixed id
@@ -18,7 +17,7 @@ use App\Helpers\_state;
 class Group extends Model
 {
     protected $fillable = [
-        'name', 'logo', 'capacity', 'description',  'captain_id', 'route_id', 'is_submit'
+        'name', 'logo', 'capacity', 'description',  'captain_id', 'route_id', 'is_submit','No'
     ];
 
     /**
@@ -81,8 +80,7 @@ class Group extends Model
         foreach ($applies as $apply) {
             $user = User::find($apply->apply_id);
 
-            //$applies->notify();
-            //notify(_notify::apply_cancel_group, $apply->apply_id, $this->id);
+            $user->notify(new Wechat(WxTemplate::Delete));
 
             $apply->delete();
         }
@@ -90,9 +88,7 @@ class Group extends Model
 
         foreach ($members as $member) {
             $member->leaveGroup();
-
-            if ($member->id !== $this->captain_id) {
-            }
+            $member->notify(new Wechat(WxTemplate::Delete));
         }
         return parent::delete();
     }

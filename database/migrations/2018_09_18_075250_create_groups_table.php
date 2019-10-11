@@ -15,11 +15,12 @@ class CreateGroupsTable extends Migration
         Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->comment('队伍名称');
+            $table->string('No')->comment('编号')->nullable();
             $table->string('logo',1000)->nullable()->comment('队伍Logo');
             $table->tinyInteger('capacity')->comment('队伍人数');
             $table->text('description')->comment('队伍简介');
             $table->integer('captain_id')->comment('队长id');
-            $table->integer('route_id')->comment('毅行路线的id');
+            $table->integer('route_id')->comment('毅行路线');
             $table->boolean('is_submit')->default(false)->comment('是否提交队伍');
             $table->timestamps();
         });

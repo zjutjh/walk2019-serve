@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\WalkTime;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -23,22 +22,5 @@ class WalkRoute extends Model
 
     public $timestamps = false;
 
-    public static function getId($name){
-        $route =  WalkRoute::where('name',$name)->first();
-        return $route->id;
-    }
 
-    public static function capacityAll(){
-        $capacities = WalkRoute::select('capacity')->get();
-        $capacity = 0;
-        foreach ($capacities as $item){
-            $capacity += $item->capacity;
-        }
-        return $capacity;
-    }
-
-    public function remainCount(){
-        $groupCount = Group::where('route_id', $this->id)->get()->count();
-        return $this->capacity - $this->id;
-    }
 }

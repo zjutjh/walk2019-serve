@@ -16,7 +16,7 @@ class wechatChannel
      */
     public function send($notifiable, Notification $notification)
     {
-        $message = $notification->toWechat();
+        $message = $notification->toWechat($notifiable);
         $client = new Client();
         $res = $client->post(config('api.jh.template'), [
             'json' => $message

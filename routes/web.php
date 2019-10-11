@@ -17,16 +17,19 @@ Route::get('/', function () {
 Route::get('/oauth', 'WXLoginController@oauth');
 Route::any('/wx/login', 'WXLoginController@wxLogin');
 
-Route::get('/index/info', 'IndexController@indexInfo');
-Route::any('/config/campus', 'IndexController@campusConfig');
-Route::any('/config/walkroute', 'IndexController@walkrouteConfig');
-Route::any('/config/members_count', 'IndexController@membersCount');
-Route::post('/config/signup', 'IndexController@signupConfig');
+Route::any('/index/info', 'IndexController@indexInfo');
+
+Route::group(['middleware' => ['check.admin']], function () {
+    Route::any('/test', 'TestController@sendTmp');
+    Route::any('/test2', 'TestController@GenYXGroupId');
+    Route::any('/test3', 'TestController@Download');
+});
 
 Route::group(['middleware' => ['check.wechat']], function () {
     Route::post('/user/info', 'UserController@getMyInfo');
     Route::post('/route/list', 'RouteController@getRouteList');
-
+    Route::post('/group/info', 'GroupController@getGroupInfo');
+    Route::post('/group/members/list', 'GroupController@getGroupMembers');
     Route::group(['middleware' => ['check.finish']], function () {
         Route::post('/user/register', 'UserController@register');
         Route::post('/user/update', 'UserController@updateInfo');
@@ -36,7 +39,7 @@ Route::group(['middleware' => ['check.wechat']], function () {
         Route::post('/group/break', 'GroupController@breakGroup');
         Route::post('/group/submit', 'GroupController@submitGroup');
         Route::post('/group/search', 'GroupController@searchTeam');
-        Route::post('/group/members/list', 'GroupController@getGroupMembers');
+
         Route::post('/group/members/delete', 'GroupController@deleteMember');
         Route::post('/group/info', 'GroupController@getGroupInfo');
         Route::post('/group/update', 'GroupController@updateGroupInfo');

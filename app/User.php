@@ -5,12 +5,11 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
-use App\Helpers\_State;
+use App\Helpers\State;
 
 /**
  * @property mixed openid
  * @property null yx_group_id
- * @property  group_id
  * @method static where(string $string, $captain_id)
  */
 class User extends Model
@@ -22,7 +21,7 @@ class User extends Model
      * @var array
      */
     protected $hidden = [
-        'openid', 'sex', 'id_card', 'height', 'birthday', 'sid'
+        'openid', 'sex', 'id_card',  'birthday', 'sid'
     ];
 
 
@@ -70,10 +69,10 @@ class User extends Model
     {
         $group = Group::find($this->group_id);
         $this->group_id = null;
-        $this->update(['state' => _State::no_entered]);
+        $this->update(['state' => State::no_entered]);
         //DONE: 在人数不达标时，强制{解锁}队伍
         if($group->members()->count() < config('info.members_count.least')){
-            //notify(_notify::dismiss, $group->id);
+
             $group->is_submit=false;
         }
         return parent::save();
@@ -99,34 +98,12 @@ class User extends Model
     public function addGroup($groupId)
     {
         $this->group_id = $groupId;
-        $this->update(['state' => _state::member]);
+        $this->update(['state' => State::member]);
 
         return parent::save();
     }
 
-    /**
-     * 确认是否关注公众号
-     * @return bool
-     */
-    public function identifyGz()
-    {
-        $openid = $this->openid;
-        $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WECHAT_APPID') . "&secret=" . env('WECHAT_SECRET');
-        $access_msg = json_decode(file_get_contents($access_token));
 
-        //var_dump( $access_msg);
-
-        $token = $access_msg->access_token;
-        $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
-        $subscribe = json_decode(file_get_contents($subscribe_msg));
-        $isSubscribed = $subscribe->subscribe;
-        //
-        if ($isSubscribed === 1) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 
 
 }

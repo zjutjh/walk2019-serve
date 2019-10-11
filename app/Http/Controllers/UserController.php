@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\User;
-use App\Apply;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -34,27 +32,26 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $all = $request->all();
-        //print($all);
+
         $openid = $request->session()->get('openid');
 
         if ($openid === null)
-            return StandardJsonResponse("你还没有openid");
+            return StandardFailJsonResponse("微信登录失败");
+
+        if (!identifyGz($openid))
+            return StandardFailJsonResponse("请先关注浙江工业大学精弘网络公众号");
 
         $validator = Validator::make($request->all(), $this->userValidator);
+
         if ($validator->fails())
-            return StandardJsonResponse(-1,"字段验证不通过");
+            return StandardFailJsonResponse("字段验证不通过,请检查一下");
 
         $user = new User();
         $user->openid = $openid;
         $user->fill($all);
+        $user->save();
 
-        try{
-            $user->save();
-        } catch (QueryException $exception){
-            return StandardJsonResponse(-1, "openid重复");
-        }
-
-        return StandardJsonResponse(1,"报名成功");
+        return StandardJsonResponse(1, "报名成功");
     }
 
 
@@ -70,7 +67,7 @@ class UserController extends Controller
         if ($user)
             return StandardSuccessJsonResponse($user);
         else
-            return StandardFailJsonResponse();
+            return StandardFailJsonResponse("登录超时");
     }
 
     /**
@@ -88,7 +85,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $this->userValidator);
 
         if ($validator->fails())
-            return StandardFailJsonResponse();
+            return StandardFailJsonResponse("字段验证不通过,请检查一下");
 
         $user->fill($all);
         $user->save();

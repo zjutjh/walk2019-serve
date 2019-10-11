@@ -4,7 +4,7 @@
 namespace App\Helpers;
 
 
-class _State
+class State
 {
     /**
      * 没有报名[默认项]
