@@ -7,7 +7,7 @@ use App\Apply;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
-
+use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -26,6 +26,7 @@ class UserController extends Controller
     ];
 
     /**
+     * [√测试通过]
      * 注册报名
      * @param Request $request
      * @return JsonResponse
@@ -33,29 +34,32 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $all = $request->all();
+        //print($all);
         $openid = $request->session()->get('openid');
 
         if ($openid === null)
-            return StandardFailJsonResponse();
-
-        //TODO: 表单验证
+            return StandardJsonResponse("你还没有openid");
 
         $validator = Validator::make($request->all(), $this->userValidator);
-
         if ($validator->fails())
-            return StandardFailJsonResponse();
+            return StandardJsonResponse(-1,"字段验证不通过");
 
         $user = new User();
         $user->openid = $openid;
-
         $user->fill($all);
 
-        $user->save();
-        return StandardSuccessJsonResponse();
+        try{
+            $user->save();
+        } catch (QueryException $exception){
+            return StandardJsonResponse(-1, "openid重复");
+        }
+
+        return StandardJsonResponse(1,"报名成功");
     }
 
 
     /**
+     * [√测试通过]
      * 获得当前用户信息
      * @param Request $request
      * @return JsonResponse
@@ -70,13 +74,15 @@ class UserController extends Controller
     }
 
     /**
+     * [√测试通过]
      * 更新用户信息
      * @param Request $request
      * @return JsonResponse
      */
     public function updateInfo(Request $request)
     {
-        $UserInfo = $request->all();
+        $all = $request->all();
+
         $user = User::current();
 
         $validator = Validator::make($request->all(), $this->userValidator);
@@ -84,31 +90,8 @@ class UserController extends Controller
         if ($validator->fails())
             return StandardFailJsonResponse();
 
-
-        $user->fill($UserInfo);
+        $user->fill($all);
         $user->save();
-        return StandardSuccessJsonResponse();
-    }
-
-    /**
-     * 解除绑定
-     * @param Request $request
-     * @return JsonResponse
-     */
-    public function dismiss(Request $request)
-    {
-        $user = User::current();
-        $group = $user->group()->first();
-        if ($group->captain_id === $user->id) {
-            $group->dismiss();
-        } else {
-            $user->leaveGroup();
-        }
-
-        Apply::removeAll($user->id);
-        $user->openid = null;
-        $user->save();
-
         return StandardSuccessJsonResponse();
     }
 

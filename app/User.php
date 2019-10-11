@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Notifications\Notifiable;
-use App\Helpers\_state;
+use App\Helpers\_State;
 
 /**
  * @property mixed openid
@@ -29,6 +29,8 @@ class User extends Model
     protected $fillable = [
         'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid','logo','identity','state','group_id', 'height'
     ];
+
+
 
     /**
      * 获得当前用户
@@ -68,10 +70,10 @@ class User extends Model
     {
         $group = Group::find($this->group_id);
         $this->group_id = null;
-        $this->update(['state' => _state::no_entered]);
+        $this->update(['state' => _State::no_entered]);
         //DONE: 在人数不达标时，强制{解锁}队伍
         if($group->members()->count() < config('info.members_count.least')){
-            notify(_notify::dismiss, $group->id);
+            //notify(_notify::dismiss, $group->id);
             $group->is_submit=false;
         }
         return parent::save();

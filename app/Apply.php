@@ -6,6 +6,10 @@ use App\User;
 use App\Helpers\_state;
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * Class Apply
+ * @package App
+ */
 class Apply extends Model
 {
     protected $fillable = [

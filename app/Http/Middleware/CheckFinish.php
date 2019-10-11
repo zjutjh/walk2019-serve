@@ -17,8 +17,8 @@ class CheckFinish
     public function handle($request, Closure $next)
     {
 
-       if( config('api.system.IsEnd')===true){
-           return StandardFailJsonResponse("Over");
+       if(config('api.system.IsEnd')===true){
+           return StandardJsonResponse(-1,"报名已结束");
        }
         return $next($request);
     }

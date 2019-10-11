@@ -20,7 +20,6 @@ class CreateGroupsTable extends Migration
             $table->text('description')->comment('队伍简介');
             $table->integer('captain_id')->comment('队长id');
             $table->integer('route_id')->comment('毅行路线的id');
-            $table->integer('walk_time_id')->comment('出发时间的id');
             $table->boolean('is_submit')->default(false)->comment('是否提交队伍');
             $table->timestamps();
         });

@@ -20,8 +20,9 @@ Route::any('/wx/login', 'WXLoginController@wxLogin');
 Route::get('/index/info', 'IndexController@indexInfo');
 Route::any('/config/campus', 'IndexController@campusConfig');
 Route::any('/config/walkroute', 'IndexController@walkrouteConfig');
-
 Route::any('/config/members_count', 'IndexController@membersCount');
+Route::post('/config/signup', 'IndexController@signupConfig');
+
 Route::group(['middleware' => ['check.wechat']], function () {
     Route::post('/user/info', 'UserController@getMyInfo');
     Route::post('/route/list', 'RouteController@getRouteList');
@@ -36,7 +37,7 @@ Route::group(['middleware' => ['check.wechat']], function () {
         Route::post('/group/submit', 'GroupController@submitGroup');
         Route::post('/group/search', 'GroupController@searchTeam');
         Route::post('/group/members/list', 'GroupController@getGroupMembers');
-        Route::post('/group/member/delete', 'GroupController@deleteMember');
+        Route::post('/group/members/delete', 'GroupController@deleteMember');
         Route::post('/group/info', 'GroupController@getGroupInfo');
         Route::post('/group/update', 'GroupController@updateGroupInfo');
         Route::post('/group/unsubmit', 'GroupController@unSubmitGroup');

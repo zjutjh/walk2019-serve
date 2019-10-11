@@ -7,12 +7,15 @@ use App\User;
 use App\Group;
 use App\SignupTime;
 use App\WalkRoute;
+use Carbon\Traits\Timestamp;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Carbon;
 
 class IndexController extends Controller
 {
 
     /**
+     * [√通过测试]
      * 获取首页信息
      * @return JsonResponse
      */
@@ -25,7 +28,13 @@ class IndexController extends Controller
         // ];
         $begin = SignupTime::beginAt();
         $end = SignupTime::endAt();
-        if (now() < $begin){
+        $now = now()->toDateTimeString();
+
+        if($begin == null || $end == null){
+            return StandardJsonResponse(-1, "服务器还没有配置");
+        }
+
+        if ($now < $begin){
           $state = -1;//'not_start';
         } else if (now() <= $end){
           $state = 1;// 'doing';
@@ -34,33 +43,24 @@ class IndexController extends Controller
         }
 
         $indexInfo = [
-          'begin' => $begin,
-          'end' => $end,
-          'state' => $state,
-          'apply_count' => User::getUserCount(),
-          'current' => SignupTime::caculateCurrentConfig(),
+            'begin' => $begin,
+            'end' => $end,
+            'now' => $now,
+            'state' => $state,
+            'apply_count' => User::getUserCount(),
+            'current' => SignupTime::caculateCurrentConfig(),
         ];
 
-        return StandardSuccessJsonResponse($indexInfo);
+        return StandardJsonResponse(1,"获取信息成功",$indexInfo);
     }
 
+    /**
+     * [√通过测试]
+     * 获取报名的人数
+     * @return JsonResponse
+     */
     public function signupConfig() {
         return StandardSuccessJsonResponse(SignupTime::caculateConfig());
     }
 
-    public function walkrouteConfig() {
-        return StandardSuccessJsonResponse(WalkRoute::caculateConfig());
-    }
-
-    public function campusConfig() {
-        return StandardSuccessJsonResponse(config('info.campus'));
-    }
-
-    public function schoolConfig(){
-        return StandardSuccessJsonResponse(config('info.school'));
-    }
-
-    public function membersCountConfig(){
-        return StandardSuccessJsonResponse(config('info.members_count'));
-    }
 }

@@ -19,136 +19,26 @@ class WalkRoute extends Model
      * 可填充字段
      * @return int
      */
-    protected $fillable = ['name', 'limit_campus', 'campus_from', 'capacity'];
+    protected $fillable = ['name',  'capacity'];
 
-    public function supportCampus($campus){
-        if($this->limit_campus === 'all'){
-            return true;
-        } elseif ($this->limit_campus === $campus){
-            return true;
-        } else {
-            return false;
-        }
+    public $timestamps = false;
+
+    public static function getId($name){
+        $route =  WalkRoute::where('name',$name)->first();
+        return $route->id;
     }
 
-    public function caculateCapacity(){
-        /**
-         * 不含auto的时间配置.
-         */
-        $result1 = [];
-        /**
-         * 包含auto的时间配置.
-         */
-        $result2 = [];
-        $walkTimes = WalkTime::all()->sortBy('end');
-        $capacityThisPath = $this->capacity;
-        $capacityCaculate = 0;
-        //dd($walkTimes);
-        foreach ($walkTimes as $item) {
-            $capacity = $item->getCapacityOf($this->id);
-            if (!is_null($capacity)) {
-                $temp = [
-                    'begin' => $item->begin,
-                    'end' => $item->end,
-                    'capacity' => $capacity,
-                    'remain' => $capacity - $this->submitGroupCountOfWalkTime($item->id)
-                ];
-
-                dd($temp);
-                //dd($temp);
-
-                if ($capacity === 'auto') {
-                    $result2[] = $temp;
-                } else {
-                    $result1[] = $temp;
-                }
-            }
+    public static function capacityAll(){
+        $capacities = WalkRoute::select('capacity')->get();
+        $capacity = 0;
+        foreach ($capacities as $item){
+            $capacity += $item->capacity;
         }
-
-        foreach ($result1 as $value) {
-            $capacity = $value->capacity;
-            if ($capacityCaculate + int($value->capacity) > $capacityThisPath) {
-                $remain = $capacityThisPath - $capacityCaculate;
-                if ($remain > 0) {
-                    $value->capacity = $remain;
-                    $capacityCaculate = $capacityThisPath;
-                } else {
-                    $value->capacity = 0;
-                }
-            }
-        }
-
-        $capacityRemain = $capacityThisPath - $capacityCaculate;
-        $capacityRemainCaculate = 0;
-
-        $autoCount = $result2->count();
-        foreach ($result2 as $index => $value) {
-            if ($index < $autoCount - 1) {
-                $eachCount = $capacityRemain / $autoCount;
-                $value->$capacity = $eachCount;
-                $capacityRemainCaculate += $eachCount;
-            } else {
-                $value->$capacity = $capacityRemain - $capacityRemainCaculate;
-            }
-        }
-
-        $result = array();
-        foreach (array_merge($result1, $result2) as $item) {
-            if ($item->capacity > 0) {
-                $result[] = $item;
-            }
-        }
-
-        return $result;
+        return $capacity;
     }
 
-    public function capacityGroupCountOfWalkTime($walk_time_id){
-        $walkTime = WalkTime::find($walk_time_id);
-        return $walkTime->getCapacityOf($this->id);
-    }
-
-    /**
-     * 获取已经提交的队伍在一个线路一个时间段的数量
-     */
-    public function submitGroupCountOfWalkTime($walk_time_id){
-        $count = Group::where('is_submit', true)
-            ->where('route_id', $this->id)
-            ->where('walk_time_id', $walk_time_id)
-            ->get()
-            ->count();
-        return $count;
-    }
-
-    /**
-     * 所有的容量(队伍数)
-     */
-    public static function capacityAll()
-    {
-        try {
-            //$capacity = array_sum(WalkRoute::select('capacity')->get());
-        } finally {
-            $capacity = 0;
-        }
-
-
-    }
-
-    /**
-     * 计算各个路线在出发时间段的限制人数和剩余人数等配置项
-     * 详情请见\doc\sqldesign
-     */
-    public static function caculateConfig()
-    {
-        $walkRoutes = WalkRoute::all();
-        //dd($walk_paths);
-        $result = [];
-        foreach($walkRoutes as $item){
-            $result[] = [
-                'name' => $item->name,
-                'limit_campus' => $item->limit_campus,
-                'campus_from' => $item->campus_from,
-                'capacities' => $item->caculateCapacity()
-            ];
-        }
+    public function remainCount(){
+        $groupCount = Group::where('route_id', $this->id)->get()->count();
+        return $this->capacity - $this->id;
     }
 }

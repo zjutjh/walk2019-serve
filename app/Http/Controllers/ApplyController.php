@@ -37,7 +37,7 @@ class ApplyController extends Controller
     public function getApplyCount()
     {
         $groupId = User::current()->group_id;
-        $applyCount = Apply::where('apply_team_id', $groupId)->count();
+        $applies = Apply::where('apply_team_id', $groupId)->get();
         return StandardJsonResponse(1, '请求成功', $applyCount);
     }
 
@@ -90,12 +90,12 @@ class ApplyController extends Controller
         $apply_team_id = $request->get('apply_team_id');
         if (!$apply = Apply::where('apply_id', $apply_id)->first())
             return StandardJsonResponse(-1, '你的申请已经处理');
-        
-        
+
+
         notify(_notify::apply_cancel_user, $user->id);
 
         Apply::removeOne($apply_id, $apply_team_id);
-        
+
         return StandardJsonResponse(1, 'Success');
     }
 
@@ -108,7 +108,7 @@ class ApplyController extends Controller
     {
         $user = User::current();
         $group = $user->group()->first();
-        
+
         if($user->id != $group->captain_id){
             return StandardJsonResponse(-1, '你没有权限处理申请');
         }
@@ -152,7 +152,7 @@ class ApplyController extends Controller
             return StandardJsonResponse(-1, '该申请者已经撤回申请了');
         }
         Apply::removeOne($apply_id, $group->id);
-        
+
         notify(_notify::apply_cancel_captain, $apply_id);
 
         return StandardJsonResponse(1, '拒绝成功');

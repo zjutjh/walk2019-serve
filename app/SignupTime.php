@@ -2,7 +2,9 @@
 
 namespace App;
 
+use Carbon\Traits\Timestamp;
 use Illuminate\Database\Eloquent\Model;
+use phpDocumentor\Reflection\DocBlock\Tags\Since;
 
 class SignupTime extends Model
 {
@@ -16,75 +18,56 @@ class SignupTime extends Model
      */
     protected $fillable = ['begin','end','capacity'];
 
+    public $timestamps = false;
+
     /**
-     * 由配置的数据统计报名开始的时间
+     * @return Timestamp|null
      */
     public static function beginAt()
     {
-        return WalkTime::select('begin')->orderBy('begin')->first();
+        $first = SignupTime::orderBy('begin','asc')->first();
+        if ($first == null) {
+            return null;
+        }
+        return $first->begin;
     }
 
     /**
      * 由配置的数据统计报名结束的时间
      */
     public static function endAt(){
-        return WalkTime::select('end')->orderBy('end','desc')->first();
+        $last = SignupTime::orderBy('end','desc')->first();
+        if ($last == null){
+            return null;
+        }
+        return $last->end;
     }
 
     /**
      * 计算出各个时间段的报名人数信息
      */
     public static function caculateConfig(){
-        $capacityAll = WalkRoute::capacityAll();
-        $capacityGiven = 0;
-        $flag = false;
-        $result = array();
+        $times = SignupTime::all();
+        return $times;
+    }
 
-        $times1 = WalkRoute::where('capacity','<>','auto')->get();
-
-        foreach($times1 as $time1){
-
-            $currentCapacity = int($time1->capacity);
-            if ($capacityGiven + $currentCapacity >= $capactiyAll) {
-                $currentCapacity = $capacityAll - $capacityGiven;
-                $flag = true;
-            };
-
-            //将计算好的配置添加到数组
-            $result[] = [
-                'begin' => $time1->begin,
-                'end' => $time1->end,
-                'capacity' => $currentCapacity
-            ];
-
-            if ($flag) {
-                break;
-            }
+    public static function capacityToNow(){
+        $times = SignupTime::where('begin','<=',now())->get();
+        //echo $times;
+        $capacity = 0;
+        foreach($times as $time){
+            $capacity += $time->capacity;
         }
+        return $capacity;
+    }
 
-        if (!$flag) {
-            $times2 = WalkRoute::where('capacity','auto')->get();
-            $times2Count = $times2->count();
-            $capacityRemain = $capacityAll - $capacityGiven;
-            $capacityRemainCaculated = 0;
-
-            foreach($times2 as $i => $time2){
-                if($i < $times2Count - 1){
-                    $currentCapacity = $capacityRemain / $times2Count;
-                    $capacityRemainCaculated += $currentCapacity;
-                } else {
-                    $currentCapacity = $capacityRemain - $capacityRemainCaculated;
-                }
-
-                $result[] = [
-                    'begin' => $time2->begin,
-                    'end' => $time2->end,
-                    'capacity' => $currentCapacity
-                ];
-            }
+    public static function capacityAll(){
+        $times = SignupTime::all();
+        $capacity = 0;
+        foreach($times as $time){
+            $capacity += $time->capacity;
         }
-
-        return $result;
+        return $capacity;
     }
 
     /**
@@ -93,38 +76,25 @@ class SignupTime extends Model
      * @return array|null
      */
     public static function caculateCurrentConfig(){
-        $config = SignupTime::caculateConfig();
-        $capacityAll = WalkPath::capacityAll();
-        $capacityToNow = 0;
-        $groupCountToNow = Group::countSumbitToNow();
-        $flag = false;
-
-        $current = null;
-        foreach ($config as $i => $time) {
-            if (!$flag && now() >= $time -> begin && now() <= $time -> end) {
-                $current = $time;
-                $flag = true;
-            }
-            if (now() >= $time -> begin){
-                $capacityToNow += $time -> capacity;
-            }
+        $current = SignupTime::where('begin','<=',now())->where('end','>',now())->first();
+        if($current == null){
+            return null;
         }
+
+        $capacityAll = SignupTime::capacityAll();
+        $capacityToNow = SignupTime::capacityToNow();
+        $groupCountToNow = Group::submitedCount();
 
         $remainNow = $capacityToNow - $groupCountToNow;
-        $remainAll = $capacityToNow - $groupCountToNow;
+        $remainAll = $capacityAll - $groupCountToNow;
 
-        if (is_null($current)) {
-            return null;
-        } else {
-            return [
-                'begin' => $current -> begin,
-                'end' => $current -> end,
-                'group_count_sumbit' => $groupCountToNow,
-                'group_count' => Group::count(),
-                'remain' => $remainNow,
-                'remain_total' => $remainAll,
-                'capacity' => $capacityAll
-            ];
-        }
+        return [
+            'begin' => $current -> begin,
+            'end' => $current -> end,
+            'group_count_sumbit' => $groupCountToNow,
+            'group_count' => Group::all()->count(),
+            'remain' => $remainNow,
+            'remain_total' => $remainAll,
+        ];
     }
 }
