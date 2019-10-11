@@ -7,7 +7,6 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\WalkRoute;
-use App\Helpers\_state;
 
 /**
  * @property mixed id
@@ -92,6 +91,8 @@ class Group extends Model
             $member->leaveGroup();
 
             if ($member->id !== $this->captain_id) {
+
+                //notify
             }
         }
         return parent::delete();

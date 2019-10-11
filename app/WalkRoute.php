@@ -2,7 +2,6 @@
 
 namespace App;
 
-use App\WalkTime;
 use Illuminate\Database\Eloquent\Model;
 
 /**

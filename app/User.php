@@ -9,8 +9,7 @@ use App\Helpers\_State;
 
 /**
  * @property mixed openid
- * @property null yx_group_id
- * @property  group_id
+ * @property null group_id
  * @method static where(string $string, $captain_id)
  */
 class User extends Model

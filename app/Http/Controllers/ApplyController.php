@@ -93,6 +93,12 @@ class ApplyController extends Controller
      */
     public function deleteApply(Request $request)
     {
+        $validator = \Validator::make($request->all(),[
+            'apply_team_id' => 'required|integer'
+        ]);
+        if($validator->fails()) {
+            return StandardJsonResponse(-1,'表单验证失败');
+        }
         $user = User::current();
         $apply_id = $user->id;
         $apply_team_id = $request->get('apply_team_id');
@@ -116,6 +122,13 @@ class ApplyController extends Controller
      */
     public function agreeMember(Request $request)
     {
+        $validator = \Validator::make($request->all(),[
+            'apply_id' => 'required|integer'
+        ]);
+        if($validator->fails()) {
+            return StandardJsonResponse(-1,'表单验证失败');
+        }
+
         $user = User::current();
         $group = $user->group()->first();
 
@@ -152,6 +165,13 @@ class ApplyController extends Controller
      */
     public function refuseMember(Request $request)
     {
+        $validator = Validator::make($request->all(),[
+            'apply_id' => 'required|integer'
+        ]);
+        if($validator->fails()) {
+            return StandardJsonResponse(-1,'表单验证失败');
+        }
+
         $user = User::current();
         $group = $user->group()->first();
 
