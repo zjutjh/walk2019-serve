@@ -17,6 +17,7 @@ class CreateWalkRouteTable extends Migration
             $table->bigIncrements('id');
             $table->string('name')->unique()->comment('路线的名称，选项中显示的就是这个名称');
             $table->integer('capacity')->comment('此条线路限制的队伍数');
+            $table->integer('time_id')->comment('报名时间的id');
         });
     }
 
