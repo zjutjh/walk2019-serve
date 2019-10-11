@@ -57,18 +57,10 @@ class ApplyController extends Controller
 
         if ($group->members >= $group->capacity)
             return StandardFailJsonResponse('该队伍已经满员');
-        elseif ($group->is_submit)
+        else if ($group->is_submit)
             return StandardFailJsonResponse('该队伍已经锁定');
-        elseif ($group->captain_id == $user->id)
+        else if ($group->captain_id == $user->id)
             return StandardFailJsonResponse('这是你自己的队伍');
-        else {
-            $walkPath = WalkRoute::find($group->walk_path_id);
-            if (!$walkPath->supportCampus($user->campus)) {
-                return StandardJsonResponse(-1, '该线路不支持'
-                    . config('info.campus.' . $user->campus . '')
-                    . '校区的同学参加');
-            }
-        }
 
         $apply = Apply::add($user->id, $groupId);
 
@@ -91,11 +83,10 @@ class ApplyController extends Controller
     {
         $user = User::current();
         $apply_id = $user->id;
-        $apply_team_id = $request->get('apply_team_id');
         if (!$apply = Apply::where('apply_id', $apply_id)->first())
             return StandardJsonResponse(-1, '你的申请已经处理');
 
-        Apply::removeOne($apply_id, $apply_team_id);
+        Apply::removeOne($apply_id);
         return StandardJsonResponse(1, 'Success');
     }
 
