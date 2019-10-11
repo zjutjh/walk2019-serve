@@ -3,12 +3,14 @@
 namespace App;
 
 use App\User;
-use App\Helpers\_state;
+use App\Helpers\_State;
 use Illuminate\Database\Eloquent\Model;
 
 /**
  * Class Apply
  * @package App
+ * @method static where(string $string, $id)
+ * @method delete()
  */
 class Apply extends Model
 {
@@ -18,7 +20,9 @@ class Apply extends Model
 
     public static function removeAll($user_id){
       $applies = Apply::where('apply_id', $user_id)->get();
-      $applies->delete();
+      foreach ($applies as $apply){
+          $apply->delete();
+      }
       $user = User::find($user_id);
       if($user->state === _state::appling){
         $user->state = _state::no_entered;
@@ -26,29 +30,41 @@ class Apply extends Model
     }
 
     public static function removeOne($user_id, $group_id){
-      $flag = false;
-      $apply = Apply::where('apply_id', $user_id)->where('apply_team_id', $group_id)->get()->first();
-      if (!is_null($apply)) {
-        $apply->delete();
-        $flag = true;
-      }
-      $applies = Apply::where('apply_id', $user_id)->get();
-      if ($applies -> count() == 0){
-        if($user->state === _state::appling){
-          $user->state = _state::no_entered;
+        $user = User::find($user_id);
+        $apply = Apply::where('apply_id', $user_id)->where('apply_team_id', $group_id)->get()->first();
+        if ($apply !== null) {
+            $apply->delete();
         }
-      }
+        $applies = Apply::where('apply_id', $user_id)->get();
+        if ($applies->count() === 0){
+            if($user->state === _State::appling){
+                $user->state = _State::no_entered;
+                $user->save();
+            }
+        }
     }
 
     public static function addOne($user_id, $group_id){
-      $user = User::find($user_id);
-      if ($user->state === _state::captain || $user->state === _state::member) {
-        return null;
-      } else {
-        $apply = Apply::create(['apply_team_id' => $groupId, 'apply_id' => $user->id]);
-        $user->state = _state::appling;
-        $user->save();
-        return $apply;
-      }
+        $user = User::find($user_id);
+        if ($user->state === _State::captain || $user->state === _State::member) {
+            return 0;
+        } else {
+            $applis = Apply::where('apply_team_id',$group_id)->where('apply_id',$user_id)->get();
+            if($applis !== null){
+                return 1;
+            } else {
+                $apply = Apply::create(['apply_team_id' => $group_id, 'apply_id' => $user_id]);
+                $user->state = _State::appling;
+                $user->save();
+                return $apply;
+            }
+        }
+    }
+
+    public static function removeGroup($group_id) {
+        $applies = Apply::where('group_id',$group_id)->get();
+        foreach($applies as $apply){
+            $apply->delete();
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Apply;
 use App\User;
 use App\Group;
 use App\WalkRoute;
@@ -93,7 +94,7 @@ class GroupController extends Controller
             return StandardJsonResponse(-1,'表单验证失败');
         }
 
-        if (!!$user->group_id)
+        if ($user->group_id !== null)
             return StandardJsonResponse(-1, '你已经拥有队伍');
 
         $all['captain_id'] = $user->id;
@@ -236,7 +237,7 @@ class GroupController extends Controller
     public function submitGroup(Request $request)
     {
         $user = User::current();
-        if ($user->state != _State::captain)
+        if ($user->state !== _State::captain)
             return StandardJsonResponse(-1, '你没有权限锁定队伍');
 
         $group = $user->group()->first();
@@ -269,6 +270,10 @@ class GroupController extends Controller
 
         $group->is_submit = true;
         $group->save();
+        //拒绝与此队伍有关的所有apply
+        $applies = Apply::where('apply_team_id', $group->id)->get();
+
+        Apply::removeGroup($group->id);
 
         //notify(_notify::submit, $group->id);
 
@@ -287,7 +292,7 @@ class GroupController extends Controller
         $group = $user->group()->first();
         if ($user->id === $group->captain_id) {
             $group = $user->group()->first();
-            if($group->is_submit == false){
+            if($group->is_submit === false){
                 return StandardJsonResponse(-1, '无需此操作');
             }
 
@@ -324,9 +329,9 @@ class GroupController extends Controller
         //校验2: 自己是否时队长
         if ($group->is_submit) {
             return StandardJsonResponse(-1, '已锁定队伍');
-        } elseif ($group->captain_id == $delete_id) {
+        } elseif ($group->captain_id === $delete_id) {
             return StandardJsonResponse(-1, '你是队长，不能踢自己');
-        } elseif( $deleteUser == null){
+        } elseif( $deleteUser === null){
             return StandardJsonResponse(-1, '找不到该用户');
         }
 

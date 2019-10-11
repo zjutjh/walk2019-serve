@@ -6,7 +6,7 @@ namespace App;
 use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\WalkPath;
+use App\WalkRoute;
 use App\Helpers\_state;
 
 /**
