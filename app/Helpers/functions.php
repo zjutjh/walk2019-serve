@@ -22,7 +22,7 @@ function StandardJsonResponse($code, $msg = '', $data = null) {
         'msg' => $msg,
     ];
 
-    if($data != null){
+    if($data !== null){
        $json['data'] = $data;
     }
     return response()->json($json);
