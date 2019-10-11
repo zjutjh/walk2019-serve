@@ -2,14 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\SuccessTeam;
+use App\Apply;
 use App\User;
-use App\YxApply;
-use App\YxGroup;
+use App\Group;
+use App\WalkRoute;
+use App\SignupTime;
+use App\Helpers\_State;
+use App\WxTemplate;
+use ErrorException;
+use Exception;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
+use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
 {
@@ -19,8 +27,11 @@ class GroupController extends Controller
      */
     public function groupLists()
     {
-        $groups = Group::orderBy('id', 'desc')->paginate(15);
-        return template(1, '获取数据成功', $groups);
+        //TODO: 表单验证
+
+        $pageSize = $request->get('page_size', 15);
+        $groups = Group::orderBy('id', 'desc')->paginate($pageSize);
+        return StandardJsonResponse(1, 'Success', $groups);
     }
 
     /**
@@ -28,66 +39,38 @@ class GroupController extends Controller
      */
     public function createGroup(Request $request)
     {
-        $teamInfo = $request->all();
-        $validator = Validator::make($teamInfo, [
-            'name' => 'required|max:180',
-            'description' => 'required|max:180'
-        ]);
-        if($validator->fails()){
-            return template(-1, '名称或描述太长');
-        }
+        //TODO: 表单验证
 
-        $user = Auth::user();
-        if (!!$user->group_id) {
-            return template(-1, '你已经拥有队伍');
-        }
-        $teamInfo['captain_id'] = $user->id;
-        $group = Group::create($teamInfo);
-        $user->group_id = $group->id;
-        $user->state = 3;
-        $user->save();
-        $data = [
-            'first' => '你已经创建了一个队伍',
-            'keyword1' => '队伍创建',
-            'keyword2' => '创建成功',
-            'keyword3' => date('Y-m-d H:i:s', time()),
-            'remark' => '快邀请大家来加入你的队伍把！ 点击查看详情'
-        ];
-        $user->notify($data);
-        return template(1, '创建成功');
+        $query_string = $request->get('query_string');
+        if (!$query_string)
+            return $this->groupLists($request);
+
+        $pageSize = $request->get('page_size', 15);
+        $groups = Group::orWhere('id', $query_string)->where('name', 'like', "%{$query_string}%")->paginate($pageSize);
+        return StandardJsonResponse(1, '搜索成功', $groups);
     }
 
+    /**
+     * [√通过测试]
+     * 查询队伍信息
+     * @return JsonResponse
+     */
+    public function getGroupInfo()
+    {
+        $user = User::current();
+        $group = $user->group()->first()->toArray();
 
-    public function updateGroupInfo(Request $request) {
-        
-        $teamInfo = $request->all();
-        $validator = Validator::make($teamInfo, [
-            'name' => 'required|max:180',
-            'description' => 'required|max:180'
-        ]);
-        if($validator->fails()){
-            return template(-1, '名称或描述太长');
-        }
+        $group['route'] = WalkRoute::find($group['route_id'])->name;
+        unset($group['route_id']);
 
-        $user = Auth::user();
-        $group = $user->group()->first();
-
-        $route = YxRoute::fromName($teamInfo['route']);
-        $members = $group->members();
-        foreach ($members as $member) {
-            if(!$route->allowJoin($member)){
-                return template(-1, '你队伍里有不支持此线路校区的队员');
-            }
-        }
-
-        $group->fill($teamInfo);
-        $group->save();
-        return template(1, '更新成功');
+        return StandardJsonResponse(1, 'Success', $group);
     }
 
 
     /**
-     * 解散队伍
+     * [√通过测试]
+     * 获取队伍成员信息
+     * @return JsonResponse
      */
     public function breakGroup()
     {
@@ -109,22 +92,30 @@ class GroupController extends Controller
     }
 
     /**
-     * 申请入队
+     * [√通过测试]
+     * 创建队伍
+     * @param Request $request
+     * @return JsonResponse
      */
     public function doApply(Request $request)
     {
-        $user = Auth::user();
-        $groupId = $request->get('groupId');
-        $group = Group::find($groupId);
-        if ($group->members === $group->num) {
+        $all = $request->all();
+        $user = User::current();
 
-            return template(-1, '该队伍已经满员');
-        }
-        if ($group->is_lock) {
-            return template(-1, '该队伍已经锁定');
+        if(!$this->validateGroup($all)) {
+            return StandardJsonResponse(-1,'表单验证失败');
         }
 
-        $route = YxRoute::fromName($group->route);
+        if ($user->group_id !== null)
+            return StandardJsonResponse(-1, '你已经拥有队伍');
+
+        $all['captain_id'] = $user->id;
+        $group = Group::create($all);
+        $user->group_id = $group->id;
+        $user->state = _State::captain;
+        $user->save();
+
+        //notify(_notify::create, $group->id);
 
         if(!$route->allowJoin($user)){
             return template(1,'你无法参加此条线路的毅行');
@@ -133,133 +124,197 @@ class GroupController extends Controller
             return template(-1, '这是你自己的队伍');
         }
 
-        YxApply::create(['apply_team_id' => $groupId, 'apply_id' => Auth::user()->id]);
-        $group->notifyCaptain();
+    public function validateGroup($all){
 
-        $data = [
-            'first' => "你正在申请 {$group->name} 的队伍",
-            'keyword1' => '队伍申请',
-            'keyword2' => '等待同意',
-            'keyword3' => date('Y-m-d H:i:s', time()),
-            'remark' => '耐心等待队长同意哦'
-        ];
-        $user->notify($data);
-        $user->state = 2;
-        $user->save();
-        return template(1, '正在申请中');
-    }
-
-    /**
-     * 撤回申请
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function deleteApply() {
-        $user = Auth::user();
-        $apply_id = $user->id;
-        if (!$apply = YxApply::where('apply_id', $apply_id)->first()) {
-            return template(-1, '你的申请已经处理');
+        $validator = Validator::make($all, [
+            'name' => 'required|between:2,15',
+            'capacity' => 'integer|between:'.config('info.members_count.min').','.config('info.members_count.max'),
+            'description' => 'max:200',
+            'route' => 'required'
+        ]);
+        if($validator->fails()){
+            return false;
         }
-        $user->state = 1;
-        $user->save();
-        $apply->delete();
-        return template(1, '撤回成功');
+        try{
+            $all['route_id'] = WalkRoute::getId($all['route']);
+            //$all['route_id'] = WalkRoute::getId($all['route']);
+            unset($all['route']);
+        } catch (ErrorException $ex){
+            return false;
+        }
+
+        return true;
     }
 
 
     /**
-     * 获取申请队伍信息
+     * [√普通]
+     * 更新队伍信息
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function getApplyTeam() {
-        $apply_id = Auth::user()->id;
-        $yxAplly = YxApply::where('apply_id', $apply_id)->first();
-        $group = Group::where('id', $yxAplly->group_id)->first();
-        return template(1, '查询成功', $group);
+    public function updateGroupInfo(Request $request)
+    {
+        $user = User::current();
+        $all = $request->all();
+        $group = Group::where('captain_id', $user->id)->first();
+
+        if(!$this->validateGroup($all)) {
+            return StandardJsonResponse(-1,'表单验证失败');
+        }
+
+        if ($group !== null) {
+            // 验证1: 队伍锁定状态验证
+            // 验证2: 人数验证
+            // 验证3: 校区验证
+            $memberCount = $group->members()->count();
+            $walkPath = WalkRoute::find('$all->route_id');
+            if ($group->is_submit === true){
+                return StandardJsonResponse(-1, '队伍已锁定');
+            }
+            elseif ($memberCount > $group->capacity) {
+                return StandardJsonResponse(-1, '队伍人数超过容量');
+            }
+
+            $group->fill($all);
+            $group->save();
+
+            //notify(_notify::update, $group->id);
+
+            return StandardJsonResponse(1, '更新队伍信息成功');
+        }
+
+        return StandardJsonResponse(-1, '你没有权限修改队伍信息');
+    }
+
+
+    /**
+     * [√基本]
+     * 解散队伍
+     * @param Request $request
+     * @return JsonResponse
+     * @throws Exception
+     */
+    public function breakGroup(Request $request)
+    {
+        $user = User::current();
+        $group = $user->group()->first();
+
+        //echo $user->id . ' '. $group->id;
+
+        if (!$group){
+            return StandardJsonResponse(-1,"你还没有队伍");
+        } elseif ($user->id !== $group->captain_id) {
+            return StandardJsonResponse(-1, '你没有权限解散队伍');
+        }
+
+        /**
+         * 先提醒，再删除
+         */
+        //notify(_notify::dismiss, $group_id);
+
+        $group->delete();
+
+        return StandardJsonResponse(1, '成功解散队伍');
 
     }
 
     /**
+     * [√基本]
      * 离开队伍
      */
     public function leaveGroup()
     {
         $user = Auth::user();
         $group = $user->group()->first();
-       
-        //TODO: 加入后续逻辑
+        //if ($group->is_sumbit)
+        //校验，自己是否是队长
+
+        if($group->captain_id === $user->id){
+            return StandardJsonResponse(-1, '你是队长，不能离开队伍');
+        }
 
         $user->leaveGroup();
-        $data = [
-            'first' => "你已经离开了一个队伍",
-            'keyword1' => '离开队伍',
-            'keyword2' => '离开成功',
-            'keyword3' => date('Y-m-d H:i:s', time()),
-            'remark' => '如果你还想加入一个队伍，请进入队伍列表寻找哦'
-        ];
-        $user->notify($data);
 
-        return template(1, '离开队伍');
+        //notify(_notify::leave, $user->id);
+
+        return StandardJsonResponse(1, '成功离开队伍');
     }
 
 
     /**
+     * [√无权限 √人数要求 √报名限流 √线路限制]
      * 锁定队伍
      */
     public function lockGroup()
     {
-        $user = Auth::user();
-        if ($user->state()->first()->state == 3) {
-            $group = $user->group()->first();
-            if($group->members()->count() < 4){
-                return template(-1, '人数只有达到4人才可以锁定');
-            } elseif(PeriodRegister::remainCount() <= 0){
-                return template(-1, '当前时间段已经没有名额了');
-            } elseif(YxRoute::isFull()){
-                return template(-1, '此线路该时间段出发的队伍已满');
-            }
+        $user = User::current();
+        if ($user->state !== _State::captain)
+            return StandardJsonResponse(-1, '你没有权限锁定队伍');
 
-            $group->is_lock = true;
-            $group->save();
-
-            $data = [
-                'first' => "你已经锁定了你的队伍",
-                'keyword1' => '队伍锁定',
-                'keyword2' => '锁定成功',
-                'keyword3' => date('Y-m-d H:i:s', time()),
-                'remark' => '如果想解除锁定，点击详情进入队伍列表解锁哦'
-            ];
-            $user->notify($data);
-            return template(1, '已经锁定队伍');
+        $group = $user->group()->first();
+        //校验: 人数达到需求
+        $leastMembersCount = config('info.members_count.least');
+        if ($group->members < $leastMembersCount) //判断人数是否达到要求
+            return StandardJsonResponse(-1, '只有到达'.$leastMembersCount.'人才可以锁定哦');
+        //校验: 当前报名未满
+        $signupConfig = SignupTime::caculateCurrentConfig();
+        if($signupConfig['remain'] <= 0){
+            return StandardJsonResponse(-1, '当前报名队伍已满');
+        }
+        //校验: 当前报名的线路是否还有余量
+        $walkRoute = WalkRoute::find($group->route_id);
+        if($walkRoute->remainCount() <= 0){
+            return StandardJsonResponse(-1,'此线路已经报满了');
         }
 
+        // 不再使用不稳定，需要跑数据库的设置了
+        // $max_team_num = 0;
+        // if ($group->select_route === "屏峰小和山全程毅行")
+        //     $max_team_num = config('PF_Full_Max');
+        // else if ($group->select_route === "屏峰小和山半程毅行")
+        //     $max_team_num = config('PF_Half_Max');
+        // else if ($group->select_route === "朝晖京杭大运河毅行")
+        //     $max_team_num = config('ZH_Full_Max');
 
-        return template(-1, '你没有权限');
+        // if (Group::where('select_route', $group->select_route)->where('is_submit', true)->count() >= $max_team_num)
+        //     return StandardJsonResponse(-1, '今日队伍已满');
 
+        $group->is_submit = true;
+        $group->save();
+        //拒绝与此队伍有关的所有apply
+        $applies = Apply::where('apply_team_id', $group->id)->get();
+
+        Apply::removeGroup($group->id);
+
+        //notify(_notify::submit, $group->id);
+
+        return StandardJsonResponse(1, '锁定队伍成功');
     }
 
 
     /**
+     * [√通过验证]
      * 解锁队伍
      * @return \Illuminate\Http\JsonResponse
      */
-    public function unlockGroup()
+    public function unSubmitGroup(Request $request)
     {
         $user = Auth::user();
         if ($user->state == 3) {
             $group = $user->group()->first();
-            $group->is_lock = false;
-            $group->save();
-            $data = [
-                'first' => "你已经解锁你的队伍",
-                'keyword1' => '队伍解锁',
-                'keyword2' => '解锁成功',
-                'keyword3' => date('Y-m-d H:i:s', time()),
-                'remark' => '点击详情，查看队伍信息'
-            ];
-            $user->notify($data);
-            return template(1, '解锁成功');
-        }
+            if($group->is_submit === false){
+                return StandardJsonResponse(-1, '无需此操作');
+            }
 
-        return template(-1, '你没有权限');
+            $group->is_submit = false;
+            $group->save();
+
+            //notify(_notify::unsubmit, $group->id);
+
+            return StandardJsonResponse(1,'解锁队伍成功');
+        }
+        return StandardJsonResponse(-1, '你没有权限解锁队伍');
     }
 
     /**
@@ -294,95 +349,36 @@ class GroupController extends Controller
 
     }
     /**
-     * 拒绝加入
+     * [√通过验证]
+     * 踢出队伍
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function refuseMember(Request $request)
+    public function deleteMember(Request $request)
     {
-        $apply_id = $request->get('apply_id');
+        $validator = Validator::make($request->all(),[
+            'user_id' => 'required|integer'
+        ]);
+        $user = User::current();
+        $delete_id = $request->get('user_id');
+        $deleteUser = User::find($delete_id);
 
-        $user = User::where('id', $apply_id)->first();
-        if ($user->state != 2) {
-            return template(-1, '该申请者已经撤回申请了');
-        }
-        YxApply::where('apply_id', $apply_id)->delete();
-        $uState = $user->state()->first();
-        $uState->state = 1;
-        $uState->save();
-        $data = [
-            'first' => "你申请的队伍已经拒绝了你的申请",
-            'keyword1' => '队伍申请',
-            'keyword2' => '申请失败',
-            'keyword3' => date('Y-m-d H:i:s', time()),
-            'remark' => '可以进入队伍列表找寻其他你希望加入的队伍哦'
-        ];
-        $user->notify($data);
-        return template(1, '拒绝成功');
-    }
-
-    /**
-     * 搜索队伍
-     */
-    public function searchTeam(Request $request)
-    {
-        $query_string = $request->get('query_string');
-        if (!$query_string) {
-            return $this->groupLists();
-        }
-        $groups = Group::where('name', 'like', "%{$query_string}%")->orWhere('id', $query_string)->paginate(100);
-        return template(1, '搜索成功', $groups);
-    }
-
-
-    /**
-     * 查询申请者列表
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getApplyList()
-    {
-        $groupId = Auth::user()->group_id;
-        $applies = YxApply::where('apply_team_id', $groupId)->get();
-        $userId = [];
-        foreach ($applies as $apply) {
-            $userId [] = $apply->apply_id;
-        }
-
-        $applyUsers = User::find($userId);
-        return template(1, '请求成功', $applyUsers);
-    }
-
-
-    /**
-     * 查询申请者数量
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getApplyCount()
-    {
-        $groupId = Auth::user()->group_id;
-        $applyModels = YxApply::where('apply_team_id', $groupId)->count();
-        return template(1, '请求成功', $applyModels);
-    }
-
-    /**
-     * 查询队伍信息
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getGroupInfo()
-    {
-        $user = Auth::user();
         $group = $user->group()->first();
-        return template(1, '获取成功', $group);
-    }
+        $members = $group->members()->get();
 
-    /**
-     * 获取队伍成员信息
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function getGroupMembers() {
-        $user = Auth::user();
+        //校验1: 队伍是否锁定
+        //校验2: 自己是否时队长
+        if ($group->is_submit) {
+            return StandardJsonResponse(-1, '已锁定队伍');
+        } elseif ($group->captain_id === $delete_id) {
+            return StandardJsonResponse(-1, '你是队长，不能踢自己');
+        } elseif( $deleteUser === null){
+            return StandardJsonResponse(-1, '找不到该用户');
+        }
 
-        $members = $user->group()->first()->members()->get();
-        return template(1, '查询成功', $members);
+        $deleteUser->leaveGroup();
 
+        return StandardJsonResponse(1,'踢人成功');
     }
 
 

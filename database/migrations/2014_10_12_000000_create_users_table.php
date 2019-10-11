@@ -25,7 +25,8 @@ class CreateUsersTable extends Migration
             $table->string('name')->nullable();
             $table->string('email')->unique()->nullable();
             $table->enum('sex', ['男', '女'])->nullable();
-            $table->enum('campus', ['屏峰', '朝晖'])->comment('校区');
+            $table->string('logo',1000)->nullable()->comment('Logo');
+            $table->string('campus')->comment('校区')->nullable();
             $table->string('phone')->nullable()->comment('电话号码');
             $table->string('id_card')->nullable()->comment('身份证');
             $table->string('qq_id')->nullable()->comment('联系qq');
@@ -35,6 +36,7 @@ class CreateUsersTable extends Migration
             
             $table->rememberToken();
             $table->timestamps();
+
         });
     }
 

@@ -21,6 +21,9 @@ class CheckFinish
             return RJM(-1, '关闭报名');
         }
 
+       if(config('api.system.IsEnd')===true){
+           return StandardJsonResponse(-1,"报名已结束");
+       }
         return $next($request);
     }
 }

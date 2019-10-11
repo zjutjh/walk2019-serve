@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\UsersExport;
-use App\Services\UserCenterService;
+use App\User;
+use App\Apply;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\QueryException;
 
 class UserController extends Controller
 {
@@ -24,100 +24,89 @@ class UserController extends Controller
         }
     }
 
-    /**
-     * 更新个人的信息
-     */
-    public function updateInfo(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|between:2,32',
-            'phone' => 'required|size:11',
-            'email' => 'email',
-            'qq_id' => 'alpha_num',
-            'wx_id' => 'alpha_num',
-            'height' => 'integer|between:50,300'
-        ]);
-        
-        if($validator->fails()){
-            return template(-1, '字段不符合要求');
-        }
-    
-        $user = Auth::user();
-        $user->fill($detail);
-        if ($detail['type'] == 'create') {
-            $user->state = 1;
-        }
-        $user->save();
-        return template(1, '更新信息成功');
-
-    }
-
+    private $userValidator = [
+        'name' => 'required|between:2,32',
+        'email' => 'required|email',
+        'phone' => 'required|digits:11',
+        'id_card' => 'required|alpha_dash|size:18',
+        'qq' => 'digits_between:5,12',
+        'wx_id' => 'alpha_dash|between:2,100',
+        'identity' => 'required',
+        'height' => 'integer|between:50,300',
+        'sid' => 'required_if:identity,学生|digits_between:10,14',
+        'school' => 'required_if:identity,学生'
+    ];
 
     /**
-     * 验证学生身份； 改变状态为已经报名
+     * [√测试通过]
+     * 注册报名
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function verifyStu(Request $request) {
-        $uid = $request->get('uid');
-        $password = $request->get('password');
-        //TODO: 需要对身份做验证
-        $identity = $request->get('identity');
-        $uCenter = new UserCenterService();
+    public function register(Request $request)
+    {
+        $all = $request->all();
+        //print($all);
+        $openid = $request->session()->get('openid');
 
-        if  (!$error = $uCenter->checkJhPassport($uid, $password)) {
-            $error = $uCenter->getError();
-            return template(-1, $error ?  $error: '用户或密码错误');
+        if ($openid === null)
+            return StandardJsonResponse("你还没有openid");
+
+        $validator = Validator::make($request->all(), $this->userValidator);
+        if ($validator->fails())
+            return StandardJsonResponse(-1,"字段验证不通过");
+
+        $user = new User();
+        $user->openid = $openid;
+        $user->fill($all);
+
+        try{
+            $user->save();
+        } catch (QueryException $exception){
+            return StandardJsonResponse(-1, "openid重复");
         }
 
-        $user = Auth::user();
-        $user->uid = $uid;
-        $user->identity = $identity;
-        //TODO: 完善确认是否正确填写信息的逻辑
-        if (!$user->id_card) {
-            $user->state=5;
-        } 
-
-        $user->save();
+        return StandardJsonResponse(1,"报名成功");
+    }
 
         return template(1, '登录成功,请完善信息');
     }
 
     /**
-     * 确定身份： 教职工 校友 其他; 改变状态为已经报名
+     * [√测试通过]
+     * 获得当前用户信息
+     * @param Request $request
+     * @return JsonResponse
      */
-    public function verifyOther(Request $request) {
-        $identity = $request->get('identity');
-
-        $user = Auth::user();
-        $user->identity = $identity;
-        if (!$user->id_card) {
-            $user->state=5;
-        }
-        $user->save();
-        return template(1, '登录成功,请完善信息');
-    }
-
-
-    /*
-     * 获取报名名单
-     */
-    public function download() {
-        return Excel::download(new UsersExport(), '报名名单.xlsx');
-
+    public function getMyInfo(Request $request)
+    {
+        $user = User::current();
+        if ($user)
+            return StandardSuccessJsonResponse($user);
+        else
+            return StandardFailJsonResponse();
     }
 
     /**
-     * 确认是否关注公众号
+     * [√测试通过]
+     * 更新用户信息
+     * @param Request $request
+     * @return JsonResponse
      */
-    private function identifyGz($openid) {
-        $client = new Client();
-        $response = $client->request('GET', 'https://api.weixin.qq.com/sns/oauth2/access_token?appid='.env('WECHAT_APPID').'&secret='.env('WECHAT_SECRET').'&code='.$code.'&grant_type=authorization_code', ['verify' => false]);
-        $data = json_decode($response->getBody(), true);
-        if (isset($data['openid'])) {
-            return $data['openid'];
-        }
-        return null;
-    }
+    public function updateInfo(Request $request)
+    {
+        $all = $request->all();
 
+        $user = User::current();
+
+        $validator = Validator::make($request->all(), $this->userValidator);
+
+        if ($validator->fails())
+            return StandardFailJsonResponse();
+
+        $user->fill($all);
+        $user->save();
+        return StandardSuccessJsonResponse();
+    }
 
 }

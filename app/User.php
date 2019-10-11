@@ -5,11 +5,14 @@ namespace App;
 use App\Jobs\SendTemplate;
 use App\Mail\Message;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Mail;
-use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Helpers\_State;
 
-class User extends Authenticatable implements JWTSubject
+/**
+ * @property mixed openid
+ * @property null group_id
+ * @method static where(string $string, $captain_id)
+ */
+class User extends Model
 {
     /**
      * The attributes that should be hidden for arrays.
@@ -22,8 +25,9 @@ class User extends Authenticatable implements JWTSubject
 
 
     protected $fillable = [
-        'name', 'id_card', 'email', 'sex', 'qq_id', 'wx_id', 'height', 'birthday', 'phone','campus', 'state'
+        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid','logo','identity','state','group_id', 'height'
     ];
+
 
 
     /**
@@ -96,9 +100,16 @@ class User extends Authenticatable implements JWTSubject
      * 离开队伍
      * @return $this
      */
-    public function leaveGroup() {
+    public function leaveGroup()
+    {
+        $group = Group::find($this->group_id);
         $this->group_id = null;
-        $this->state()->update(['state' => 1]);
+        $this->update(['state' => _State::no_entered]);
+        //DONE: 在人数不达标时，强制{解锁}队伍
+        if($group->members()->count() < config('info.members_count.least')){
+            //notify(_notify::dismiss, $group->id);
+            $group->is_submit=false;
+        }
         return parent::save();
     }
 
@@ -123,8 +134,34 @@ class User extends Authenticatable implements JWTSubject
      */
     public function addGroup($groupId) {
         $this->group_id = $groupId;
-        $this->state()->update(['state' => 4]);
+        $this->update(['state' => _state::member]);
+
         return parent::save();
     }
+
+    /**
+     * 确认是否关注公众号
+     * @return bool
+     */
+    public function identifyGz()
+    {
+        $openid = $this->openid;
+        $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WECHAT_APPID') . "&secret=" . env('WECHAT_SECRET');
+        $access_msg = json_decode(file_get_contents($access_token));
+
+        //var_dump( $access_msg);
+
+        $token = $access_msg->access_token;
+        $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
+        $subscribe = json_decode(file_get_contents($subscribe_msg));
+        $isSubscribed = $subscribe->subscribe;
+        //
+        if ($isSubscribed === 1) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
 
 }

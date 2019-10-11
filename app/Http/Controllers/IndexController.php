@@ -4,13 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Exports\GroupExport;
 use App\User;
-use App\YxGroup;
-use App\YxState;
-use App\YxRoute;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Maatwebsite\Excel\Facades\Excel;
-
+use App\Group;
+use App\SignupTime;
+use App\WalkRoute;
+use Carbon\Traits\Timestamp;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Carbon;
 
 class IndexController extends Controller
 {
@@ -20,78 +19,52 @@ class IndexController extends Controller
 
 
     /**
+     * [√通过测试]
      * 获取首页信息
      * @return \Illuminate\Http\JsonResponse
      */
     public function indexInfo() {
-        $indexInfo = [
-            'begin_time' => YxRoute::totalBegin(),
-            'end_time' => YxRoute::totalEnd(),
-            'apply_count' => User::getUserCount(),
-            'team_count' => Group::teamCount(),
-            'success_team_count' => Group::successTeamCount()
-        ];
+        // $indexInfo = [
+        //   'end_time' => config('api.system.EndTime'),
+        //   'is_end'=> config('api.system.IsEnd'),
+        //   'apply_count' => User::getUserCount(),
+        //   'group_count' => Group::getTeamCount()
+        // ];
+        $begin = SignupTime::beginAt();
+        $end = SignupTime::endAt();
+        $now = now()->toDateTimeString();
 
-        return template(1, '请求成功', $indexInfo);
-    }
-
-
-    /**
-     * 报名是否关闭
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function verifyApplyEnd() {
-        $yxState = YxState::where('id', 0)->first();
-        if ($yxState->state === 1) {
-            return RJM(1, '关闭报名');
+        if($begin == null || $end == null){
+            return StandardJsonResponse(-1, "服务器还没有配置");
         }
 
-        return RJM(-1, '报名正在进行');
-    }
+        if ($now < $begin){
+          $state = -1;//'not_start';
+        } else if (now() <= $end){
+          $state = 1;// 'doing';
+        } else {
+          $state = 0;//'end';
+        }
 
+        $indexInfo = [
+            'begin' => $begin,
+            'end' => $end,
+            'now' => $now,
+            'state' => $state,
+            'apply_count' => User::getUserCount(),
+            'current' => SignupTime::caculateCurrentConfig(),
+        ];
 
-    /**
-     * 首页信息统计
-     * @return \Illuminate\Contracts\View\Factory|\Illuminate\View\View
-     */
-    public function count() {
-        $apply_count = User::getUserCount();
-        $team_count = YxGroup::getTeamCount();
-        $upToTeam = YxGroup::whereNotNull('up_to_standard')->where('select_route', '<>', '朝晖京杭大运河毅行')->count();
-        $chToTeam = YxGroup::whereNotNull('up_to_standard')->where('select_route', '朝晖京杭大运河毅行')->count();
-
-//        $res  = '报名人数: ' . $apply_count . '<br>';
-//        $res .= '队伍总数: ' . $team_count . '<br>';
-//        $res .= '达到要求队伍数: '. $upToTeam . '<br>';
-//        return $res;
-        return view('count', ['apply_count' => $apply_count, 'team_count' => $team_count, 'upToTeam' => $upToTeam, 'ch' => $chToTeam]);
-    }
-
-
-    /**
-     * 给琪琪测试的api
-     */
-    public function toQq() {
-        $apply_count = User::getUserCount();
-        $team_count = YxGroup::getTeamCount();
-        $upToTeam = YxGroup::whereNotNull('up_to_standard')->where('select_route', '<>', '朝晖京杭大运河毅行')->count();
-        $chToTeam = YxGroup::whereNotNull('up_to_standard')->where('select_route', '朝晖京杭大运河毅行')->count();
-        $data = array(
-            'apply_count' => $apply_count,
-            'team_count' => $team_count,
-            'pf' => $upToTeam,
-            'ch' => $chToTeam
-        );
-
-        return RJM(1, '获取成功', $data);
+        return StandardJsonResponse(1,"获取信息成功",$indexInfo);
     }
 
     /**
-     * 获取队伍名单
+     * [√通过测试]
+     * 获取报名的人数
+     * @return JsonResponse
      */
-    public function teamDownload() {
-        return Excel::download(new GroupExport(), '队伍名单.xlsx');
-
+    public function signupConfig() {
+        return StandardSuccessJsonResponse(SignupTime::caculateConfig());
     }
 
 
