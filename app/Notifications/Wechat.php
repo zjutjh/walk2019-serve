@@ -13,7 +13,7 @@ class Wechat extends Notification implements ShouldQueue
     use Queueable;
     private $data;
 
-    public function __construct( $data = WxTemplate::Test)
+    public function __construct($data = WxTemplate::Test)
     {
         $this->data = $data;
     }
@@ -27,9 +27,9 @@ class Wechat extends Notification implements ShouldQueue
     {
 
         $data = $this->data;
-        $this->data['keyword3']=date('Y-m-d H:i:s', time());
+        $data['keyword3'] = date('Y-m-d H:i:s', time());
         return [
-            'openid' =>$notifiable->openid,
+            'openid' => $notifiable->openid,
             'url' => 'http://walk.zjutjh.com',
             'data' => $data
         ];

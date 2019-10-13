@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\State;
+use App\Notifications\Wechat;
 use App\User;
 use App\Group;
 use App\WalkRoute;
+use App\WxTemplate;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -39,7 +41,7 @@ class GroupController extends Controller
             return $this->groupLists($request);
 
         $pageSize = $request->get('page_size', 15);
-        $groups = Group::where('id', $query_string)->where('name', 'like', "%{$query_string}%")->paginate($pageSize);
+        $groups = Group::where('id', $query_string)->orWhere('name', 'like', "%{$query_string}%")->paginate($pageSize);
         return StandardSuccessJsonResponse($groups);
     }
 
@@ -69,7 +71,7 @@ class GroupController extends Controller
     public function getGroupMembers()
     {
         $user = User::current();
-        if ($user)
+        if ($user === null)
             return StandardFailJsonResponse('你还没有报名');
         if ($user->group_id === null)
             return StandardFailJsonResponse('你还没有加入');
@@ -139,8 +141,8 @@ class GroupController extends Controller
 
         if ($group === null)
             return StandardFailJsonResponse('你没有权限修改队伍信息');
-        if ($group->is_submit === true)
-            return StandardFailJsonResponse('队伍已锁定');
+        if ($group->is_submit)
+            return StandardFailJsonResponse('队伍已经提交，不能修改');
 
         $memberCount = $group->members()->count();
 
@@ -188,7 +190,7 @@ class GroupController extends Controller
 
         if ($group->captain_id === $user->id)
             return StandardFailJsonResponse('你是队长，不能离开队伍');
-        if ($group->is_submit === 1)
+        if ($group->is_submit)
             return StandardFailJsonResponse('队伍已经提交，不能离开');
 
         $user->leaveGroup();
@@ -243,7 +245,7 @@ class GroupController extends Controller
         if ($user->id !== $group->captain_id)
             return StandardFailJsonResponse('你没有权限解锁队伍');
 
-        if ($group->is_submit == false)
+        if (!$group->is_submit)
             return StandardJsonResponse(-1, '无需此操作');
 
         $group->is_submit = false;
@@ -275,7 +277,7 @@ class GroupController extends Controller
         $group = $user->group();
 
         if ($group->is_submit)
-            return StandardFailJsonResponse('已提交队伍');
+            return StandardFailJsonResponse('已提交队伍,不能踢人');
         else if ($group->captain_id === $delete_id)
             return StandardFailJsonResponse('你是队长，不能踢自己');
         else if ($deleteUser === null)
@@ -283,6 +285,7 @@ class GroupController extends Controller
         else if ($group->id !== $deleteUser->group_id)
             return StandardFailJsonResponse('找不到该用户');
 
+        $deleteUser->notify(new Wechat(WxTemplate::Knit));
         $deleteUser->leaveGroup();
 
         return StandardSuccessJsonResponse();

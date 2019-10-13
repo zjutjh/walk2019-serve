@@ -44,6 +44,13 @@ class  WxTemplate
         'keyword3' => 'ZJUT JH',
         'remark' => '点击查看详情',
     ];
+    const Knit = [
+        'first' => '你已经被队长移出队伍',
+        'keyword1' => '移出队伍',
+        'keyword2' => '移出',
+        'keyword3' => 'ZJUT JH',
+        'remark' => '点击查看详情',
+    ];
     //删除队伍时
     const Delete = [
         'first' => '你申请或者加入的队伍已经解散',

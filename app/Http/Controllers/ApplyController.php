@@ -21,14 +21,11 @@ class ApplyController extends Controller
     public function getApplyList(Request $request)
     {
         $groupId = User::current()->group_id;
-        $applies = Apply::where('apply_team_id', $groupId)->get();
-        $userId = [];
-        foreach ($applies as $apply)
-            $userId[] = $apply->apply_id;
-
         $pageSize = $request->get('page_size', 15);
-        $applyUsers = User::where('id', $userId);
-        return StandardSuccessJsonResponse( $applyUsers);
+        $apply_ids = Apply::where('apply_team_id', $groupId)->get('apply_id');
+
+        $applyUsers = User::whereIn('id', $apply_ids)->paginate($pageSize);
+        return StandardSuccessJsonResponse($applyUsers);
     }
 
     /**
@@ -81,8 +78,14 @@ class ApplyController extends Controller
     {
         $user = User::current();
         $apply = Apply::where('apply_id', $user->id)->first();
-        if ($apply === null)
+        if ($apply === null) {
+            if ($user->state == State::appling) {
+                $user->state = State::no_entered;
+                $user->save();
+            }
+
             return StandardFailJsonResponse('你的申请已经处理');
+        }
 
         $apply->delete();
         return StandardSuccessJsonResponse();
@@ -99,7 +102,7 @@ class ApplyController extends Controller
         $group = $user->group();
         $apply_id = $request->get('apply_id');
 
-        if (!$group||$user->id !== $group->captain_id)
+        if (!$group || $user->id !== $group->captain_id)
             return StandardFailJsonResponse('你没有权限处理申请');
         if ($group->members >= $group->capacity)
             return StandardFailJsonResponse('队伍已经达到上限');
