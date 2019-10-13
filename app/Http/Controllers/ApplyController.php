@@ -7,7 +7,6 @@ use App\Notifications\Wechat;
 use App\User;
 use App\Apply;
 use App\Group;
-use App\WalkRoute;
 use App\WxTemplate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -24,14 +23,13 @@ class ApplyController extends Controller
         $groupId = User::current()->group_id;
         $applies = Apply::where('apply_team_id', $groupId)->get();
         $userId = [];
-        foreach ($applies as $apply) {
+        foreach ($applies as $apply)
             $userId[] = $apply->apply_id;
-        }
-        $pageSize = $request->get('page_size', 15);
-        $applyUsers = User::find($userId);
-        return StandardJsonResponse(1, '请求成功', $applyUsers);
-    }
 
+        $pageSize = $request->get('page_size', 15);
+        $applyUsers = User::where('id', $userId);
+        return StandardSuccessJsonResponse( $applyUsers);
+    }
 
     /**
      * 查询申请者数量
@@ -41,7 +39,7 @@ class ApplyController extends Controller
     {
         $groupId = User::current()->group_id;
         $applyCount = Apply::where('apply_team_id', $groupId)->get();
-        return StandardJsonResponse(1, '请求成功', $applyCount);
+        return StandardSuccessJsonResponse($applyCount);
     }
 
     /**
@@ -53,25 +51,25 @@ class ApplyController extends Controller
     {
         $user = User::current();
         $groupId = $request->get('group_id');
-        $group = Group::find($groupId)->first();
-
+        $group = Group::where('id', $groupId)->first();
+        if (!$group)
+            return StandardFailJsonResponse('该队伍已经解散');
         if ($group->members >= $group->capacity)
             return StandardFailJsonResponse('该队伍已经满员');
-        else if ($group->is_submit)
+        if ($group->is_submit)
             return StandardFailJsonResponse('该队伍已经锁定');
-        else if ($group->captain_id == $user->id)
+        if ($group->captain_id == $user->id)
             return StandardFailJsonResponse('这是你自己的队伍');
+        if ($user->group_id !== null)
+            return StandardFailJsonResponse('你已经拥有队伍，无法申请');
 
-        $apply = Apply::add($user->id, $groupId);
+        Apply::create(['apply_team_id' => $groupId, 'apply_id' => $user->id]);
 
+        $user->state = State::appling;
+        $user->save();
 
-        if (is_null($apply)) {
-            return StandardJsonResponse(-1, '你已经拥有队伍，无法申请');
-        } else {
-            User::find($group->captain_id)->first()->notify(new Wechat(WxTemplate::Apply));
-            return StandardJsonResponse(1, '正在申请中');
-        }
-
+        User::where('id', $group->captain_id)->first()->notify(new Wechat(WxTemplate::Apply));
+        return StandardSuccessJsonResponse();
     }
 
     /**
@@ -82,12 +80,12 @@ class ApplyController extends Controller
     public function deleteApply(Request $request)
     {
         $user = User::current();
-        $apply_id = $user->id;
-        if (!$apply = Apply::where('apply_id', $apply_id)->first())
-            return StandardJsonResponse(-1, '你的申请已经处理');
+        $apply = Apply::where('apply_id', $user->id)->first();
+        if ($apply === null)
+            return StandardFailJsonResponse('你的申请已经处理');
 
-        Apply::removeOne($apply_id);
-        return StandardJsonResponse(1, 'Success');
+        $apply->delete();
+        return StandardSuccessJsonResponse();
     }
 
     /**
@@ -98,30 +96,27 @@ class ApplyController extends Controller
     public function agreeMember(Request $request)
     {
         $user = User::current();
-        $group = $user->group()->first();
-
-        if ($user->id != $group->captain_id)
-            return StandardJsonResponse(-1, '你没有权限处理申请');
-
-        if ($group->members >= $group->capacity)
-            return StandardJsonResponse(-1, '队伍已经达到上限');
-
+        $group = $user->group();
         $apply_id = $request->get('apply_id');
-        $groupId = User::current()->group_id;
-        $applyUser = User::find($apply_id);
 
+        if (!$group||$user->id !== $group->captain_id)
+            return StandardFailJsonResponse('你没有权限处理申请');
+        if ($group->members >= $group->capacity)
+            return StandardFailJsonResponse('队伍已经达到上限');
+        $applyUser = User::where('id', $apply_id)->first();
+        if ($applyUser->state !== State::appling)
+            return StandardFailJsonResponse('该申请者已经撤回申请了');
+        $apply = Apply::where('apply_id', $apply_id);
+        if ($apply === null)
+            return StandardFailJsonResponse('申请不存在');
 
-        if ($applyUser->state !== State::appling) {
-            return StandardJsonResponse(-1, '该申请者已经撤回申请了');
-        }
-        $applyUser->group_id = $groupId;
+        $applyUser->group_id = $group->id;
         $applyUser->state = State::member;
+        $applyUser->save();
+        $applyUser->notify(new Wechat(WxTemplate::Agree));
 
-        Apply::removeAll($apply_id);
-
-        User::find($apply_id)->first()->notify(new Wechat(WxTemplate::Agree));
-
-        return StandardJsonResponse(1, '同意成功');
+        $apply->delete();
+        return StandardSuccessJsonResponse();
     }
 
     /**
@@ -132,22 +127,26 @@ class ApplyController extends Controller
     public function refuseMember(Request $request)
     {
         $user = User::current();
-        $group = $user->group()->first();
+        $group = $user->group();
 
-        if ($user->id != $group->captain_id) {
-            return StandardJsonResponse(-1, '你没有权限处理申请');
-        }
+        if ($user->id != $group->captain_id)
+            return StandardSuccessJsonResponse('你没有权限处理申请');
 
         $apply_id = $request->get('apply_id');
-
         $applyUser = User::where('id', $apply_id)->first();
-        if ($applyUser->state != State::appling) {
-            return StandardJsonResponse(-1, '该申请者已经撤回申请了');
-        }
-        Apply::removeOne($apply_id, $group->id);
+        if ($applyUser->state != State::appling)
+            return StandardSuccessJsonResponse('该申请者已经撤回申请了');
 
-        User::find($apply_id)->first()->notify(new Wechat(WxTemplate::Refuse));
-        return StandardJsonResponse(1, '拒绝成功');
+        $apply = Apply::where('apply_id', $apply_id);
+        if ($apply === null)
+            return StandardFailJsonResponse('申请不存在');
+
+        $apply->delete();
+
+        $applyUser->state = State::no_entered;
+        $applyUser->save();
+        $applyUser->notify(new Wechat(WxTemplate::Refuse));
+        return StandardSuccessJsonResponse();
     }
 
 }

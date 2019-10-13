@@ -58,11 +58,15 @@ function iidGetSex(string $iid) {
     return $sex % 2 == 0 ? '女' : '男';
 }
 
-function getAccessToken(){
-    $client = new Client();
-    $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WECHAT_APPID') . "&secret=" . env('WECHAT_SECRET');
-    $access_msg = json_decode($client->get($access_token)->getBody());
-    $token = $access_msg->access_token;
+function getAccessToken($getNew=false){
+    $token=config('accessToken');
+    if($token===null||$getNew){
+        $client = new Client();
+        $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WECHAT_APPID') . "&secret=" . env('WECHAT_SECRET');
+        $access_msg = json_decode($client->get($access_token)->getBody());
+        $token = $access_msg->access_token;
+        config(['accessToken'=>$token]);
+    }
     return $token;
 }
 /**
@@ -72,17 +76,13 @@ function getAccessToken(){
 function identifyGz($openid)
 {
     $client = new Client();
-    $token=config('accessToken');
-    if($token===null){
-        config(['accessToken'=>getAccessToken()]);
-        $token=config('accessToken');
-    }
+    $token=getAccessToken();
     $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
 
     $subscribe = json_decode($client->get($subscribe_msg)->getBody());
     if(property_exists($subscribe,'errcode')){
-        config(['accessToken'=>getAccessToken()]);
-        $token=config('accessToken');
+
+        $token=getAccessToken(true);
         $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
         $subscribe = json_decode($client->get($subscribe_msg)->getBody());
     }

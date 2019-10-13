@@ -15,12 +15,13 @@ class ResultController extends Controller
      * @param Request $request
      * @return string
      */
-    public function result(Request $request) {
+    public function result(Request $request)
+    {
         $user = User::current();
 
-        if ($user->group_id === null) {
+        if ($user->group_id === null)
             return StandardFailJsonResponse('你还没有加入');
-        }
+
         $group = $user->group()->first();
         $group['route'] = WalkRoute::find($group['route_id'])->name;
         unset($group['route_id']);

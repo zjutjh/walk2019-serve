@@ -25,7 +25,7 @@ class Group extends Model
      * 追加字段
      * @var array
      */
-    protected $appends = ['members'];
+    protected $appends = ['members','route'];
 
     /**
      *  获取所有组员
@@ -35,7 +35,14 @@ class Group extends Model
     {
         return $this->hasMany('App\User');
     }
-
+    /**
+     *  获取所有组员
+     * @return HasMany
+     */
+    public function getRouteAttribute()
+    {
+        return WalkRoute::where('id',$this->route_id)->first()->name;
+    }
     /**
      * 获取队员
      */

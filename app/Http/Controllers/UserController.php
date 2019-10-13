@@ -16,7 +16,6 @@ class UserController extends Controller
         'phone' => 'required|digits:11',
         'id_card' => 'required|alpha_dash|size:18',
         'qq' => 'digits_between:5,12',
-        'wx_id' => 'alpha_dash|between:2,100',
         'identity' => 'required',
         'height' => 'integer|between:50,300',
         'sid' => 'required_if:identity,学生|digits_between:10,14',
@@ -33,25 +32,22 @@ class UserController extends Controller
     {
         $all = $request->all();
 
-        $openid = $request->session()->get('openid');
+        $validator = Validator::make($request->all(), $this->userValidator);
+        if ($validator->fails())
+            return StandardFailJsonResponse('字段验证不通过,请检查一下');
 
+        $openid = $request->session()->get('openid');
         if ($openid === null)
-            return StandardFailJsonResponse("微信登录失败");
+            return StandardFailJsonResponse('微信登录失败');
 
         if (!identifyGz($openid))
-            return StandardFailJsonResponse("请先关注浙江工业大学精弘网络公众号");
-
-        $validator = Validator::make($request->all(), $this->userValidator);
-
-        if ($validator->fails())
-            return StandardFailJsonResponse("字段验证不通过,请检查一下");
-
+            return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
         $user = new User();
         $user->openid = $openid;
         $user->fill($all);
         $user->save();
 
-        return StandardJsonResponse(1, "报名成功");
+        return StandardJsonResponse(1, '报名成功');
     }
 
 
@@ -67,7 +63,7 @@ class UserController extends Controller
         if ($user)
             return StandardSuccessJsonResponse($user);
         else
-            return StandardFailJsonResponse("登录超时");
+            return StandardFailJsonResponse('登录超时');
     }
 
     /**
@@ -85,7 +81,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $this->userValidator);
 
         if ($validator->fails())
-            return StandardFailJsonResponse("字段验证不通过,请检查一下");
+            return StandardFailJsonResponse('字段验证不通过,请检查一下');
 
         $user->fill($all);
         $user->save();

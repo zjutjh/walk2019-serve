@@ -7,11 +7,11 @@ namespace App;
 class  WxTemplate
 {
     const  Test = [
-        'first' => 'Test First',
-        'keyword1' => 'keyword1',
-        'keyword2' => 'keyword2',
-        'keyword3' => ['keyword3', '#000000'],
-        'remark' => ['Test remark', '#fdfdfd'],
+        'first' => '你已经创建了一个队伍',
+        'keyword1' => '队伍创建',
+        'keyword2' => '创建成功',
+        'keyword3' => 'ZJUT JH',
+        'remark' => '快邀请大家来加入你的队伍把！ 点击查看详情',
     ];
     //创建队伍时
     const  Create = [

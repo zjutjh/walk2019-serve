@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Group;
 use App\User;
 use Illuminate\Http\JsonResponse;
 
@@ -38,7 +39,8 @@ class IndexController extends Controller
             'end' => $end,
             'now' => $now,
             'state' => $state,
-            'apply_count' => User::getUserCount()
+            'apply_count' => User::getUserCount(),
+            'group_count' => Group::getGroupCount()
         ];
 
         return StandardSuccessJsonResponse($indexInfo);

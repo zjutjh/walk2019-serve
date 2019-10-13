@@ -27,7 +27,7 @@ class Wechat extends Notification implements ShouldQueue
     {
 
         $data = $this->data;
-
+        $this->data['keyword3']=date('Y-m-d H:i:s', time());
         return [
             'openid' =>$notifiable->openid,
             'url' => 'http://walk.zjutjh.com',
