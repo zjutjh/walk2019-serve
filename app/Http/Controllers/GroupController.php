@@ -58,8 +58,6 @@ class GroupController extends Controller
             return StandardFailJsonResponse('你还没有加入');
 
         $group = $user->group();
-        $group->route = WalkRoute::where('id', $group->route_id)->first()->name;
-
         return StandardSuccessJsonResponse($group);
     }
 
@@ -226,6 +224,10 @@ class GroupController extends Controller
             return StandardFailJsonResponse('今日人数已经满了');
 
         $group->is_submit = true;
+        $mem = $group->members()->get();
+        foreach ($mem as $u) {
+            $u->notify(new Wechat(WxTemplate::Submit));
+        }
         $group->save();
 
         return StandardSuccessJsonResponse();
@@ -250,8 +252,10 @@ class GroupController extends Controller
 
         $group->is_submit = false;
         $group->save();
-
-        //notify(_notify::unsubmit, $group->id);
+        $mem = $group->members()->get();
+        foreach ($mem as $u) {
+            $u->notify(new Wechat(WxTemplate::Unsubmit));
+        }
 
         return StandardSuccessJsonResponse();
     }

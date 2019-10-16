@@ -63,20 +63,20 @@ class  WxTemplate
 
     //锁定队伍时
     const Submit = [
-        'first' => 'Test First',
-        'keyword1' => 'keyword1',
-        'keyword2' => 'keyword2',
-        'keyword3' => ['keyword3', '#000000'],
-        'remark' => ['Test remark', '#fdfdfd'],
+        'first' => '你加入的队伍已经提交',
+        'keyword1' => '队伍提交',
+        'keyword2' => '队伍提交',
+        'keyword3' => 'ZJUT JH',
+        'remark' => '请于11月5日,在报名平台查看队伍编号',
     ];
 
     //解除锁定队伍时
     const Unsubmit = [
-        'first' => 'Test First',
-        'keyword1' => 'keyword1',
-        'keyword2' => 'keyword2',
+        'first' => '你加入的队伍已经取消提交',
+        'keyword1' => '队伍取消提交',
+        'keyword2' => '队伍取消提交',
         'keyword3' => ['keyword3', '#000000'],
-        'remark' => ['Test remark', '#fdfdfd'],
+        'remark' => '你的队伍已经取消了提交,将不视为报名参加',
     ];
 
 }

@@ -20,7 +20,7 @@ class IndexController extends Controller
 
         $begin = config("api.system.BeginTime");
         $end = config("api.system.EndTime");
-        $now = now()->toDateTimeString();
+        $now = date('Y-m-d-H:i:s', time());
 
         if ($begin == null || $end == null) {
             return StandardJsonResponse(-1, "Server Error");
@@ -28,7 +28,7 @@ class IndexController extends Controller
 
         if ($now < $begin) {
             $state = -1;//'not_start';
-        } else if (now() <= $end) {
+        } else if ($now <= $end) {
             $state = 1;// 'doing';
         } else {
             $state = 0;//'end';

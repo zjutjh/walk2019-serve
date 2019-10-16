@@ -15,7 +15,7 @@ class UserController extends Controller
         'email' => 'required|email',
         'phone' => 'required|digits:11',
         'id_card' => 'required|alpha_dash|size:18',
-        'qq' => 'digits_between:5,12',
+        'qq' => 'digits_between:4,12',
         'identity' => 'required',
         'height' => 'integer|between:50,300',
         'sid' => 'required_if:identity,学生|digits_between:10,14',
@@ -34,7 +34,7 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), $this->userValidator);
         if ($validator->fails())
-            return StandardFailJsonResponse('字段验证不通过,请检查一下');
+            return StandardFailJsonResponse($validator->errors().'字段验证不通过,请检查一下');
 
         $openid = $request->session()->get('openid');
         if ($openid === null)
@@ -44,6 +44,7 @@ class UserController extends Controller
             return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
         $user = new User();
         $user->openid = $openid;
+
         $user->fill($all);
         $user->save();
 
@@ -81,7 +82,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), $this->userValidator);
 
         if ($validator->fails())
-            return StandardFailJsonResponse('字段验证不通过,请检查一下');
+            return StandardFailJsonResponse($validator->errors().'字段验证不通过,请检查一下');
 
         $user->fill($all);
         $user->save();

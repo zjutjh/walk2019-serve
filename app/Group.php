@@ -18,14 +18,14 @@ use App\Helpers\State;
 class Group extends Model
 {
     protected $fillable = [
-        'name', 'logo', 'capacity', 'description',  'captain_id', 'route_id', 'is_submit','No'
+        'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id', 'is_submit', 'No'
     ];
 
     /**
      * 追加字段
      * @var array
      */
-    protected $appends = ['members','route'];
+    protected $appends = ['members', 'route', 'captain_name'];
 
     /**
      *  获取所有组员
@@ -35,14 +35,25 @@ class Group extends Model
     {
         return $this->hasMany('App\User');
     }
+
     /**
      *  获取所有组员
      * @return HasMany
      */
     public function getRouteAttribute()
     {
-        return WalkRoute::where('id',$this->route_id)->first()->name;
+        return WalkRoute::where('id', $this->route_id)->first()->name;
     }
+
+    /**
+     *  获取所有组员
+     * @return HasMany
+     */
+    public function getCaptainNameAttribute()
+    {
+        return User::where('id', $this->captain_id)->first()->name;
+    }
+
     /**
      * 获取队员
      */
