@@ -17,6 +17,7 @@ return [
     'system' => [
         'BeginTime'=>env('BeginTime'),
         'EndTime' => env('EndTime'),
-        'IsEnd' => false
+        'IsEnd' => false,
+        'minGroupPeople'=>env("minGroupPeople")
     ]
 ];

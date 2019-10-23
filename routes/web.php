@@ -11,9 +11,6 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 Route::get('/oauth', 'WXLoginController@oauth');
 Route::any('/wx/login', 'WXLoginController@wxLogin');
 

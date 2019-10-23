@@ -22,17 +22,16 @@ class IndexController extends Controller
         $end = config("api.system.EndTime");
         $now = date('Y-m-d-H:i:s', time());
 
-        if ($begin == null || $end == null) {
+        if ($begin == null || $end == null)
             return StandardJsonResponse(-1, "Server Error");
-        }
 
-        if ($now < $begin) {
+
+        if ($now < $begin)
             $state = -1;//'not_start';
-        } else if ($now <= $end) {
+        else if ($now <= $end)
             $state = 1;// 'doing';
-        } else {
+        else
             $state = 0;//'end';
-        }
 
         $indexInfo = [
             'begin' => $begin,

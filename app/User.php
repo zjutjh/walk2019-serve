@@ -25,7 +25,7 @@ class User extends Model
 
 
     protected $fillable = [
-        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid', 'logo', 'identity', 'state', 'group_id', 'height'
+        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid', 'logo', 'identity', 'state', 'group_id', 'height','pe_class'
     ];
 
 

@@ -41,7 +41,7 @@ class GroupController extends Controller
             return $this->groupLists($request);
 
         $pageSize = $request->get('page_size', 15);
-        $groups = Group::where('id', $query_string)->orWhere('name', 'like', "%{$query_string}%")->paginate($pageSize);
+        $groups = Group::where(['is_submit'=>false])->where(['id'=>$query_string])->orWhere('name', 'like', "%{$query_string}%")->paginate($pageSize);
         return StandardSuccessJsonResponse($groups);
     }
 
@@ -211,14 +211,14 @@ class GroupController extends Controller
 
         $group = $user->group();
         //校验: 人数达到需求
-        $leastMembersCount = env("minGroupPeople");
+        $leastMembersCount = config("api.system.minGroupPeople");
 
         if ($group->members < $leastMembersCount) //判断人数是否达到要求
-            return StandardFailJsonResponse('只有到达' . $leastMembersCount . '人才可以锁定哦');
+            return StandardFailJsonResponse('只有到达' . $leastMembersCount . '人才可以提交哦');
 
         //校验: 当前报名的线路是否还有余量
         $route = WalkRoute::where('id', $group->route_id)->first();
-        $submit = Group::where('is_submit', 1)->where('route_id', $group->route_id)->count();
+        $submit = Group::where(['is_submit'=>1], ['route_id'=>$group->route_id])->count();
 
         if ($route->capacity <= $submit)
             return StandardFailJsonResponse('今日人数已经满了');
@@ -248,10 +248,11 @@ class GroupController extends Controller
             return StandardFailJsonResponse('你没有权限解锁队伍');
 
         if (!$group->is_submit)
-            return StandardJsonResponse(-1, '无需此操作');
+            return StandardFailJsonResponse('无需此操作');
 
         $group->is_submit = false;
         $group->save();
+
         $mem = $group->members()->get();
         foreach ($mem as $u) {
             $u->notify(new Wechat(WxTemplate::Unsubmit));

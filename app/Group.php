@@ -13,7 +13,6 @@ use App\Helpers\State;
  * @property mixed id
  * @property mixed captain_id
  * @method static orderBy(string $string, string $string1)
- * @method static where(string $string, string $select_route)
  */
 class Group extends Model
 {
@@ -62,19 +61,6 @@ class Group extends Model
         return $this->members()->count();
     }
 
-    /**
-     * 判断该组的成员是否支持某条线路
-     * @param $walkRoute
-     * @return bool
-     */
-    public function supportWalkPath($walkRoute)
-    {
-        $members = $this->members();
-        foreach ($members as $member)
-            if (!$walkRoute->supportCampus($member->campus))
-                return false;
-        return true;
-    }
 
     /**
      * 获取队伍数量
@@ -93,14 +79,12 @@ class Group extends Model
     public function delete()
     {
         $members = $this->members()->get();
-        $applies = Apply::where('apply_team_id', $this->id)->get();
+        $applies = Apply::with('user')->where('apply_team_id', $this->id)->get();
 
 
         foreach ($applies as $apply) {
-            $user = User::find($apply->apply_id);
-
+            $user = $apply->user();
             $user->notify(new Wechat(WxTemplate::Delete));
-
             $apply->delete();
         }
 
