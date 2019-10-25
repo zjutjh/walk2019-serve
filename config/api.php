@@ -15,9 +15,14 @@ return [
     //TODO: 使用其他方式解决不能动态修改设置的问题
 
     'system' => [
-        'BeginTime'=>env('BeginTime'),
+        'BeginTime' => env('BeginTime'),
         'EndTime' => env('EndTime'),
         'IsEnd' => false,
-        'minGroupPeople'=>env("minGroupPeople")
+        'minGroupPeople' => env("minGroupPeople"),
+    ],
+    'wx' => [
+        'WECHAT_REDIRECT' => env('WECHAT_REDIRECT'),
+        'WECHAT_APPID' => env('WECHAT_APPID'),
+        'WECHAT_SECRET' => env('WECHAT_SECRET')
     ]
 ];

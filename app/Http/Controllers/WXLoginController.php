@@ -12,13 +12,14 @@ class WXLoginController extends Controller
     /**
      * 微信回调
      */
-    public function oauth() {
+    public function oauth()
+    {
         return redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='
-            .env('WECHAT_APPID')
-            .'&redirect_uri='
-            .urlencode(config('api.jh.oauth'))
-            .urlencode(env('WECHAT_REDIRECT'))
-            .'&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect');
+            . config('WECHAT_APPID')
+            . '&redirect_uri='
+            . urlencode(config('api.jh.oauth'))
+            . urlencode(config('WECHAT_REDIRECT'))
+            . '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect');
     }
 
     /**
@@ -27,19 +28,19 @@ class WXLoginController extends Controller
      * @return JsonResponse
      * @throws GuzzleException
      */
-    public function wxLogin(Request $request) {
+    public function wxLogin(Request $request)
+    {
         $code = $request->get('code');
         $openid = $this->getWxOpenid($code);
 
         if (!isset($openid))
-            return StandardJsonResponse(-1, 'Failed');
+            return StandardFailJsonResponse();
 
         if (!$openid)
-            return StandardJsonResponse(-1, 'Failed');
+            return StandardFailJsonResponse();
 
         session(['openid' => $openid]);
-        $openid=$request->session()->get('openid');
-        return StandardJsonResponse(1, 'Success',$openid);
+        return StandardSuccessJsonResponse();
     }
 
     /** use code to get openid
@@ -47,13 +48,14 @@ class WXLoginController extends Controller
      * @return mixed
      * @throws GuzzleException
      */
-    public function getWxOpenid($code) {
-        $response = (new Client())->request('GET', 
+    public function getWxOpenid($code)
+    {
+        $response = (new Client())->request('GET',
             'https://api.weixin.qq.com/sns/oauth2/access_token?'
-            .'appid='.env('WECHAT_APPID')
-            .'&secret='.env('WECHAT_SECRET')
-            .'&code='.$code
-            .'&grant_type=authorization_code', ['verify' => false]);
+            . 'appid=' . config('WECHAT_APPID')
+            . '&secret=' . config('WECHAT_SECRET')
+            . '&code=' . $code
+            . '&grant_type=authorization_code', ['verify' => false]);
         $data = json_decode($response->getBody(), true);
         if (isset($data['openid'])) {
             return $data['openid'];

@@ -41,7 +41,7 @@ class GroupController extends Controller
             return $this->groupLists($request);
 
         $pageSize = $request->get('page_size', 15);
-        $groups = Group::where(['is_submit'=>false])->where(['id'=>$query_string])->orWhere('name', 'like', "%{$query_string}%")->paginate($pageSize);
+        $groups = Group::where('name', 'like', "%{$query_string}%")->paginate($pageSize);
         return StandardSuccessJsonResponse($groups);
     }
 
