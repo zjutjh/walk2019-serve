@@ -78,5 +78,19 @@ class  WxTemplate
         'keyword3' => ['keyword3', '#000000'],
         'remark' => '你的队伍已经取消了提交,将不视为报名参加',
     ];
+    const Success = [
+        'first' => '你的队伍成功报名精弘毅行',
+        'keyword1' => '报名成功',
+        'keyword2' => '报名成功',
+        'keyword3' => ['keyword3', '#000000'],
+        'remark' => '点击查看队伍编号',
+    ];
+    const Failed = [
+        'first' => '你的队伍没有成功报名精弘毅行',
+        'keyword1' => '队伍报名失败',
+        'keyword2' => '队伍报名失败',
+        'keyword3' => ['keyword3', '#000000'],
+        'remark' => '你的队伍由于没有提交或者,报名失败,欢迎明年报名精弘毅行',
+    ];
 
 }

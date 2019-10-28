@@ -90,8 +90,8 @@ class Group extends Model
 
 
         foreach ($members as $member) {
-            $member->leaveGroup();
             $member->notify(new Wechat(WxTemplate::Delete));
+            $member->leaveGroup();
         }
         return parent::delete();
     }

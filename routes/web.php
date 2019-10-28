@@ -20,6 +20,7 @@ Route::group(['middleware' => ['check.admin']], function () {
     Route::any('/test', 'TestController@sendTmp');
     Route::any('/test2', 'TestController@GenYXGroupId');
     Route::any('/test3', 'TestController@Download');
+    Route::any('/test4', 'TestController@SendResult');
 });
 
 Route::group(['middleware' => ['check.wechat']], function () {
@@ -38,7 +39,6 @@ Route::group(['middleware' => ['check.wechat']], function () {
         Route::post('/group/search', 'GroupController@searchTeam');
 
         Route::post('/group/members/delete', 'GroupController@deleteMember');
-        Route::post('/group/info', 'GroupController@getGroupInfo');
         Route::post('/group/update', 'GroupController@updateGroupInfo');
         Route::post('/group/unsubmit', 'GroupController@unSubmitGroup');
         Route::post('/group/leave', 'GroupController@leaveGroup');

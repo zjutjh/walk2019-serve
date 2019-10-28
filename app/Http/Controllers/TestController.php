@@ -36,7 +36,6 @@ class TestController extends Controller
         $routes = WalkRoute::orderBy('id', 'asc')->get();
         foreach ($routes as $route) {
             $groups = Group::where('is_submit', 1)->where('route_id', $route->id)->orderBy('id', 'asc')->get();
-
             $i = 1;
             foreach ($groups as $group) {
                 $group->No = $route->type . $i;
@@ -46,6 +45,29 @@ class TestController extends Controller
         }
 
     }
+
+    public function SendResult(Request $request)
+    {
+        $groups = Group::all();
+        foreach ($groups as $group) {
+            if ($group->is_submit) {
+                $mem = $group->members()->get();
+                foreach ($mem as $m) {
+                    $d=WxTemplate::Success;
+                    $d['keyword2'] ='你的队伍编号是'.$group->No;
+                    $m->notify(new Wechat($d));
+                }
+            }else{
+                $mem = $group->members()->get();
+                foreach ($mem as $m) {
+                    $m->notify(new Wechat(WxTemplate::Failed));
+                }
+            }
+        }
+
+
+    }
+
 
     public function Download(Request $request)
     {

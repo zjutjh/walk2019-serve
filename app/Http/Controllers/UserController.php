@@ -34,7 +34,7 @@ class UserController extends Controller
 
         $validator = Validator::make($request->all(), $this->userValidator);
         if ($validator->fails())
-            return StandardFailJsonResponse($validator->errors().'字段验证不通过,请检查一下');
+            return StandardFailJsonResponse('字段验证不通过,请检查一下');
 
         $openid = $request->session()->get('openid');
         if ($openid === null)

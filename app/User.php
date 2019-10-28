@@ -20,7 +20,7 @@ class User extends Model
      * @var array
      */
     protected $hidden = [
-        'openid', 'sex', 'id_card', 'birthday', 'sid'
+        'openid', 'sex', 'id_card', 'birthday'
     ];
 
 
