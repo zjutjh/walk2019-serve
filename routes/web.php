@@ -15,6 +15,8 @@ Route::get('/oauth', 'WXLoginController@oauth');
 Route::any('/wx/login', 'WXLoginController@wxLogin');
 
 Route::any('/index/info', 'IndexController@indexInfo');
+Route::get('/prize','PrizeController@index');
+Route::post('/prize','PrizeController@indexPost');
 
 Route::group(['middleware' => ['check.admin']], function () {
     Route::any('/prize/current','PrizeController@current');

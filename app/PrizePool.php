@@ -45,6 +45,10 @@ class PrizePool extends Model
 
         $prize = PrizePool::select($c);
 
+        if($prize == null){
+            return 3;
+        }
+
         $prize->count += 1;
         $prize->save();
 
@@ -83,4 +87,16 @@ class PrizePool extends Model
         return null;
     }
 
+    public static function getData(){
+         return [
+                [
+                    'campus'=>'屏峰',
+                    'data'=>PrizePool::current('屏峰')
+                ],
+                [
+                    'campus'=>'朝晖',
+                    'data'=>PrizePool::current('朝晖')
+                ]
+         ];
+    }
 }
