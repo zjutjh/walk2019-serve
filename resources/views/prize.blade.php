@@ -108,11 +108,8 @@
             @if($result ?? '')
                 <div><span class="msg">{{$result['msg']}}</span></div>
                 @if(array_key_exists('data',$result))
-                    @if(array_key_exists('no',$result))
-                    <div><span class="captain">抽奖的队伍：{{ $result['no'] }}</span></div>
-                    @endif
+                    <div><span class="captain">{{ $result['no'] }} - {{$result['data']['captain']}}</span></div>
                     <div>
-                        <span>{{$result['data']['captain']}}</span>
                         <span>{{$result['data']['content']}}</span>
                     </div>
                 @endif
@@ -123,8 +120,8 @@
             <span class="campus">{{ $prize['campus'] }}</span>
                 @foreach ($prize['data'] as $item)
                     <div>
-                <span class="captain">{{ $item['captain'] }}</span>
-                <span >{{ $item['content'] }}</span>
+                <span >{{ $item['captain'] }}: </span>
+                <span >{{ $item['content'] }} </span>
                 <span class="prize-count">{{ $item['count'] }}/{{ $item['capacity'] }} </span>
                     </div>
                 @endforeach

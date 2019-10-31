@@ -87,28 +87,27 @@ class PrizeController extends Controller
 
         if($group === null){
             $result['msg'] = '队伍不存在';
-        }
-
-        //$group = $groups->first();
-        $group_id = $group['id'];
-        $result['no'] = $no;
-
-        $prize = PrizePool::next($group_id);
-
-
-        if($prize === null){
-            $result['msg'] = '队伍不存在';
-        } else if ($prize === 1){
-            $result['msg'] = '队伍未提交，不能抽奖';
-        } else if($prize === 2) {
-            $prize_exist = PrizePool::find($group->prize);
-            $result['msg'] = '该队伍抽过奖了';
-            $result['data'] = $prize_exist;
-        } else if($prize === 3){
-            $result['msg'] ='奖池为空，不能再抽奖了';
         } else {
-            $result['msg'] = '抽奖成功';
-            $result['data'] = $prize;
+            //$group = $groups->first();
+            $group_id = $group['id'];
+            $result['no'] = $no;
+
+            $prize = PrizePool::next($group_id);
+
+            if($prize === null){
+                $result['msg'] = '队伍不存在';
+            } else if ($prize === 1){
+                $result['msg'] = '队伍未提交，不能抽奖';
+            } else if($prize === 2) {
+                $prize_exist = PrizePool::find($group->prize);
+                $result['msg'] = '该队伍抽过奖了';
+                $result['data'] = $prize_exist;
+            } else if($prize === 3){
+                $result['msg'] ='奖池为空，不能再抽奖了';
+            } else {
+                $result['msg'] = '抽奖成功';
+                $result['data'] = $prize;
+            }
         }
 
         return view('prize',
