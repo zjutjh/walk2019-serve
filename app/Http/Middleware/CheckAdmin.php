@@ -20,6 +20,6 @@ class CheckAdmin
        if(env('AdminPass')!==$request->get('pass')){
            return StandardJsonResponse(-1,"Admin pass wrong");
        }
-        return $next($request);
+       return $next($request);
     }
 }

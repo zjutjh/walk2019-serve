@@ -21,6 +21,7 @@ class CreateGroupsTable extends Migration
             $table->text('description')->comment('队伍简介');
             $table->integer('captain_id')->comment('队长id');
             $table->integer('route_id')->comment('毅行路线');
+            $table->integer('prize')->nullable()->comment('抽到的奖');
             $table->boolean('is_submit')->default(false)->comment('是否提交队伍');
             $table->boolean('is_super')->default(false)->comment('是否是超级队伍');
             $table->timestamps();
