@@ -18,7 +18,7 @@ class WalkRoute extends Model
      * 可填充字段
      * @return int
      */
-    protected $fillable = ['name',  'capacity'];
+    protected $fillable = ['name',  'capacity', 'campus', 'type'];
 
     public $timestamps = false;
 

@@ -17,6 +17,8 @@ Route::any('/wx/login', 'WXLoginController@wxLogin');
 Route::any('/index/info', 'IndexController@indexInfo');
 
 Route::group(['middleware' => ['check.admin']], function () {
+    Route::any('/prize/current','PrizeController@current');
+    Route::any('/prize/select', 'PrizeController@select');
     Route::any('/test', 'TestController@sendTmp');
     Route::any('/test2', 'TestController@GenYXGroupId');
     Route::any('/test3', 'TestController@Download');
