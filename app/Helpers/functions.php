@@ -57,13 +57,14 @@ function iidGetSex(string $iid) {
 }
 
 function getAccessToken($getNew=false){
-    $token=config('accessToken');
+
+    $token=Cache::get('accessToken');
     if($token===null||$getNew){
         $client = new Client();
-        $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . env('WECHAT_APPID') . "&secret=" . env('WECHAT_SECRET');
+        $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . config('api.wx.WECHAT_APPID') . "&secret=" . config('api.wx.WECHAT_SECRET');
         $access_msg = json_decode($client->get($access_token)->getBody());
         $token = $access_msg->access_token;
-        config(['accessToken'=>$token]);
+        Cache::put('accessToken',$token,60);
     }
     return $token;
 }
