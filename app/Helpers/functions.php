@@ -17,14 +17,15 @@ use Illuminate\Http\JsonResponse;
  * @param null $data 返回数据
  * @return JsonResponse
  */
-function StandardJsonResponse($code, $msg = '', $data = null) {
+function StandardJsonResponse($code, $msg = '', $data = null)
+{
     $json = [
         'code' => $code,
         'msg' => $msg,
     ];
 
-    if($data !== null){
-       $json['data'] = $data;
+    if ($data !== null) {
+        $json['data'] = $data;
     }
     return response()->json($json);
 }
@@ -34,7 +35,8 @@ function StandardJsonResponse($code, $msg = '', $data = null) {
  * @param null $data
  * @return JsonResponse
  */
-function StandardSuccessJsonResponse($data = null) {
+function StandardSuccessJsonResponse($data = null)
+{
     return StandardJsonResponse(1, "Success", $data);
 }
 
@@ -43,31 +45,42 @@ function StandardSuccessJsonResponse($data = null) {
  * @param null $data
  * @return JsonResponse
  */
-function StandardFailJsonResponse($data = null) {
+function StandardFailJsonResponse($data = null)
+{
     return StandardJsonResponse(-1, "Fail", $data);
 }
+
 /**
  * 用身份证获取性别
  * @param string $iid
  * @return string
  */
-function iidGetSex(string $iid) {
-    $sex = (int) substr($iid, 16, 1);
+function iidGetSex(string $iid)
+{
+    $sex = (int)substr($iid, 16, 1);
     return $sex % 2 == 0 ? '女' : '男';
 }
 
-function getAccessToken($getNew=false){
+function getAccessToken($getNew = false)
+{
 
-    $token=Cache::get('accessToken');
-    if($token===null||$getNew){
+    $token = Cache::get('accessToken');
+    if ($token === null || $getNew) {
         $client = new Client();
-        $access_token = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" . config('api.wx.WECHAT_APPID') . "&secret=" . config('api.wx.WECHAT_SECRET');
+        $access_token = "https://server.wejh.imcr.me/api/wechat/accessToken?passport=2002jhwl";
         $access_msg = json_decode($client->get($access_token)->getBody());
-        $token = $access_msg->access_token;
-        Cache::put('accessToken',$token,60);
+        if ($access_msg->data !== null) {
+            $token = $access_msg->data->token;
+            if ($token !== null) {
+                Cache::put('accessToken', $token, 60);
+            }
+        }
+
+
     }
     return $token;
 }
+
 /**
  * 确认是否关注公众号
  * @return bool
@@ -75,13 +88,13 @@ function getAccessToken($getNew=false){
 function identifyGz($openid)
 {
     $client = new Client();
-    $token=getAccessToken();
+    $token = getAccessToken();
     $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
 
     $subscribe = json_decode($client->get($subscribe_msg)->getBody());
-    if(property_exists($subscribe,'errcode')){
+    if (property_exists($subscribe, 'errcode')) {
 
-        $token=getAccessToken(true);
+        $token = getAccessToken(true);
         $subscribe_msg = "https://api.weixin.qq.com/cgi-bin/user/info?access_token=$token&openid=$openid";
         $subscribe = json_decode($client->get($subscribe_msg)->getBody());
     }
@@ -100,7 +113,8 @@ function identifyGz($openid)
  * @param string $iid
  * @return bool|string
  */
-function iidGetBirthday(string $iid) {
+function iidGetBirthday(string $iid)
+{
     return substr($iid, 6, 8);
 }
 

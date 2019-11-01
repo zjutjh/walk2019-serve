@@ -34,10 +34,12 @@ class WXLoginController extends Controller
         $openid = $this->getWxOpenid($code);
 
         if (!isset($openid))
-            return StandardFailJsonResponse();
+            return StandardJsonResponse(0,'请在微信中打开');
 
         if (!$openid)
-            return StandardFailJsonResponse();
+            return StandardJsonResponse(0,'请在微信中打开');
+        if (!identifyGz($openid))
+            return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
 
         session(['openid' => $openid]);
         return StandardSuccessJsonResponse();
