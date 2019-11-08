@@ -19,6 +19,7 @@ class CheckWeChat
         $openid = $request->session()->get('openid');
         if ($openid === null) {
             return StandardFailJsonResponse("你还没有openid");
+            //$request->session()->push('openid','hello_world');
         }
         return $next($request);
     }

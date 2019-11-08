@@ -17,7 +17,8 @@ use App\Helpers\State;
 class Group extends Model
 {
     protected $fillable = [
-        'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id', 'is_submit', 'No'
+        'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id', 'is_submit', 'No',
+        'prize_id', 'prize_get'
     ];
 
     /**

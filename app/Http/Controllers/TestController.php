@@ -78,4 +78,11 @@ class TestController extends Controller
     {
         return StandardSuccessJsonResponse();
     }
+
+    public function EncryptIid(Request $request){
+        $iid = $request->get('iid');
+        return StandardJsonResponse(1,'获取成功',[
+            'code'=> encrypt_iid($iid)
+        ]);
+    }
 }

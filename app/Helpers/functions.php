@@ -56,6 +56,10 @@ function iidGetSex(string $iid) {
     return $sex % 2 == 0 ? '女' : '男';
 }
 
+function encrypt_iid($iid){
+    return md5(strtoupper($iid));
+}
+
 function getAccessToken($getNew=false){
     $token=config('accessToken');
     if($token===null||$getNew){

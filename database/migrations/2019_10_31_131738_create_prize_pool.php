@@ -14,8 +14,8 @@ class CreateTablePrizePool extends Migration
     public function up()
     {
         Schema::create('prize_pool', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('campus')->comment('抽奖适用的校区');
+            $table->increments('id');
+            $table->integer('route_id')->comment('抽奖适用的线路');
             $table->string('captain')->comment('抽奖标签');
             $table->string('content')->comment('中奖内容');
             $table->integer('capacity')->comment('中奖最大数量');
