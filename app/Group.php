@@ -8,6 +8,7 @@ use Exception;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Helpers\State;
+use Route;
 
 /**
  * @property mixed id
@@ -17,7 +18,7 @@ use App\Helpers\State;
 class Group extends Model
 {
     protected $fillable = [
-        'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id', 'is_submit', 'No',
+        'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id', 'is_submit', 'No', 'is_super',
         'prize_id', 'prize_get'
     ];
 
@@ -26,6 +27,7 @@ class Group extends Model
      * @var array
      */
     protected $appends = ['members', 'route', 'captain_name'];
+
 
     /**
      *  获取所有组员
@@ -97,8 +99,4 @@ class Group extends Model
         return parent::delete();
     }
 
-    public static function submitedCount()
-    {
-        return Group::where('is_submit', true)->get()->count();
-    }
 }

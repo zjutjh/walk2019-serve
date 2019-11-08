@@ -53,12 +53,32 @@ class GroupController extends Controller
     public function getGroupInfo()
     {
         $user = User::current();
-
+        if ($user === null)
+            return StandardFailJsonResponse('你还没有报名');
         if ($user->group_id === null)
             return StandardFailJsonResponse('你还没有加入');
 
         $group = $user->group();
         return StandardSuccessJsonResponse($group);
+    }
+
+
+    /**
+     * [√通过测试]
+     * 查询队伍信息
+     * @return JsonResponse
+     */
+    public function getRemainInfo()
+    {
+        $route = Route::all();
+        $res = [];
+
+        foreach ($route as $r) {
+            array_push($res,
+                $r->name . ':' . $r->capacity - Group::where('is_submit', true)->where('route_id', $r->id)->get()->count());
+        }
+
+        return StandardSuccessJsonResponse($res);
     }
 
     /**
@@ -104,7 +124,7 @@ class GroupController extends Controller
             return StandardFailJsonResponse('你已经拥有队伍');
 
         $all['captain_id'] = $user->id;
-
+        $all['is_super'] = ($user->identity == '校友' || $user->identity == '教职工') ? true : false;
         $group = Group::create($all);
 
         $user->group_id = $group->id;
@@ -218,19 +238,28 @@ class GroupController extends Controller
 
         //校验: 当前报名的线路是否还有余量
         $route = WalkRoute::where('id', $group->route_id)->first();
-        $submit = Group::where(['is_submit'=>1], ['route_id'=>$group->route_id])->count();
+        $submit = Group::where('is_submit', true)->where('route_id', $group->route_id)->where('is_super', false)->count();
 
-        if ($route->capacity <= $submit)
-            return StandardFailJsonResponse('今日人数已经满了');
+        $superCount = User::where('group_id', $group->id)->where('identity', '校友')->count();
+        $superCount = $superCount + User::where('group_id', $group->id)->where('identity', '教职工')->count();
+        if ($superCount >= 1)
+            $group->is_super = true;
+        else
+            $group->is_super = false;
+
+        if ($route->capacity <= $submit && !$group->is_super)
+            return StandardFailJsonResponse('今日人数已经满了,请明天再来');
 
         $group->is_submit = true;
-        $mem = $group->members()->get();
-        foreach ($mem as $u) {
-            $u->notify(new Wechat(WxTemplate::Submit));
-        }
         $group->save();
 
-        return StandardSuccessJsonResponse();
+        $mem = $group->members()->get();
+//        foreach ($mem as $u) {
+//            $u->notify(new Wechat(WxTemplate::Submit));
+//        }
+
+
+        return StandardSuccessJsonResponse($superCount);
     }
 
     /**
@@ -254,9 +283,9 @@ class GroupController extends Controller
         $group->save();
 
         $mem = $group->members()->get();
-        foreach ($mem as $u) {
-            $u->notify(new Wechat(WxTemplate::Unsubmit));
-        }
+//        foreach ($mem as $u) {
+//            $u->notify(new Wechat(WxTemplate::Unsubmit));
+//        }
 
         return StandardSuccessJsonResponse();
     }

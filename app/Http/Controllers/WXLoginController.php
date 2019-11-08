@@ -15,10 +15,10 @@ class WXLoginController extends Controller
     public function oauth()
     {
         return redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='
-            . config('WECHAT_APPID')
+            . config('api.wx.WECHAT_APPID')
             . '&redirect_uri='
             . urlencode(config('api.jh.oauth'))
-            . urlencode(config('WECHAT_REDIRECT'))
+            . urlencode(config('api.wx.WECHAT_REDIRECT'))
             . '&response_type=code&scope=snsapi_base&state=STATE#wechat_redirect');
     }
 
@@ -34,10 +34,12 @@ class WXLoginController extends Controller
         $openid = $this->getWxOpenid($code);
 
         if (!isset($openid))
-            return StandardFailJsonResponse();
+            return StandardJsonResponse(0,'请在微信中打开');
 
         if (!$openid)
-            return StandardFailJsonResponse();
+            return StandardJsonResponse(0,'请在微信中打开');
+        if (!identifyGz($openid))
+            return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
 
         session(['openid' => $openid]);
         return StandardSuccessJsonResponse();
@@ -52,8 +54,8 @@ class WXLoginController extends Controller
     {
         $response = (new Client())->request('GET',
             'https://api.weixin.qq.com/sns/oauth2/access_token?'
-            . 'appid=' . config('WECHAT_APPID')
-            . '&secret=' . config('WECHAT_SECRET')
+            . 'appid=' . config('api.wx.WECHAT_APPID')
+            . '&secret=' . config('api.wx.WECHAT_SECRET')
             . '&code=' . $code
             . '&grant_type=authorization_code', ['verify' => false]);
         $data = json_decode($response->getBody(), true);

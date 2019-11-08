@@ -15,7 +15,7 @@ class UserController extends Controller
         'name' => 'required|between:2,32',
         'email' => 'required|email',
         'phone' => 'required|digits:11',
-        'id_card' => 'required|alpha_dash|size:18',
+        'id_card' => 'required|alpha_dash|between:8,20',
         'qq' => 'digits_between:4,12',
         'identity' => 'required',
         'height' => 'integer|between:50,300',
@@ -42,8 +42,6 @@ class UserController extends Controller
         if ($openid === null)
             return StandardFailJsonResponse('微信登录失败');
 
-        if (!identifyGz($openid))
-            return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
 
         $user = new User();
         $user->openid = $openid;

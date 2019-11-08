@@ -33,6 +33,7 @@ Route::group(['middleware' => ['check.admin']], function () {
 Route::group(['middleware' => ['check.wechat']], function () {
     Route::post('/user/info', 'UserController@getMyInfo');
     Route::post('/route/list', 'RouteController@getRouteList');
+    Route::post('/group/remain', 'GroupController@getRemainInfo');
     Route::post('/group/info', 'GroupController@getGroupInfo');
     Route::post('/group/members/list', 'GroupController@getGroupMembers');
     Route::group(['middleware' => ['check.finish']], function () {
