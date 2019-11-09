@@ -18,7 +18,7 @@ class PrizeController extends Controller
 
 
     public function getData(Request $request){
-        return PrizePool::getData();
+        return StandardJsonResponse(1,"获取成功",PrizePool::getData());
     }
 
     public function verify(Request $request){
@@ -46,16 +46,22 @@ class PrizeController extends Controller
             return StandardJsonResponse(-1,'队伍不存在');
         } elseif ($result === 1){
             return StandardJsonResponse(-1,'该队伍还没有抽过奖');
-        } elseif ($result === 2){
-            return StandardJsonResponse(-1, '该队伍已经领过奖了');
         } else {
-            return StandardJsonResponse(1,'领奖成功', $result);
+            $prize = PrizePool::find($group->prize_id);
+            if ($result == 2){
+                return StandardJsonResponse(1, "该队伍已经领过奖了", $prize);
+            } else {
+                return StandardJsonResponse(1, "领奖成功", $prize);
+            }
         }
     }
 
     public function select(Request $request){
         $all = $request->all();
-        $validator = self::validate_no($all);
+        $validator = Validator::make($all, [
+            'no' => 'required|alpha_dash',
+            'title' => 'required'
+        ]);
 
         if($validator->fails()){
             return StandardJsonResponse(-1,'字段验证失败');
@@ -70,18 +76,19 @@ class PrizeController extends Controller
 
         //$group = $groups->first();
         $group_id = $group['id'];
+        $title = $all['title'];
 
-        $prize = PrizePool::next($group_id);
+        $prize = PrizePool::next($title,$group_id);
 
         if($prize === null){
             return StandardJsonResponse(-1,'抽奖失败');
         } else if($prize === 1){
-            return StandardJsonResponse(1, '队伍未提交，不能抽奖');
+            return StandardJsonResponse(4, '队伍未提交，不能抽奖');
         } else if($prize === 2) {
             $prize_exist = PrizePool::find($group->prize_id);
-            return StandardJsonResponse(1, '该队伍抽过奖了', $prize_exist);
+            return StandardJsonResponse(3, '该队伍抽过奖了', $prize_exist);
         } else if($prize === 3){
-            return StandardJsonResponse(1, '奖池为空，不能再抽奖了');
+            return StandardJsonResponse(2, '奖池为空，不能再抽奖了');
         } else {
             return StandardJsonResponse(1,'抽奖成功', $prize);
         }

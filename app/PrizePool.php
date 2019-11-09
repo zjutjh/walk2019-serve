@@ -18,13 +18,8 @@ class PrizePool extends Model
 
     protected $fillable = ['count'];
 
-    /**
-     * 当前路线奖项的状态
-     * @param int $route_id get the prize pool of campus now.
-     * @return mixed data.
-     */
-    public static function current(int $route_id){
-        return PrizePool::where('route_id', $route_id)->get();
+    public static function current(string $title){
+        return PrizePool::where('title',$title)->get();
     }
 
     /**
@@ -32,7 +27,7 @@ class PrizePool extends Model
      * @param int $group_id 队伍编号
      * @return mixed
      */
-    public static function next(int $group_id){
+    public static function next(string $title,int $group_id){
         $group = Group::find($group_id);
         if($group === null){
             return null;
@@ -41,9 +36,8 @@ class PrizePool extends Model
         } else if($group->prize_id !== null){
             return 2;
         }
-        $route = WalkRoute::find($group->route_id);
 
-        $c = PrizePool::current($route->id);
+        $c = PrizePool::current($title);
 
         $prize = PrizePool::select($c);
 
@@ -74,16 +68,19 @@ class PrizePool extends Model
         }
         $prize_id = $group->prize_id;
         $prize_get = $group->prize_get;
+
         if($prize_id === null){
             return 1;
         } else if($prize_get == true ){ //true
             return 2;
         }
-
+        $prize = PrizePool::find($prize_id);
+        $prize->accept_count += 1;
+        $prize->save();
         $group->prize_get = true;
         $group->save();
 
-        return PrizePool::find($prize_id);
+        return 3;
     }
 
     /**
@@ -120,17 +117,19 @@ class PrizePool extends Model
 
 
     public static function getData(){
-        $mapping = function ($route) {
-            $data = PrizePool::current($route['id']);
-
-            return [
-                'route'=> $route,
-                'data' => $data
+        $data = [];
+        $result = [];
+        $prizePools = PrizePool::all()->toArray();
+        foreach($prizePools as $value){
+            $data[$value['title']][] = $value;
+        }
+        foreach($data as $key=>$value){
+            $result[] = [
+                'title' => $key,
+                'data' => $value
             ];
-        };
+        }
 
-        $route = WalkRoute::all()->toArray();
-
-        return array_map($mapping, $route);
+        return $result;
     }
 }
