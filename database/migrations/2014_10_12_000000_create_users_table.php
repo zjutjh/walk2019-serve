@@ -29,7 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('birthday')->nullable()->comment('出生年月');
             $table->string('sid')->nullable()->comment('学生学号');
             $table->string('school')->nullable()->comment('学生学院');
-            $table->string('pe_class')->nullable()->comment('学生体育课');
+            //$table->string('pe_class')->nullable()->comment('学生体育课');
             $table->integer('group_id')->nullable()->comment('队伍编号');
             $table->tinyInteger('state')->default(0)->comment('0 未报名 1已经报名未组队 2 正在申请队伍 3 有队伍（队长）4 有队伍（队员）5 未填写信息');
             $table->tinyInteger('verify_code')->default(0)->comment('刷卡状态 0未刷卡 1出发 2正常完成 3未完成');

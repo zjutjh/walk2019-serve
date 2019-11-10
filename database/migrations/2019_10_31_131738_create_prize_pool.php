@@ -15,7 +15,7 @@ class CreateTablePrizePool extends Migration
     {
         Schema::create('prize_pool', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('route_id')->comment('抽奖适用的线路');
+            $table->string('title')->comment('标题');
             $table->string('captain')->comment('抽奖标签');
             $table->string('content')->comment('中奖内容');
             $table->integer('capacity')->default(0)->comment('中奖最大数量');
