@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Helpers\Verify_Code;
 use App\User;
+use App\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -103,6 +104,12 @@ class UserController extends Controller
 
         $iid = $all['iid'];
         $user = User::where('id_card',encrypt_iid($iid))->get()->first();
+        $group = Group::find($user->group_id);
+
+        $data = [
+            'user' => $user,
+            'group' => $group
+        ];
 
         if($user === null){
             return StandardJsonResponse(-1, '该用户不存在');
@@ -114,7 +121,7 @@ class UserController extends Controller
             return StandardJsonResponse(1, '该选项不可用');
         } else if($code == Verify_Code::start){
             if($user->verify_code == Verify_Code::complete || $user->verify_code == Verify_Code::fail){
-                return StandardJsonResponse(-1, '该队伍已经结束毅行了');
+                return StandardJsonResponse(-1, '该队伍已经结束毅行了', $data);
             }
 
             $user->verify_code = Verify_Code::start;
@@ -122,14 +129,15 @@ class UserController extends Controller
 
         } else {
             if($user->verify_code == Verify_Code::no){
-                return StandardJsonResponse(-1, '该队伍还没有出发，无法完成');
+                return StandardJsonResponse(-1, '该队伍还没有出发，无法完成', $data);
             }
             $user->verify_code = $code;
             $user->end_at = now();
         }
         $user->save();
 
-        return StandardJsonResponse(1, '刷卡成功', $user);
+
+        return StandardJsonResponse(1, '刷卡成功', $data);
     }
 
 }
