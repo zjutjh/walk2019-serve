@@ -33,6 +33,8 @@ class CreateUsersTable extends Migration
             $table->integer('group_id')->nullable()->comment('队伍编号');
             $table->tinyInteger('state')->default(0)->comment('0 未报名 1已经报名未组队 2 正在申请队伍 3 有队伍（队长）4 有队伍（队员）5 未填写信息');
             $table->tinyInteger('verify_code')->default(0)->comment('刷卡状态 0未刷卡 1出发 2正常完成 3未完成');
+            $table->tinyInteger('is_start')->nullable()->default(0);
+            $table->tinyInteger('is_end')->nullable()->default(0);
             $table->timestamp('start_at')->nullable()->comment('开始刷卡时间');
             $table->timestamp('end_at')->nullable()->comment('结束刷卡时间');
             $table->timestamps();
