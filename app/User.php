@@ -28,6 +28,10 @@ class User extends Model
         'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid', 'logo', 'identity', 'state', 'group_id', 'height','pe_class'
     ];
 
+    protected $dates = [
+        'start_at',
+        'end_at'
+    ];
 
     /**
      * 获得当前用户
@@ -85,7 +89,7 @@ class User extends Model
     {
         $this->attributes['sex'] = iidGetSex($value);
         $this->attributes['birthday'] = iidGetBirthday($value);
-        $this->attributes['id_card'] = md5(strtoupper($value));
+        $this->attributes['id_card'] = encrypt_iid($value);
     }
 
     /**

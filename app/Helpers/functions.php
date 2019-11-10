@@ -61,9 +61,11 @@ function iidGetSex(string $iid)
     return $sex % 2 == 0 ? '女' : '男';
 }
 
-function getAccessToken($getNew = false)
-{
+function encrypt_iid($iid){
+    return md5(strtoupper($iid));
+}
 
+function getAccessToken($getNew=false){
     $token = Cache::get('accessToken');
     if ($token === null || $getNew) {
         $client = new Client();

@@ -18,7 +18,8 @@ use Route;
 class Group extends Model
 {
     protected $fillable = [
-        'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id', 'is_submit', 'No', 'is_super'
+        'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id', 'is_submit', 'No', 'is_super',
+        'prize_id', 'prize_get'
     ];
 
     /**

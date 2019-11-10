@@ -19,12 +19,15 @@ Route::get('/prize','PrizeController@index');
 Route::post('/prize','PrizeController@indexPost');
 
 Route::group(['middleware' => ['check.admin']], function () {
-    Route::any('/prize/current','PrizeController@current');
+    Route::any('user/verify','UserController@verify');
+    Route::any('/prize/get_data','PrizeController@getData');
     Route::any('/prize/select', 'PrizeController@select');
+    Route::any('/prize/verify', 'PrizeController@verify');
     Route::any('/test', 'TestController@sendTmp');
     Route::any('/test2', 'TestController@GenYXGroupId');
     Route::any('/test3', 'TestController@Download');
     Route::any('/test4', 'TestController@SendResult');
+    Route::any('/test5','TestController@EncryptIid');
 });
 
 Route::group(['middleware' => ['check.wechat']], function () {

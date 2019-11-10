@@ -14,12 +14,13 @@ class CreateTablePrizePool extends Migration
     public function up()
     {
         Schema::create('prize_pool', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('campus')->comment('抽奖适用的校区');
+            $table->increments('id');
+            $table->string('title')->comment('标题');
             $table->string('captain')->comment('抽奖标签');
             $table->string('content')->comment('中奖内容');
-            $table->integer('capacity')->comment('中奖最大数量');
-            $table->integer('count')->comment('已经抽中的数量');
+            $table->integer('capacity')->default(0)->comment('中奖最大数量');
+            $table->integer('count')->default(0)->comment('已经抽中的数量');
+            $table->integer('accept_count')->default(0)->comment('已领奖的数量');
         });
     }
 

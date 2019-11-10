@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Verify_Code;
 use App\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -31,6 +32,7 @@ class UserController extends Controller
     public function register(Request $request)
     {
         $all = $request->all();
+
 
         $validator = Validator::make($request->all(), $this->userValidator);
         if ($validator->fails())
@@ -86,6 +88,48 @@ class UserController extends Controller
         $user->fill($all);
         $user->save();
         return StandardSuccessJsonResponse();
+    }
+
+    public function verify(Request $request){
+        $all = $request->all();
+        $validator = Validator::make($all, [
+           'iid' => 'required|alpha_dash|size:18',
+           'code' => 'required|integer|between:0,3'
+        ]);
+
+        if($validator->fails()){
+            return StandardJsonResponse(-1, '字段验证失败');
+        }
+
+        $iid = $all['iid'];
+        $user = User::where('id_card',encrypt_iid($iid))->get()->first();
+
+        if($user === null){
+            return StandardJsonResponse(-1, '该用户不存在');
+        }
+
+        $code = $all['code'];
+
+        if($code == Verify_Code::no){
+            return StandardJsonResponse(1, '该选项不可用');
+        } else if($code == Verify_Code::start){
+            if($user->verify_code == Verify_Code::complete || $user->verify_code == Verify_Code::fail){
+                return StandardJsonResponse(-1, '该队伍已经结束毅行了');
+            }
+
+            $user->verify_code = Verify_Code::start;
+            $user->start_at = now();
+
+        } else {
+            if($user->verify_code == Verify_Code::no){
+                return StandardJsonResponse(-1, '该队伍还没有出发，无法完成');
+            }
+            $user->verify_code = $code;
+            $user->end_at = now();
+        }
+        $user->save();
+
+        return StandardJsonResponse(1, '刷卡成功', $user);
     }
 
 }
