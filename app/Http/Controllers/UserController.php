@@ -103,22 +103,28 @@ class UserController extends Controller
         }
 
         $iid = $all['iid'];
-        $user = User::where('id_card',encrypt_iid($iid))->get()->first();
-        $group = Group::find($user->group_id);
 
+        $user = User::where('id_card',encrypt_iid($iid))->get()->first();
+
+
+        if($user === null) {
+            return StandardJsonResponse(-1, '该用户不存在');
+        }
+
+        $group = Group::find($user->group_id);
         $data = [
             'user' => $user,
             'group' => $group
         ];
 
-        if($user === null){
-            return StandardJsonResponse(-1, '该用户不存在');
+        if($group == null){
+            return StandardJsonResponse(-1, '该用户现在还没有队伍', $data);
         }
 
         $code = $all['code'];
 
         if($code == Verify_Code::no){
-            return StandardJsonResponse(1, '该选项不可用');
+            return StandardJsonResponse(-1, '该选项不可用');
         } else if($code == Verify_Code::start){
             if($user->verify_code == Verify_Code::complete || $user->verify_code == Verify_Code::fail){
                 return StandardJsonResponse(-1, '该队伍已经结束毅行了', $data);
