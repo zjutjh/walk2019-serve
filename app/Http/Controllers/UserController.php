@@ -34,7 +34,6 @@ class UserController extends Controller
     {
         $all = $request->all();
 
-
         $validator = Validator::make($request->all(), $this->userValidator);
         if ($validator->fails())
             return StandardFailJsonResponse('字段验证不通过,请检查一下');
@@ -42,7 +41,6 @@ class UserController extends Controller
         $openid = $request->session()->get('openid');
         if ($openid === null)
             return StandardFailJsonResponse('微信登录失败');
-
 
         $user = new User();
         $user->openid = $openid;
@@ -94,22 +92,22 @@ class UserController extends Controller
     public function verify(Request $request){
         $all = $request->all();
         $validator = Validator::make($all, [
-           'iid' => 'required|alpha_dash|size:18',
+           'iid' => 'required|alpha_dash',
            'code' => 'required|integer|between:0,3'
         ]);
 
-        if($validator->fails()){
+        if($validator->fails())
             return StandardJsonResponse(-1, '字段验证失败');
-        }
+
 
         $iid = $all['iid'];
 
         $user = User::where('id_card',encrypt_iid($iid))->get()->first();
 
 
-        if($user === null) {
+        if($user === null)
             return StandardJsonResponse(-1, '该用户不存在');
-        }
+
 
         $group = Group::find($user->group_id);
         $data = [
@@ -117,26 +115,29 @@ class UserController extends Controller
             'group' => $group
         ];
 
-        if($group == null){
+        if($group == null)
             return StandardJsonResponse(-1, '该用户现在还没有队伍', $data);
-        }
+
+        if($group->is_submit == 0)
+            return StandardJsonResponse(-1, '该队伍没有报名', $data);
 
         $code = $all['code'];
 
-        if($code == Verify_Code::no){
+        if($code == Verify_Code::no)
             return StandardJsonResponse(-1, '该选项不可用');
-        } else if($code == Verify_Code::start){
-            if($user->verify_code == Verify_Code::complete || $user->verify_code == Verify_Code::fail){
+
+        else if($code == Verify_Code::start){
+
+            if($user->verify_code == Verify_Code::complete || $user->verify_code == Verify_Code::fail)
                 return StandardJsonResponse(-1, '该队伍已经结束毅行了', $data);
-            }
+
 
             $user->verify_code = Verify_Code::start;
             $user->start_at = now();
-
         } else {
-            if($user->verify_code == Verify_Code::no){
+            if($user->verify_code == Verify_Code::no)
                 return StandardJsonResponse(-1, '该队伍还没有出发，无法完成', $data);
-            }
+
             $user->verify_code = $code;
             $user->end_at = now();
         }

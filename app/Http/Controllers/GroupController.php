@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Validator;
+use Route;
 
 class GroupController extends Controller
 {
@@ -253,11 +254,6 @@ class GroupController extends Controller
         $group->is_submit = true;
         $group->save();
 
-        $mem = $group->members()->get();
-//        foreach ($mem as $u) {
-//            $u->notify(new Wechat(WxTemplate::Submit));
-//        }
-
 
         return StandardSuccessJsonResponse($superCount);
     }
@@ -283,9 +279,6 @@ class GroupController extends Controller
         $group->save();
 
         $mem = $group->members()->get();
-//        foreach ($mem as $u) {
-//            $u->notify(new Wechat(WxTemplate::Unsubmit));
-//        }
 
         return StandardSuccessJsonResponse();
     }
