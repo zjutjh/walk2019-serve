@@ -10,9 +10,10 @@ use App\WalkRoute;
 use App\WxTemplate;
 use DateInterval;
 use DateTime;
+use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Facades\Excel;
-use function Matrix\add;
 
 class TestController extends Controller
 {
@@ -28,7 +29,9 @@ class TestController extends Controller
         $ids = explode("\n", $ids);
         $users = User::find($ids);
         foreach ($users as $user) {
-            $user->notify(new Wechat(WxTemplate::Test));
+            $d=WxTemplate::Test;
+            $d['keyword2'] = '你的队伍的出发时间是' . $user->created_at;
+            $user->notify(new Wechat($d));
         }
         return '发送成功';
     }
@@ -63,18 +66,28 @@ class TestController extends Controller
     {
         $groups = Group::all();
         foreach ($groups as $group) {
+            Log::info($group->id);
             if ($group->is_submit) {
                 $mem = $group->members()->get();
                 foreach ($mem as $m) {
-                    $d = WxTemplate::Success;
-                    $d['keyword1'] = '你的队伍编号是' . $group->No;
-                    $d['keyword2'] = '你的队伍的出发时间是' . $group->start_time;
-                    $m->notify(new Wechat($d));
+                    try{
+                        $d = WxTemplate::Success;
+                        $d['keyword1'] = '你的队伍编号是' .  $group->No;
+                        $d['keyword2'] = '你的队伍的出发时间是' .$group->start_time;
+                        $m->notify(new Wechat($d));
+                    }catch (Exception $exception){
+
+                    }
                 }
             } else {
                 $mem = $group->members()->get();
                 foreach ($mem as $m) {
-                    $m->notify(new Wechat(WxTemplate::Failed));
+                    try{
+                        $m->notify(new Wechat(WxTemplate::Failed));
+                    }catch (Exception $exception){
+
+                    }
+
                 }
             }
         }
