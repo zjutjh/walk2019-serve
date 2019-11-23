@@ -7,7 +7,7 @@ use App\User;
 use App\Group;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator;
+use Validator;
 
 class UserController extends Controller
 {
@@ -35,6 +35,7 @@ class UserController extends Controller
         $all = $request->all();
 
         $validator = Validator::make($request->all(), $this->userValidator);
+
         if ($validator->fails())
             return StandardFailJsonResponse('字段验证不通过,请检查一下');
 

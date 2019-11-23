@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.1.0 on 2019-10-02 11:20:54.
+ * Generated for Laravel 6.5.0 on 2019-11-18 22:56:21.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1641,662 +1641,6 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @see \Illuminate\Auth\AuthManager
-     * @see \Illuminate\Contracts\Auth\Factory
-     * @see \Illuminate\Contracts\Auth\Guard
-     * @see \Illuminate\Contracts\Auth\StatefulGuard
-     */ 
-    class Auth {
-        
-        /**
-         * Attempt to get the guard from the local cache.
-         *
-         * @param string|null $name
-         * @return \Illuminate\Contracts\Auth\Guard|\Illuminate\Contracts\Auth\StatefulGuard 
-         * @static 
-         */ 
-        public static function guard($name = null)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->guard($name);
-        }
-        
-        /**
-         * Create a session based authentication guard.
-         *
-         * @param string $name
-         * @param array $config
-         * @return \Illuminate\Auth\SessionGuard 
-         * @static 
-         */ 
-        public static function createSessionDriver($name, $config)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->createSessionDriver($name, $config);
-        }
-        
-        /**
-         * Create a token based authentication guard.
-         *
-         * @param string $name
-         * @param array $config
-         * @return \Illuminate\Auth\TokenGuard 
-         * @static 
-         */ 
-        public static function createTokenDriver($name, $config)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->createTokenDriver($name, $config);
-        }
-        
-        /**
-         * Get the default authentication driver name.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getDefaultDriver()
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->getDefaultDriver();
-        }
-        
-        /**
-         * Set the default guard driver the factory should serve.
-         *
-         * @param string $name
-         * @return void 
-         * @static 
-         */ 
-        public static function shouldUse($name)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        $instance->shouldUse($name);
-        }
-        
-        /**
-         * Set the default authentication driver name.
-         *
-         * @param string $name
-         * @return void 
-         * @static 
-         */ 
-        public static function setDefaultDriver($name)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        $instance->setDefaultDriver($name);
-        }
-        
-        /**
-         * Register a new callback based request guard.
-         *
-         * @param string $driver
-         * @param callable $callback
-         * @return \Illuminate\Auth\AuthManager 
-         * @static 
-         */ 
-        public static function viaRequest($driver, $callback)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->viaRequest($driver, $callback);
-        }
-        
-        /**
-         * Get the user resolver callback.
-         *
-         * @return \Closure 
-         * @static 
-         */ 
-        public static function userResolver()
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->userResolver();
-        }
-        
-        /**
-         * Set the callback to be used to resolve users.
-         *
-         * @param \Closure $userResolver
-         * @return \Illuminate\Auth\AuthManager 
-         * @static 
-         */ 
-        public static function resolveUsersUsing($userResolver)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->resolveUsersUsing($userResolver);
-        }
-        
-        /**
-         * Register a custom driver creator Closure.
-         *
-         * @param string $driver
-         * @param \Closure $callback
-         * @return \Illuminate\Auth\AuthManager 
-         * @static 
-         */ 
-        public static function extend($driver, $callback)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->extend($driver, $callback);
-        }
-        
-        /**
-         * Register a custom provider creator Closure.
-         *
-         * @param string $name
-         * @param \Closure $callback
-         * @return \Illuminate\Auth\AuthManager 
-         * @static 
-         */ 
-        public static function provider($name, $callback)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->provider($name, $callback);
-        }
-        
-        /**
-         * Determines if any guards have already been resolved.
-         *
-         * @return bool 
-         * @static 
-         */ 
-        public static function hasResolvedGuards()
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->hasResolvedGuards();
-        }
-        
-        /**
-         * Create the user provider implementation for the driver.
-         *
-         * @param string|null $provider
-         * @return \Illuminate\Contracts\Auth\UserProvider|null 
-         * @throws \InvalidArgumentException
-         * @static 
-         */ 
-        public static function createUserProvider($provider = null)
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->createUserProvider($provider);
-        }
-        
-        /**
-         * Get the default user provider name.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getDefaultUserProvider()
-        {
-                        /** @var \Illuminate\Auth\AuthManager $instance */
-                        return $instance->getDefaultUserProvider();
-        }
-        
-        /**
-         * Get the currently authenticated user.
-         *
-         * @return \App\User|null 
-         * @static 
-         */ 
-        public static function user()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->user();
-        }
-        
-        /**
-         * Get the ID for the currently authenticated user.
-         *
-         * @return int|null 
-         * @static 
-         */ 
-        public static function id()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->id();
-        }
-        
-        /**
-         * Log a user into the application without sessions or cookies.
-         *
-         * @param array $credentials
-         * @return bool 
-         * @static 
-         */ 
-        public static function once($credentials = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->once($credentials);
-        }
-        
-        /**
-         * Log the given user ID into the application without sessions or cookies.
-         *
-         * @param mixed $id
-         * @return \App\User|false 
-         * @static 
-         */ 
-        public static function onceUsingId($id)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->onceUsingId($id);
-        }
-        
-        /**
-         * Validate a user's credentials.
-         *
-         * @param array $credentials
-         * @return bool 
-         * @static 
-         */ 
-        public static function validate($credentials = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->validate($credentials);
-        }
-        
-        /**
-         * Attempt to authenticate using HTTP Basic Auth.
-         *
-         * @param string $field
-         * @param array $extraConditions
-         * @return \Symfony\Component\HttpFoundation\Response|null 
-         * @static 
-         */ 
-        public static function basic($field = 'email', $extraConditions = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->basic($field, $extraConditions);
-        }
-        
-        /**
-         * Perform a stateless HTTP Basic login attempt.
-         *
-         * @param string $field
-         * @param array $extraConditions
-         * @return \Symfony\Component\HttpFoundation\Response|null 
-         * @static 
-         */ 
-        public static function onceBasic($field = 'email', $extraConditions = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->onceBasic($field, $extraConditions);
-        }
-        
-        /**
-         * Attempt to authenticate a user using the given credentials.
-         *
-         * @param array $credentials
-         * @param bool $remember
-         * @return bool 
-         * @static 
-         */ 
-        public static function attempt($credentials = array(), $remember = false)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->attempt($credentials, $remember);
-        }
-        
-        /**
-         * Log the given user ID into the application.
-         *
-         * @param mixed $id
-         * @param bool $remember
-         * @return \App\User|false 
-         * @static 
-         */ 
-        public static function loginUsingId($id, $remember = false)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->loginUsingId($id, $remember);
-        }
-        
-        /**
-         * Log a user into the application.
-         *
-         * @param \Illuminate\Contracts\Auth\Authenticatable $user
-         * @param bool $remember
-         * @return void 
-         * @static 
-         */ 
-        public static function login($user, $remember = false)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->login($user, $remember);
-        }
-        
-        /**
-         * Log the user out of the application.
-         *
-         * @return void 
-         * @static 
-         */ 
-        public static function logout()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->logout();
-        }
-        
-        /**
-         * Log the user out of the application on their current device only.
-         *
-         * @return void 
-         * @static 
-         */ 
-        public static function logoutCurrentDevice()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->logoutCurrentDevice();
-        }
-        
-        /**
-         * Invalidate other sessions for the current user.
-         * 
-         * The application must be using the AuthenticateSession middleware.
-         *
-         * @param string $password
-         * @param string $attribute
-         * @return bool|null 
-         * @static 
-         */ 
-        public static function logoutOtherDevices($password, $attribute = 'password')
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->logoutOtherDevices($password, $attribute);
-        }
-        
-        /**
-         * Register an authentication attempt event listener.
-         *
-         * @param mixed $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function attempting($callback)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->attempting($callback);
-        }
-        
-        /**
-         * Get the last user we attempted to authenticate.
-         *
-         * @return \App\User 
-         * @static 
-         */ 
-        public static function getLastAttempted()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getLastAttempted();
-        }
-        
-        /**
-         * Get a unique identifier for the auth session value.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getName()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getName();
-        }
-        
-        /**
-         * Get the name of the cookie used to store the "recaller".
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getRecallerName()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getRecallerName();
-        }
-        
-        /**
-         * Determine if the user was authenticated via "remember me" cookie.
-         *
-         * @return bool 
-         * @static 
-         */ 
-        public static function viaRemember()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->viaRemember();
-        }
-        
-        /**
-         * Get the cookie creator instance used by the guard.
-         *
-         * @return \Illuminate\Contracts\Cookie\QueueingFactory 
-         * @throws \RuntimeException
-         * @static 
-         */ 
-        public static function getCookieJar()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getCookieJar();
-        }
-        
-        /**
-         * Set the cookie creator instance used by the guard.
-         *
-         * @param \Illuminate\Contracts\Cookie\QueueingFactory $cookie
-         * @return void 
-         * @static 
-         */ 
-        public static function setCookieJar($cookie)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->setCookieJar($cookie);
-        }
-        
-        /**
-         * Get the event dispatcher instance.
-         *
-         * @return \Illuminate\Contracts\Events\Dispatcher 
-         * @static 
-         */ 
-        public static function getDispatcher()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getDispatcher();
-        }
-        
-        /**
-         * Set the event dispatcher instance.
-         *
-         * @param \Illuminate\Contracts\Events\Dispatcher $events
-         * @return void 
-         * @static 
-         */ 
-        public static function setDispatcher($events)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->setDispatcher($events);
-        }
-        
-        /**
-         * Get the session store used by the guard.
-         *
-         * @return \Illuminate\Contracts\Session\Session 
-         * @static 
-         */ 
-        public static function getSession()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getSession();
-        }
-        
-        /**
-         * Return the currently cached user.
-         *
-         * @return \App\User|null 
-         * @static 
-         */ 
-        public static function getUser()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getUser();
-        }
-        
-        /**
-         * Set the current user.
-         *
-         * @param \Illuminate\Contracts\Auth\Authenticatable $user
-         * @return \Illuminate\Auth\SessionGuard 
-         * @static 
-         */ 
-        public static function setUser($user)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->setUser($user);
-        }
-        
-        /**
-         * Get the current request instance.
-         *
-         * @return \Symfony\Component\HttpFoundation\Request 
-         * @static 
-         */ 
-        public static function getRequest()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getRequest();
-        }
-        
-        /**
-         * Set the current request instance.
-         *
-         * @param \Symfony\Component\HttpFoundation\Request $request
-         * @return \Illuminate\Auth\SessionGuard 
-         * @static 
-         */ 
-        public static function setRequest($request)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->setRequest($request);
-        }
-        
-        /**
-         * Determine if current user is authenticated. If not, throw an exception.
-         *
-         * @return \App\User 
-         * @throws \Illuminate\Auth\AuthenticationException
-         * @static 
-         */ 
-        public static function authenticate()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->authenticate();
-        }
-        
-        /**
-         * Determine if the guard has a user instance.
-         *
-         * @return bool 
-         * @static 
-         */ 
-        public static function hasUser()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->hasUser();
-        }
-        
-        /**
-         * Determine if the current user is authenticated.
-         *
-         * @return bool 
-         * @static 
-         */ 
-        public static function check()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->check();
-        }
-        
-        /**
-         * Determine if the current user is a guest.
-         *
-         * @return bool 
-         * @static 
-         */ 
-        public static function guest()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->guest();
-        }
-        
-        /**
-         * Get the user provider used by the guard.
-         *
-         * @return \Illuminate\Contracts\Auth\UserProvider 
-         * @static 
-         */ 
-        public static function getProvider()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->getProvider();
-        }
-        
-        /**
-         * Set the user provider used by the guard.
-         *
-         * @param \Illuminate\Contracts\Auth\UserProvider $provider
-         * @return void 
-         * @static 
-         */ 
-        public static function setProvider($provider)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->setProvider($provider);
-        }
-        
-        /**
-         * Register a custom macro.
-         *
-         * @param string $name
-         * @param object|callable $macro
-         * @return void 
-         * @static 
-         */ 
-        public static function macro($name, $macro)
-        {
-                        \Illuminate\Auth\SessionGuard::macro($name, $macro);
-        }
-        
-        /**
-         * Mix another object into the class.
-         *
-         * @param object $mixin
-         * @param bool $replace
-         * @return void 
-         * @throws \ReflectionException
-         * @static 
-         */ 
-        public static function mixin($mixin, $replace = true)
-        {
-                        \Illuminate\Auth\SessionGuard::mixin($mixin, $replace);
-        }
-        
-        /**
-         * Checks if macro is registered.
-         *
-         * @param string $name
-         * @return bool 
-         * @static 
-         */ 
-        public static function hasMacro($name)
-        {
-                        return \Illuminate\Auth\SessionGuard::hasMacro($name);
-        }
-         
-    }
-
-    /**
-     * 
-     *
      * @see \Illuminate\View\Compilers\BladeCompiler
      */ 
     class Blade {
@@ -2542,7 +1886,7 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @method static \Illuminate\Broadcasting\Broadcasters\Broadcaster channel(string $channel, callable|string  $callback)
+     * @method static \Illuminate\Broadcasting\Broadcasters\Broadcaster channel(string $channel, callable|string  $callback, array $options = [])
      * @method static mixed auth(\Illuminate\Http\Request $request)
      * @see \Illuminate\Contracts\Broadcasting\Factory
      */ 
@@ -5183,6 +4527,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Determine if a file or directory is missing.
+         *
+         * @param string $path
+         * @return bool 
+         * @static 
+         */ 
+        public static function missing($path)
+        {
+                        /** @var \Illuminate\Filesystem\Filesystem $instance */
+                        return $instance->missing($path);
+        }
+        
+        /**
          * Get the contents of a file.
          *
          * @param string $path
@@ -5712,289 +5069,6 @@ namespace Illuminate\Support\Facades {
         public static function hasMacro($name)
         {
                         return \Illuminate\Filesystem\Filesystem::hasMacro($name);
-        }
-         
-    }
-
-    /**
-     * 
-     *
-     * @see \Illuminate\Contracts\Auth\Access\Gate
-     */ 
-    class Gate {
-        
-        /**
-         * Determine if a given ability has been defined.
-         *
-         * @param string|array $ability
-         * @return bool 
-         * @static 
-         */ 
-        public static function has($ability)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->has($ability);
-        }
-        
-        /**
-         * Define a new ability.
-         *
-         * @param string $ability
-         * @param callable|string $callback
-         * @return \Illuminate\Auth\Access\Gate 
-         * @throws \InvalidArgumentException
-         * @static 
-         */ 
-        public static function define($ability, $callback)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->define($ability, $callback);
-        }
-        
-        /**
-         * Define abilities for a resource.
-         *
-         * @param string $name
-         * @param string $class
-         * @param array|null $abilities
-         * @return \Illuminate\Auth\Access\Gate 
-         * @static 
-         */ 
-        public static function resource($name, $class, $abilities = null)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->resource($name, $class, $abilities);
-        }
-        
-        /**
-         * Define a policy class for a given class type.
-         *
-         * @param string $class
-         * @param string $policy
-         * @return \Illuminate\Auth\Access\Gate 
-         * @static 
-         */ 
-        public static function policy($class, $policy)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->policy($class, $policy);
-        }
-        
-        /**
-         * Register a callback to run before all Gate checks.
-         *
-         * @param callable $callback
-         * @return \Illuminate\Auth\Access\Gate 
-         * @static 
-         */ 
-        public static function before($callback)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->before($callback);
-        }
-        
-        /**
-         * Register a callback to run after all Gate checks.
-         *
-         * @param callable $callback
-         * @return \Illuminate\Auth\Access\Gate 
-         * @static 
-         */ 
-        public static function after($callback)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->after($callback);
-        }
-        
-        /**
-         * Determine if the given ability should be granted for the current user.
-         *
-         * @param string $ability
-         * @param array|mixed $arguments
-         * @return bool 
-         * @static 
-         */ 
-        public static function allows($ability, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->allows($ability, $arguments);
-        }
-        
-        /**
-         * Determine if the given ability should be denied for the current user.
-         *
-         * @param string $ability
-         * @param array|mixed $arguments
-         * @return bool 
-         * @static 
-         */ 
-        public static function denies($ability, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->denies($ability, $arguments);
-        }
-        
-        /**
-         * Determine if all of the given abilities should be granted for the current user.
-         *
-         * @param \Illuminate\Auth\Access\iterable|string $abilities
-         * @param array|mixed $arguments
-         * @return bool 
-         * @static 
-         */ 
-        public static function check($abilities, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->check($abilities, $arguments);
-        }
-        
-        /**
-         * Determine if any one of the given abilities should be granted for the current user.
-         *
-         * @param \Illuminate\Auth\Access\iterable|string $abilities
-         * @param array|mixed $arguments
-         * @return bool 
-         * @static 
-         */ 
-        public static function any($abilities, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->any($abilities, $arguments);
-        }
-        
-        /**
-         * Determine if all of the given abilities should be denied for the current user.
-         *
-         * @param \Illuminate\Auth\Access\iterable|string $abilities
-         * @param array|mixed $arguments
-         * @return bool 
-         * @static 
-         */ 
-        public static function none($abilities, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->none($abilities, $arguments);
-        }
-        
-        /**
-         * Determine if the given ability should be granted for the current user.
-         *
-         * @param string $ability
-         * @param array|mixed $arguments
-         * @return \Illuminate\Auth\Access\Response 
-         * @throws \Illuminate\Auth\Access\AuthorizationException
-         * @static 
-         */ 
-        public static function authorize($ability, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->authorize($ability, $arguments);
-        }
-        
-        /**
-         * Inspect the user for the given ability.
-         *
-         * @param string $ability
-         * @param array|mixed $arguments
-         * @return \Illuminate\Auth\Access\Response 
-         * @static 
-         */ 
-        public static function inspect($ability, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->inspect($ability, $arguments);
-        }
-        
-        /**
-         * Get the raw result from the authorization callback.
-         *
-         * @param string $ability
-         * @param array|mixed $arguments
-         * @return mixed 
-         * @throws \Illuminate\Auth\Access\AuthorizationException
-         * @static 
-         */ 
-        public static function raw($ability, $arguments = array())
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->raw($ability, $arguments);
-        }
-        
-        /**
-         * Get a policy instance for a given class.
-         *
-         * @param object|string $class
-         * @return mixed 
-         * @static 
-         */ 
-        public static function getPolicyFor($class)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->getPolicyFor($class);
-        }
-        
-        /**
-         * Specify a callback to be used to guess policy names.
-         *
-         * @param callable $callback
-         * @return \Illuminate\Auth\Access\Gate 
-         * @static 
-         */ 
-        public static function guessPolicyNamesUsing($callback)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->guessPolicyNamesUsing($callback);
-        }
-        
-        /**
-         * Build a policy class instance of the given type.
-         *
-         * @param object|string $class
-         * @return mixed 
-         * @throws \Illuminate\Contracts\Container\BindingResolutionException
-         * @static 
-         */ 
-        public static function resolvePolicy($class)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->resolvePolicy($class);
-        }
-        
-        /**
-         * Get a gate instance for the given user.
-         *
-         * @param \Illuminate\Contracts\Auth\Authenticatable|mixed $user
-         * @return static 
-         * @static 
-         */ 
-        public static function forUser($user)
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->forUser($user);
-        }
-        
-        /**
-         * Get all of the defined abilities.
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function abilities()
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->abilities();
-        }
-        
-        /**
-         * Get all of the defined policies.
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function policies()
-        {
-                        /** @var \Illuminate\Auth\Access\Gate $instance */
-                        return $instance->policies();
         }
          
     }
@@ -6715,480 +5789,6 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @see \Illuminate\Mail\Mailer
-     * @see \Illuminate\Support\Testing\Fakes\MailFake
-     */ 
-    class Mail {
-        
-        /**
-         * Set the global from address and name.
-         *
-         * @param string $address
-         * @param string|null $name
-         * @return void 
-         * @static 
-         */ 
-        public static function alwaysFrom($address, $name = null)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->alwaysFrom($address, $name);
-        }
-        
-        /**
-         * Set the global reply-to address and name.
-         *
-         * @param string $address
-         * @param string|null $name
-         * @return void 
-         * @static 
-         */ 
-        public static function alwaysReplyTo($address, $name = null)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->alwaysReplyTo($address, $name);
-        }
-        
-        /**
-         * Set the global to address and name.
-         *
-         * @param string $address
-         * @param string|null $name
-         * @return void 
-         * @static 
-         */ 
-        public static function alwaysTo($address, $name = null)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->alwaysTo($address, $name);
-        }
-        
-        /**
-         * Begin the process of mailing a mailable class instance.
-         *
-         * @param mixed $users
-         * @return \Illuminate\Mail\PendingMail 
-         * @static 
-         */ 
-        public static function to($users)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->to($users);
-        }
-        
-        /**
-         * Begin the process of mailing a mailable class instance.
-         *
-         * @param mixed $users
-         * @return \Illuminate\Mail\PendingMail 
-         * @static 
-         */ 
-        public static function cc($users)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->cc($users);
-        }
-        
-        /**
-         * Begin the process of mailing a mailable class instance.
-         *
-         * @param mixed $users
-         * @return \Illuminate\Mail\PendingMail 
-         * @static 
-         */ 
-        public static function bcc($users)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->bcc($users);
-        }
-        
-        /**
-         * Send a new message with only an HTML part.
-         *
-         * @param string $html
-         * @param mixed $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function html($html, $callback)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->html($html, $callback);
-        }
-        
-        /**
-         * Send a new message with only a raw text part.
-         *
-         * @param string $text
-         * @param mixed $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function raw($text, $callback)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->raw($text, $callback);
-        }
-        
-        /**
-         * Send a new message with only a plain part.
-         *
-         * @param string $view
-         * @param array $data
-         * @param mixed $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function plain($view, $data, $callback)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->plain($view, $data, $callback);
-        }
-        
-        /**
-         * Render the given message as a view.
-         *
-         * @param string|array $view
-         * @param array $data
-         * @return string 
-         * @static 
-         */ 
-        public static function render($view, $data = array())
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->render($view, $data);
-        }
-        
-        /**
-         * Send a new message using a view.
-         *
-         * @param \Illuminate\Contracts\Mail\Mailable|string|array $view
-         * @param array $data
-         * @param \Closure|string|null $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function send($view, $data = array(), $callback = null)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->send($view, $data, $callback);
-        }
-        
-        /**
-         * Queue a new e-mail message for sending.
-         *
-         * @param \Illuminate\Contracts\Mail\Mailable $view
-         * @param string|null $queue
-         * @return mixed 
-         * @throws \InvalidArgumentException
-         * @static 
-         */ 
-        public static function queue($view, $queue = null)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->queue($view, $queue);
-        }
-        
-        /**
-         * Queue a new e-mail message for sending on the given queue.
-         *
-         * @param string $queue
-         * @param \Illuminate\Contracts\Mail\Mailable $view
-         * @return mixed 
-         * @static 
-         */ 
-        public static function onQueue($queue, $view)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->onQueue($queue, $view);
-        }
-        
-        /**
-         * Queue a new e-mail message for sending on the given queue.
-         * 
-         * This method didn't match rest of framework's "onQueue" phrasing. Added "onQueue".
-         *
-         * @param string $queue
-         * @param \Illuminate\Contracts\Mail\Mailable $view
-         * @return mixed 
-         * @static 
-         */ 
-        public static function queueOn($queue, $view)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->queueOn($queue, $view);
-        }
-        
-        /**
-         * Queue a new e-mail message for sending after (n) seconds.
-         *
-         * @param \DateTimeInterface|\DateInterval|int $delay
-         * @param \Illuminate\Contracts\Mail\Mailable $view
-         * @param string|null $queue
-         * @return mixed 
-         * @throws \InvalidArgumentException
-         * @static 
-         */ 
-        public static function later($delay, $view, $queue = null)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->later($delay, $view, $queue);
-        }
-        
-        /**
-         * Queue a new e-mail message for sending after (n) seconds on the given queue.
-         *
-         * @param string $queue
-         * @param \DateTimeInterface|\DateInterval|int $delay
-         * @param \Illuminate\Contracts\Mail\Mailable $view
-         * @return mixed 
-         * @static 
-         */ 
-        public static function laterOn($queue, $delay, $view)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->laterOn($queue, $delay, $view);
-        }
-        
-        /**
-         * Get the array of failed recipients.
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function failures()
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->failures();
-        }
-        
-        /**
-         * Get the Swift Mailer instance.
-         *
-         * @return \Swift_Mailer 
-         * @static 
-         */ 
-        public static function getSwiftMailer()
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->getSwiftMailer();
-        }
-        
-        /**
-         * Get the view factory instance.
-         *
-         * @return \Illuminate\Contracts\View\Factory 
-         * @static 
-         */ 
-        public static function getViewFactory()
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->getViewFactory();
-        }
-        
-        /**
-         * Set the Swift Mailer instance.
-         *
-         * @param \Swift_Mailer $swift
-         * @return void 
-         * @static 
-         */ 
-        public static function setSwiftMailer($swift)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        $instance->setSwiftMailer($swift);
-        }
-        
-        /**
-         * Set the queue manager instance.
-         *
-         * @param \Illuminate\Contracts\Queue\Factory $queue
-         * @return \Illuminate\Mail\Mailer 
-         * @static 
-         */ 
-        public static function setQueue($queue)
-        {
-                        /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->setQueue($queue);
-        }
-        
-        /**
-         * Register a custom macro.
-         *
-         * @param string $name
-         * @param object|callable $macro
-         * @return void 
-         * @static 
-         */ 
-        public static function macro($name, $macro)
-        {
-                        \Illuminate\Mail\Mailer::macro($name, $macro);
-        }
-        
-        /**
-         * Mix another object into the class.
-         *
-         * @param object $mixin
-         * @param bool $replace
-         * @return void 
-         * @throws \ReflectionException
-         * @static 
-         */ 
-        public static function mixin($mixin, $replace = true)
-        {
-                        \Illuminate\Mail\Mailer::mixin($mixin, $replace);
-        }
-        
-        /**
-         * Checks if macro is registered.
-         *
-         * @param string $name
-         * @return bool 
-         * @static 
-         */ 
-        public static function hasMacro($name)
-        {
-                        return \Illuminate\Mail\Mailer::hasMacro($name);
-        }
-        
-        /**
-         * Assert if a mailable was sent based on a truth-test callback.
-         *
-         * @param string $mailable
-         * @param callable|int|null $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function assertSent($mailable, $callback = null)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        $instance->assertSent($mailable, $callback);
-        }
-        
-        /**
-         * Determine if a mailable was not sent based on a truth-test callback.
-         *
-         * @param string $mailable
-         * @param callable|null $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function assertNotSent($mailable, $callback = null)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        $instance->assertNotSent($mailable, $callback);
-        }
-        
-        /**
-         * Assert that no mailables were sent.
-         *
-         * @return void 
-         * @static 
-         */ 
-        public static function assertNothingSent()
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        $instance->assertNothingSent();
-        }
-        
-        /**
-         * Assert if a mailable was queued based on a truth-test callback.
-         *
-         * @param string $mailable
-         * @param callable|int|null $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function assertQueued($mailable, $callback = null)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        $instance->assertQueued($mailable, $callback);
-        }
-        
-        /**
-         * Determine if a mailable was not queued based on a truth-test callback.
-         *
-         * @param string $mailable
-         * @param callable|null $callback
-         * @return void 
-         * @static 
-         */ 
-        public static function assertNotQueued($mailable, $callback = null)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        $instance->assertNotQueued($mailable, $callback);
-        }
-        
-        /**
-         * Assert that no mailables were queued.
-         *
-         * @return void 
-         * @static 
-         */ 
-        public static function assertNothingQueued()
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        $instance->assertNothingQueued();
-        }
-        
-        /**
-         * Get all of the mailables matching a truth-test callback.
-         *
-         * @param string $mailable
-         * @param callable|null $callback
-         * @return \Illuminate\Support\Collection 
-         * @static 
-         */ 
-        public static function sent($mailable, $callback = null)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        return $instance->sent($mailable, $callback);
-        }
-        
-        /**
-         * Determine if the given mailable has been sent.
-         *
-         * @param string $mailable
-         * @return bool 
-         * @static 
-         */ 
-        public static function hasSent($mailable)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        return $instance->hasSent($mailable);
-        }
-        
-        /**
-         * Get all of the queued mailables matching a truth-test callback.
-         *
-         * @param string $mailable
-         * @param callable|null $callback
-         * @return \Illuminate\Support\Collection 
-         * @static 
-         */ 
-        public static function queued($mailable, $callback = null)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        return $instance->queued($mailable, $callback);
-        }
-        
-        /**
-         * Determine if the given mailable has been queued.
-         *
-         * @param string $mailable
-         * @return bool 
-         * @static 
-         */ 
-        public static function hasQueued($mailable)
-        {
-                        /** @var \Illuminate\Support\Testing\Fakes\MailFake $instance */
-                        return $instance->hasQueued($mailable);
-        }
-         
-    }
-
-    /**
-     * 
-     *
      * @see \Illuminate\Notifications\ChannelManager
      */ 
     class Notification {
@@ -7465,57 +6065,6 @@ namespace Illuminate\Support\Facades {
         public static function hasMacro($name)
         {
                         return \Illuminate\Support\Testing\Fakes\NotificationFake::hasMacro($name);
-        }
-         
-    }
-
-    /**
-     * 
-     *
-     * @method static string sendResetLink(array $credentials)
-     * @method static mixed reset(array $credentials, \Closure $callback)
-     * @method static void validator(\Closure $callback)
-     * @method static bool validateNewPassword(array $credentials)
-     * @see \Illuminate\Auth\Passwords\PasswordBroker
-     */ 
-    class Password {
-        
-        /**
-         * Attempt to get the broker from the local cache.
-         *
-         * @param string|null $name
-         * @return \Illuminate\Contracts\Auth\PasswordBroker 
-         * @static 
-         */ 
-        public static function broker($name = null)
-        {
-                        /** @var \Illuminate\Auth\Passwords\PasswordBrokerManager $instance */
-                        return $instance->broker($name);
-        }
-        
-        /**
-         * Get the default password broker name.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getDefaultDriver()
-        {
-                        /** @var \Illuminate\Auth\Passwords\PasswordBrokerManager $instance */
-                        return $instance->getDefaultDriver();
-        }
-        
-        /**
-         * Set the default password broker name.
-         *
-         * @param string $name
-         * @return void 
-         * @static 
-         */ 
-        public static function setDefaultDriver($name)
-        {
-                        /** @var \Illuminate\Auth\Passwords\PasswordBrokerManager $instance */
-                        $instance->setDefaultDriver($name);
         }
          
     }
@@ -8241,6 +6790,106 @@ namespace Illuminate\Support\Facades {
         public static function hasMacro($name)
         {
                         return \Illuminate\Routing\Redirector::hasMacro($name);
+        }
+         
+    }
+
+    /**
+     * 
+     *
+     * @see \Illuminate\Redis\RedisManager
+     * @see \Illuminate\Contracts\Redis\Factory
+     */ 
+    class Redis {
+        
+        /**
+         * Get a Redis connection by name.
+         *
+         * @param string|null $name
+         * @return \Illuminate\Redis\Connections\Connection 
+         * @static 
+         */ 
+        public static function connection($name = null)
+        {
+                        /** @var \Illuminate\Redis\RedisManager $instance */
+                        return $instance->connection($name);
+        }
+        
+        /**
+         * Resolve the given connection by name.
+         *
+         * @param string|null $name
+         * @return \Illuminate\Redis\Connections\Connection 
+         * @throws \InvalidArgumentException
+         * @static 
+         */ 
+        public static function resolve($name = null)
+        {
+                        /** @var \Illuminate\Redis\RedisManager $instance */
+                        return $instance->resolve($name);
+        }
+        
+        /**
+         * Return all of the created connections.
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function connections()
+        {
+                        /** @var \Illuminate\Redis\RedisManager $instance */
+                        return $instance->connections();
+        }
+        
+        /**
+         * Enable the firing of Redis command events.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function enableEvents()
+        {
+                        /** @var \Illuminate\Redis\RedisManager $instance */
+                        $instance->enableEvents();
+        }
+        
+        /**
+         * Disable the firing of Redis command events.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function disableEvents()
+        {
+                        /** @var \Illuminate\Redis\RedisManager $instance */
+                        $instance->disableEvents();
+        }
+        
+        /**
+         * Set the default driver.
+         *
+         * @param string $driver
+         * @return void 
+         * @static 
+         */ 
+        public static function setDriver($driver)
+        {
+                        /** @var \Illuminate\Redis\RedisManager $instance */
+                        $instance->setDriver($driver);
+        }
+        
+        /**
+         * Register a custom driver creator Closure.
+         *
+         * @param string $driver
+         * @param \Closure $callback
+         * @return \Illuminate\Redis\RedisManager 
+         * @static 
+         */ 
+        public static function extend($driver, $callback)
+        {
+                        /** @var \Illuminate\Redis\RedisManager $instance */
+                        return $instance->extend($driver, $callback);
         }
          
     }
@@ -9630,7 +8279,6 @@ namespace Illuminate\Support\Facades {
          * Checks whether or not the method is safe.
          *
          * @see https://tools.ietf.org/html/rfc7231#section-4.2.1
-         * @param bool $andCacheable Adds the additional condition that the method should be cacheable. True by default.
          * @return bool 
          * @static 
          */ 
@@ -10131,6 +8779,19 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->anyFilled($keys);
+        }
+        
+        /**
+         * Determine if the request is missing a given input item key.
+         *
+         * @param string|array $key
+         * @return bool 
+         * @static 
+         */ 
+        public static function missing($key)
+        {
+                        /** @var \Illuminate\Http\Request $instance */
+                        return $instance->missing($key);
         }
         
         /**
@@ -11403,6 +10064,18 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Register the typical confirm password routes for an application.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function confirmPassword()
+        {
+                        /** @var \Illuminate\Routing\Router $instance */
+                        $instance->confirmPassword();
+        }
+        
+        /**
          * Register the typical email verification routes for an application.
          *
          * @return void 
@@ -12667,6 +11340,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Determine if a file or directory is missing.
+         *
+         * @param string $path
+         * @return bool 
+         * @static 
+         */ 
+        public static function missing($path)
+        {
+                        /** @var \Illuminate\Filesystem\FilesystemAdapter $instance */
+                        return $instance->missing($path);
+        }
+        
+        /**
          * Get the full path for the file at the given "short" path.
          *
          * @param string $path
@@ -13226,6 +11912,7 @@ namespace Illuminate\Support\Facades {
          * @param \DateTimeInterface|\DateInterval|int|null $expiration
          * @param bool $absolute
          * @return string 
+         * @throws \InvalidArgumentException
          * @static 
          */ 
         public static function signedRoute($name, $parameters = array(), $expiration = null, $absolute = true)
@@ -13262,6 +11949,33 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Routing\UrlGenerator $instance */
                         return $instance->hasValidSignature($request, $absolute);
+        }
+        
+        /**
+         * Determine if the signature from the given request matches the URL.
+         *
+         * @param \Illuminate\Http\Request $request
+         * @param bool $absolute
+         * @return bool 
+         * @static 
+         */ 
+        public static function hasCorrectSignature($request, $absolute = true)
+        {
+                        /** @var \Illuminate\Routing\UrlGenerator $instance */
+                        return $instance->hasCorrectSignature($request, $absolute);
+        }
+        
+        /**
+         * Determine if the expires timestamp from the given request is not from the past.
+         *
+         * @param \Illuminate\Http\Request $request
+         * @return bool 
+         * @static 
+         */ 
+        public static function signatureHasNotExpired($request)
+        {
+                        /** @var \Illuminate\Routing\UrlGenerator $instance */
+                        return $instance->signatureHasNotExpired($request);
         }
         
         /**
@@ -14624,6 +13338,612 @@ namespace Illuminate\Support {
  
 }
 
+namespace Barryvdh\Debugbar { 
+
+    /**
+     * 
+     *
+     * @method static void alert(string $message)
+     * @method static void critical(string $message)
+     * @method static void debug(string $message)
+     * @method static void emergency(string $message)
+     * @method static void error(string $message)
+     * @method static void info(string $message)
+     * @method static void log(string $message)
+     * @method static void notice(string $message)
+     * @method static void warning(string $message)
+     * @see \Barryvdh\Debugbar\LaravelDebugbar
+     */ 
+    class Facade {
+        
+        /**
+         * Enable the Debugbar and boot, if not already booted.
+         *
+         * @static 
+         */ 
+        public static function enable()
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->enable();
+        }
+        
+        /**
+         * Boot the debugbar (add collectors, renderer and listener)
+         *
+         * @static 
+         */ 
+        public static function boot()
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->boot();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function shouldCollect($name, $default = false)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->shouldCollect($name, $default);
+        }
+        
+        /**
+         * Adds a data collector
+         *
+         * @param \Barryvdh\Debugbar\DataCollectorInterface $collector
+         * @throws DebugBarException
+         * @return \Barryvdh\Debugbar\LaravelDebugbar 
+         * @static 
+         */ 
+        public static function addCollector($collector)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->addCollector($collector);
+        }
+        
+        /**
+         * Handle silenced errors
+         *
+         * @param $level
+         * @param $message
+         * @param string $file
+         * @param int $line
+         * @param array $context
+         * @throws \ErrorException
+         * @static 
+         */ 
+        public static function handleError($level, $message, $file = '', $line = 0, $context = array())
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->handleError($level, $message, $file, $line, $context);
+        }
+        
+        /**
+         * Starts a measure
+         *
+         * @param string $name Internal name, used to stop the measure
+         * @param string $label Public name
+         * @static 
+         */ 
+        public static function startMeasure($name, $label = null)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->startMeasure($name, $label);
+        }
+        
+        /**
+         * Stops a measure
+         *
+         * @param string $name
+         * @static 
+         */ 
+        public static function stopMeasure($name)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->stopMeasure($name);
+        }
+        
+        /**
+         * Adds an exception to be profiled in the debug bar
+         *
+         * @param \Exception $e
+         * @deprecated in favor of addThrowable
+         * @static 
+         */ 
+        public static function addException($e)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->addException($e);
+        }
+        
+        /**
+         * Adds an exception to be profiled in the debug bar
+         *
+         * @param \Exception $e
+         * @static 
+         */ 
+        public static function addThrowable($e)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->addThrowable($e);
+        }
+        
+        /**
+         * Returns a JavascriptRenderer for this instance
+         *
+         * @param string $baseUrl
+         * @param string $basePathng
+         * @return \Barryvdh\Debugbar\JavascriptRenderer 
+         * @static 
+         */ 
+        public static function getJavascriptRenderer($baseUrl = null, $basePath = null)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getJavascriptRenderer($baseUrl, $basePath);
+        }
+        
+        /**
+         * Modify the response and inject the debugbar (or data in headers)
+         *
+         * @param \Symfony\Component\HttpFoundation\Request $request
+         * @param \Symfony\Component\HttpFoundation\Response $response
+         * @return \Symfony\Component\HttpFoundation\Response 
+         * @static 
+         */ 
+        public static function modifyResponse($request, $response)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->modifyResponse($request, $response);
+        }
+        
+        /**
+         * Check if the Debugbar is enabled
+         *
+         * @return boolean 
+         * @static 
+         */ 
+        public static function isEnabled()
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->isEnabled();
+        }
+        
+        /**
+         * Collects the data from the collectors
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function collect()
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->collect();
+        }
+        
+        /**
+         * Injects the web debug toolbar into the given Response.
+         *
+         * @param \Symfony\Component\HttpFoundation\Response $response A Response instance
+         * Based on https://github.com/symfony/WebProfilerBundle/blob/master/EventListener/WebDebugToolbarListener.php
+         * @static 
+         */ 
+        public static function injectDebugbar($response)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->injectDebugbar($response);
+        }
+        
+        /**
+         * Disable the Debugbar
+         *
+         * @static 
+         */ 
+        public static function disable()
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->disable();
+        }
+        
+        /**
+         * Adds a measure
+         *
+         * @param string $label
+         * @param float $start
+         * @param float $end
+         * @static 
+         */ 
+        public static function addMeasure($label, $start, $end)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->addMeasure($label, $start, $end);
+        }
+        
+        /**
+         * Utility function to measure the execution of a Closure
+         *
+         * @param string $label
+         * @param \Closure $closure
+         * @static 
+         */ 
+        public static function measure($label, $closure)
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->measure($label, $closure);
+        }
+        
+        /**
+         * Collect data in a CLI request
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function collectConsole()
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->collectConsole();
+        }
+        
+        /**
+         * Adds a message to the MessagesCollector
+         * 
+         * A message can be anything from an object to a string
+         *
+         * @param mixed $message
+         * @param string $label
+         * @static 
+         */ 
+        public static function addMessage($message, $label = 'info')
+        {
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->addMessage($message, $label);
+        }
+        
+        /**
+         * Checks if a data collector has been added
+         *
+         * @param string $name
+         * @return boolean 
+         * @static 
+         */ 
+        public static function hasCollector($name)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->hasCollector($name);
+        }
+        
+        /**
+         * Returns a data collector
+         *
+         * @param string $name
+         * @return \DebugBar\DataCollectorInterface 
+         * @throws DebugBarException
+         * @static 
+         */ 
+        public static function getCollector($name)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getCollector($name);
+        }
+        
+        /**
+         * Returns an array of all data collectors
+         *
+         * @return \DebugBar\array[DataCollectorInterface] 
+         * @static 
+         */ 
+        public static function getCollectors()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getCollectors();
+        }
+        
+        /**
+         * Sets the request id generator
+         *
+         * @param \DebugBar\RequestIdGeneratorInterface $generator
+         * @return \Barryvdh\Debugbar\LaravelDebugbar 
+         * @static 
+         */ 
+        public static function setRequestIdGenerator($generator)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->setRequestIdGenerator($generator);
+        }
+        
+        /**
+         * 
+         *
+         * @return \DebugBar\RequestIdGeneratorInterface 
+         * @static 
+         */ 
+        public static function getRequestIdGenerator()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getRequestIdGenerator();
+        }
+        
+        /**
+         * Returns the id of the current request
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getCurrentRequestId()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getCurrentRequestId();
+        }
+        
+        /**
+         * Sets the storage backend to use to store the collected data
+         *
+         * @param \DebugBar\StorageInterface $storage
+         * @return \Barryvdh\Debugbar\LaravelDebugbar 
+         * @static 
+         */ 
+        public static function setStorage($storage = null)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->setStorage($storage);
+        }
+        
+        /**
+         * 
+         *
+         * @return \DebugBar\StorageInterface 
+         * @static 
+         */ 
+        public static function getStorage()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getStorage();
+        }
+        
+        /**
+         * Checks if the data will be persisted
+         *
+         * @return boolean 
+         * @static 
+         */ 
+        public static function isDataPersisted()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->isDataPersisted();
+        }
+        
+        /**
+         * Sets the HTTP driver
+         *
+         * @param \DebugBar\HttpDriverInterface $driver
+         * @return \Barryvdh\Debugbar\LaravelDebugbar 
+         * @static 
+         */ 
+        public static function setHttpDriver($driver)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->setHttpDriver($driver);
+        }
+        
+        /**
+         * Returns the HTTP driver
+         * 
+         * If no http driver where defined, a PhpHttpDriver is automatically created
+         *
+         * @return \DebugBar\HttpDriverInterface 
+         * @static 
+         */ 
+        public static function getHttpDriver()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getHttpDriver();
+        }
+        
+        /**
+         * Returns collected data
+         * 
+         * Will collect the data if none have been collected yet
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function getData()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getData();
+        }
+        
+        /**
+         * Returns an array of HTTP headers containing the data
+         *
+         * @param string $headerName
+         * @param integer $maxHeaderLength
+         * @return array 
+         * @static 
+         */ 
+        public static function getDataAsHeaders($headerName = 'phpdebugbar', $maxHeaderLength = 4096, $maxTotalHeaderLength = 250000)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getDataAsHeaders($headerName, $maxHeaderLength, $maxTotalHeaderLength);
+        }
+        
+        /**
+         * Sends the data through the HTTP headers
+         *
+         * @param bool $useOpenHandler
+         * @param string $headerName
+         * @param integer $maxHeaderLength
+         * @return \Barryvdh\Debugbar\LaravelDebugbar 
+         * @static 
+         */ 
+        public static function sendDataInHeaders($useOpenHandler = null, $headerName = 'phpdebugbar', $maxHeaderLength = 4096)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->sendDataInHeaders($useOpenHandler, $headerName, $maxHeaderLength);
+        }
+        
+        /**
+         * Stacks the data in the session for later rendering
+         *
+         * @static 
+         */ 
+        public static function stackData()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->stackData();
+        }
+        
+        /**
+         * Checks if there is stacked data in the session
+         *
+         * @return boolean 
+         * @static 
+         */ 
+        public static function hasStackedData()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->hasStackedData();
+        }
+        
+        /**
+         * Returns the data stacked in the session
+         *
+         * @param boolean $delete Whether to delete the data in the session
+         * @return array 
+         * @static 
+         */ 
+        public static function getStackedData($delete = true)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getStackedData($delete);
+        }
+        
+        /**
+         * Sets the key to use in the $_SESSION array
+         *
+         * @param string $ns
+         * @return \Barryvdh\Debugbar\LaravelDebugbar 
+         * @static 
+         */ 
+        public static function setStackDataSessionNamespace($ns)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->setStackDataSessionNamespace($ns);
+        }
+        
+        /**
+         * Returns the key used in the $_SESSION array
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getStackDataSessionNamespace()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->getStackDataSessionNamespace();
+        }
+        
+        /**
+         * Sets whether to only use the session to store stacked data even
+         * if a storage is enabled
+         *
+         * @param boolean $enabled
+         * @return \Barryvdh\Debugbar\LaravelDebugbar 
+         * @static 
+         */ 
+        public static function setStackAlwaysUseSessionStorage($enabled = true)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->setStackAlwaysUseSessionStorage($enabled);
+        }
+        
+        /**
+         * Checks if the session is always used to store stacked data
+         * even if a storage is enabled
+         *
+         * @return boolean 
+         * @static 
+         */ 
+        public static function isStackAlwaysUseSessionStorage()
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->isStackAlwaysUseSessionStorage();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function offsetSet($key, $value)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->offsetSet($key, $value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function offsetGet($key)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->offsetGet($key);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function offsetExists($key)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->offsetExists($key);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function offsetUnset($key)
+        {
+            //Method inherited from \DebugBar\DebugBar            
+                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
+                        return $instance->offsetUnset($key);
+        }
+         
+    }
+ 
+}
+
 namespace Facade\Ignition\Facades { 
 
     /**
@@ -14856,6 +14176,244 @@ namespace Facade\Ignition\Facades {
  
 }
 
+namespace Maatwebsite\Excel\Facades { 
+
+    /**
+     * 
+     *
+     */ 
+    class Excel {
+        
+        /**
+         * 
+         *
+         * @param object $export
+         * @param string|null $fileName
+         * @param string $writerType
+         * @param array $headers
+         * @throws \PhpOffice\PhpSpreadsheet\Exception
+         * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+         * @return \Maatwebsite\Excel\BinaryFileResponse 
+         * @static 
+         */ 
+        public static function download($export, $fileName, $writerType = null, $headers = array())
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->download($export, $fileName, $writerType, $headers);
+        }
+        
+        /**
+         * 
+         *
+         * @param object $export
+         * @param string $filePath
+         * @param string|null $disk
+         * @param string $writerType
+         * @param mixed $diskOptions
+         * @throws \PhpOffice\PhpSpreadsheet\Exception
+         * @throws \PhpOffice\PhpSpreadsheet\Writer\Exception
+         * @return bool 
+         * @static 
+         */ 
+        public static function store($export, $filePath, $diskName = null, $writerType = null, $diskOptions = array())
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->store($export, $filePath, $diskName, $writerType, $diskOptions);
+        }
+        
+        /**
+         * 
+         *
+         * @param object $export
+         * @param string $filePath
+         * @param string|null $disk
+         * @param string $writerType
+         * @param mixed $diskOptions
+         * @return \Maatwebsite\Excel\PendingDispatch 
+         * @static 
+         */ 
+        public static function queue($export, $filePath, $disk = null, $writerType = null, $diskOptions = array())
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->queue($export, $filePath, $disk, $writerType, $diskOptions);
+        }
+        
+        /**
+         * 
+         *
+         * @param object $export
+         * @param string $writerType
+         * @return string 
+         * @static 
+         */ 
+        public static function raw($export, $writerType)
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->raw($export, $writerType);
+        }
+        
+        /**
+         * 
+         *
+         * @param object $import
+         * @param string|\Maatwebsite\Excel\UploadedFile $filePath
+         * @param string|null $disk
+         * @param string|null $readerType
+         * @return \Maatwebsite\Excel\Reader|\Maatwebsite\Excel\PendingDispatch 
+         * @static 
+         */ 
+        public static function import($import, $filePath, $disk = null, $readerType = null)
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->import($import, $filePath, $disk, $readerType);
+        }
+        
+        /**
+         * 
+         *
+         * @param object $import
+         * @param string|\Maatwebsite\Excel\UploadedFile $filePath
+         * @param string|null $disk
+         * @param string|null $readerType
+         * @return array 
+         * @static 
+         */ 
+        public static function toArray($import, $filePath, $disk = null, $readerType = null)
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->toArray($import, $filePath, $disk, $readerType);
+        }
+        
+        /**
+         * 
+         *
+         * @param object $import
+         * @param string|\Maatwebsite\Excel\UploadedFile $filePath
+         * @param string|null $disk
+         * @param string|null $readerType
+         * @return \Maatwebsite\Excel\Collection 
+         * @static 
+         */ 
+        public static function toCollection($import, $filePath, $disk = null, $readerType = null)
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->toCollection($import, $filePath, $disk, $readerType);
+        }
+        
+        /**
+         * 
+         *
+         * @param \Maatwebsite\Excel\ShouldQueue $import
+         * @param string|\Maatwebsite\Excel\UploadedFile $filePath
+         * @param string|null $disk
+         * @param string $readerType
+         * @return \Maatwebsite\Excel\PendingDispatch 
+         * @static 
+         */ 
+        public static function queueImport($import, $filePath, $disk = null, $readerType = null)
+        {
+                        /** @var \Maatwebsite\Excel\Excel $instance */
+                        return $instance->queueImport($import, $filePath, $disk, $readerType);
+        }
+        
+        /**
+         * 
+         *
+         * @param string $concern
+         * @param callable $handler
+         * @param string $event
+         * @static 
+         */ 
+        public static function extend($concern, $handler, $event = 'Maatwebsite\Excel\Events\BeforeWriting')
+        {
+                        return \Maatwebsite\Excel\Excel::extend($concern, $handler, $event);
+        }
+        
+        /**
+         * When asserting downloaded, stored, queued or imported, use regular expression
+         * to look for a matching file path.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function matchByRegex()
+        {
+                        /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
+                        $instance->matchByRegex();
+        }
+        
+        /**
+         * When asserting downloaded, stored, queued or imported, use regular string
+         * comparison for matching file path.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function doNotMatchByRegex()
+        {
+                        /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
+                        $instance->doNotMatchByRegex();
+        }
+        
+        /**
+         * 
+         *
+         * @param string $fileName
+         * @param callable|null $callback
+         * @static 
+         */ 
+        public static function assertDownloaded($fileName, $callback = null)
+        {
+                        /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
+                        return $instance->assertDownloaded($fileName, $callback);
+        }
+        
+        /**
+         * 
+         *
+         * @param string $filePath
+         * @param string|callable|null $disk
+         * @param callable|null $callback
+         * @static 
+         */ 
+        public static function assertStored($filePath, $disk = null, $callback = null)
+        {
+                        /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
+                        return $instance->assertStored($filePath, $disk, $callback);
+        }
+        
+        /**
+         * 
+         *
+         * @param string $filePath
+         * @param string|callable|null $disk
+         * @param callable|null $callback
+         * @static 
+         */ 
+        public static function assertQueued($filePath, $disk = null, $callback = null)
+        {
+                        /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
+                        return $instance->assertQueued($filePath, $disk, $callback);
+        }
+        
+        /**
+         * 
+         *
+         * @param string $filePath
+         * @param string|callable|null $disk
+         * @param callable|null $callback
+         * @static 
+         */ 
+        public static function assertImported($filePath, $disk = null, $callback = null)
+        {
+                        /** @var \Maatwebsite\Excel\Fakes\ExcelFake $instance */
+                        return $instance->assertImported($filePath, $disk, $callback);
+        }
+         
+    }
+ 
+}
+
 
 namespace  { 
 
@@ -14864,8 +14422,6 @@ namespace  {
     class Arr extends \Illuminate\Support\Arr {}
 
     class Artisan extends \Illuminate\Support\Facades\Artisan {}
-
-    class Auth extends \Illuminate\Support\Facades\Auth {}
 
     class Blade extends \Illuminate\Support\Facades\Blade {}
 
@@ -14888,7 +14444,7 @@ namespace  {
              * Create and return an un-saved model instance.
              *
              * @param array $attributes
-             * @return \Illuminate\Database\Eloquent\Model 
+             * @return \Illuminate\Database\Eloquent\Model|static 
              * @static 
              */ 
             public static function make($attributes = array())
@@ -16891,7 +16447,7 @@ namespace  {
             /**
              * Add a "group by" clause to the query.
              *
-             * @param array $groups
+             * @param array|string $groups
              * @return \Illuminate\Database\Query\Builder 
              * @static 
              */ 
@@ -17253,6 +16809,32 @@ namespace  {
             {
                                 /** @var \Illuminate\Database\Query\Builder $instance */
                                 return $instance->doesntExist();
+            }
+         
+            /**
+             * Execute the given callback if no rows exist for the current query.
+             *
+             * @param \Closure $callback
+             * @return mixed 
+             * @static 
+             */ 
+            public static function existsOr($callback)
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->existsOr($callback);
+            }
+         
+            /**
+             * Execute the given callback if rows exist for the current query.
+             *
+             * @param \Closure $callback
+             * @return mixed 
+             * @static 
+             */ 
+            public static function doesntExistOr($callback)
+            {
+                                /** @var \Illuminate\Database\Query\Builder $instance */
+                                return $instance->doesntExistOr($callback);
             }
          
             /**
@@ -17654,23 +17236,19 @@ namespace  {
 
     class File extends \Illuminate\Support\Facades\File {}
 
-    class Gate extends \Illuminate\Support\Facades\Gate {}
-
     class Hash extends \Illuminate\Support\Facades\Hash {}
 
     class Lang extends \Illuminate\Support\Facades\Lang {}
 
     class Log extends \Illuminate\Support\Facades\Log {}
 
-    class Mail extends \Illuminate\Support\Facades\Mail {}
-
     class Notification extends \Illuminate\Support\Facades\Notification {}
-
-    class Password extends \Illuminate\Support\Facades\Password {}
 
     class Queue extends \Illuminate\Support\Facades\Queue {}
 
     class Redirect extends \Illuminate\Support\Facades\Redirect {}
+
+    class Redis extends \Illuminate\Support\Facades\Redis {}
 
     class Request extends \Illuminate\Support\Facades\Request {}
 
@@ -17692,7 +17270,11 @@ namespace  {
 
     class View extends \Illuminate\Support\Facades\View {}
 
+    class Debugbar extends \Barryvdh\Debugbar\Facade {}
+
     class Flare extends \Facade\Ignition\Facades\Flare {}
+
+    class Excel extends \Maatwebsite\Excel\Facades\Excel {}
  
 }
 
