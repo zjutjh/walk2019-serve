@@ -1,0 +1,91 @@
+version: '2'
+
+networks:
+  walk-laravel:
+
+services:
+  walk-site:
+    image: nginx:stable-alpine
+    container_name: walk-nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - walk-php
+      - walk-mysql
+      - walk-redis
+    networks:
+      - walk-laravel
+    environment:
+      DB_HOST: walk-mysql
+
+  walk-mysql:
+    image: mysql:5.7.29
+    container_name: walk-mysql
+    restart: unless-stopped
+    tty: true
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: walk
+      MYSQL_USER: walk
+      MYSQL_PASSWORD: walk
+      MYSQL_ROOT_PASSWORD: walk
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    volumes:
+      - ./mysql:/var/lib/mysql
+    networks:
+      - walk-laravel
+
+  walk-php:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: php
+    volumes:
+      - ./src:/var/www/html
+    expose:
+      - "9000"
+    networks:
+      - walk-laravel
+
+  walk-redis:
+    image: redis
+    networks:
+      - walk-laravel
+
+  composer:
+    image: composer:latest
+    container_name: composer
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    depends_on:
+      - walk-php
+    networks:
+      - walk-laravel
+
+  npm:
+    image: node:latest
+    container_name: npm
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['npm']
+
+  artisan:
+    build:
+      context: .
+      dockerfile: php.dockerfile
+    container_name: artisan
+    volumes:
+      - ./src:/var/www/html
+    depends_on:
+      - walk-mysql
+    working_dir: /var/www/html
+    entrypoint: ['php', '/var/www/html/artisan']
+    networks:
+      - walk-laravel
