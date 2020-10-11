@@ -47,8 +47,8 @@ class ApplyController extends Controller
      */
     public function doApply(Request $request)
     {
-        //todo Fix that
-        $group = Group::current();
+        $groupId = $request->get('group_id');
+        $group = Group::where('id', $groupId)->first();
         if (!$group)
             return StandardFailJsonResponse('该队伍已经解散');
         if ($group->members >= $group->capacity)
