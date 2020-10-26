@@ -34,7 +34,10 @@ class Group extends Model
      */
     public static function current()
     {
-       return User::current()->group();
+        $user = User::current();
+        if (!!!$user)
+            return null;
+        return User::current()->group();
     }
 
     /**
@@ -56,7 +59,7 @@ class Group extends Model
     }
 
     /**
-     *  获取所有组员
+     *  获取队长姓名
      * @return HasMany
      */
     public function getCaptainNameAttribute()
@@ -95,13 +98,13 @@ class Group extends Model
 
         foreach ($applies as $apply) {
             $user = $apply->user();
-            $user->notify(new Wechat(WxTemplate::Delete));
+            $user->notify(new Wechat(WechatTemplate::Delete));
             $apply->delete();
         }
 
 
         foreach ($members as $member) {
-            $member->notify(new Wechat(WxTemplate::Delete));
+            $member->notify(new Wechat(WechatTemplate::Delete));
             $member->leaveGroup();
         }
         return parent::delete();

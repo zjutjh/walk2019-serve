@@ -11,8 +11,8 @@
 |
 */
 
-Route::get('/oauth', 'WXLoginController@oauth');
-Route::any('/wx/login', 'WXLoginController@wxLogin');
+Route::get('/oauth', 'WechatLoginController@oauth');
+Route::any('/wx/login', 'WechatLoginController@wechatLogin');
 
 Route::any('/index/info', 'IndexController@indexInfo');
 
@@ -24,15 +24,15 @@ Route::group(['middleware' => ['check.admin']], function () {
     Route::any('/prize/get_data','PrizeController@getData');
     Route::any('/prize/select', 'PrizeController@select');
     Route::any('/prize/verify', 'PrizeController@verify');
-    Route::any('/test', 'TestController@sendTmp');
-    Route::any('/test2', 'TestController@GenYXGroupId');
-    Route::any('/test3', 'TestController@Download');
-    Route::any('/test4', 'TestController@SendResult');
-    Route::any('/test5','TestController@EncryptIid');
+    Route::any('/test', 'AdminController@sendTmp');
+    Route::any('/test2', 'AdminController@genWalkGroupId');
+    Route::any('/test3', 'AdminController@Download');
+    Route::any('/test4', 'AdminController@SendResult');
+    Route::any('/test5','AdminController@EncryptIid');
 });
 
 Route::group(['middleware' => ['check.wechat']], function () {
-    Route::post('/user/info', 'UserController@getMyInfo');
+    Route::post('/user/info', 'UserController@getUserInfo');
     Route::post('/route/list', 'RouteController@getRouteList');
     Route::post('/group/remain', 'GroupController@getRemainInfo');
     Route::post('/group/info', 'GroupController@getGroupInfo');

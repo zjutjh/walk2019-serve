@@ -12,7 +12,7 @@ use Illuminate\Http\Request;
 class RouteController extends Controller
 {
     /**
-     * 查询申请者列表
+     * 查询路线列表
      * @param Request $request
      * @return JsonResponse
      */

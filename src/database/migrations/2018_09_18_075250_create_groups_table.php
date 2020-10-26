@@ -24,8 +24,12 @@ class CreateGroupsTable extends Migration
             //applies
             $table->integer('prize_id')->nullable()->comment('获得的奖');
             $table->boolean('prize_get')->default(false)->comment('是否已领奖');
+
             $table->boolean('is_submit')->default(false)->comment('是否提交队伍');
             $table->boolean('is_super')->default(false)->comment('是否是超级队伍');
+
+            $table->boolean('allow_matching')->default(false)->comment('是否允许匹配');
+
             $table->timestamps();
         });
     }

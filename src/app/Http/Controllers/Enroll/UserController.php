@@ -49,7 +49,7 @@ class UserController extends Controller
         $user->fill($all);
         $user->save();
 
-        return StandardJsonResponse(1, '注册成功');
+        return StandardSuccessJsonResponse('注册成功');
     }
 
 

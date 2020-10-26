@@ -7,7 +7,7 @@ use App\Notifications\Wechat;
 use App\User;
 use App\Apply;
 use App\Group;
-use App\WxTemplate;
+use App\WechatTemplate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -41,6 +41,39 @@ class ApplyController extends Controller
     }
 
     /**
+     * 匹配入队
+     * @param Request $request
+     * @return JsonResponse
+     */
+    public function doMaching(Request $request)
+    {
+        $user = User::current();
+        if ($user->group_id !== null)
+            return StandardFailJsonResponse('你已经拥有队伍，无法匹配');
+
+        $groups = Group::where([['allow_matching', true], ['is_submit', false]])->inRandomOrder()->get();
+        $selectedGroup = null;
+        foreach ($groups as $group)
+            if ($group->members < $group->capacity) {
+                $selectedGroup = $group;
+                break;
+            }
+
+        if (!!!$selectedGroup)
+            return StandardFailJsonResponse('匹配失败');
+
+
+        DB::transaction(function () use ($user, $selectedGroup) {
+            $user->state = UserState::appling;
+            $user->save();
+            Apply::create(['apply_team_id' => $selectedGroup->id, 'apply_id' => $user->id]);
+        });
+
+        User::where('id', $selectedGroup->captain_id)->first()->notify(new Wechat(WechatTemplate::Apply));
+        return StandardSuccessJsonResponse();
+    }
+
+    /**
      * 申请入队
      * @param Request $request
      * @return JsonResponse
@@ -69,7 +102,7 @@ class ApplyController extends Controller
             Apply::create(['apply_team_id' => $group->id, 'apply_id' => $user->id]);
         });
 
-        User::where('id', $group->captain_id)->first()->notify(new Wechat(WxTemplate::Apply));
+        User::where('id', $group->captain_id)->first()->notify(new Wechat(WechatTemplate::Apply));
         return StandardSuccessJsonResponse();
     }
 
@@ -119,7 +152,7 @@ class ApplyController extends Controller
             $applyUser->state = UserState::member;
             $applyUser->save();
             $apply->delete();
-            $applyUser->notify(new Wechat(WxTemplate::Agree));
+            $applyUser->notify(new Wechat(WechatTemplate::Agree));
         });
 
         return StandardSuccessJsonResponse();
@@ -154,7 +187,7 @@ class ApplyController extends Controller
             $apply->delete();
             $applyUser->state = UserState::no_entered;
             $applyUser->save();
-            $applyUser->notify(new Wechat(WxTemplate::Refuse));
+            $applyUser->notify(new Wechat(WechatTemplate::Refuse));
         });
         return StandardSuccessJsonResponse();
 

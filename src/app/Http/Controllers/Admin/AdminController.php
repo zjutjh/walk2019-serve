@@ -3,11 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Exports\GroupExport;
+use App\Exports\UsersExport;
 use App\Group;
 use App\Notifications\Wechat;
 use App\User;
 use App\WalkRoute;
-use App\WxTemplate;
+use App\WechatTemplate;
 use DateInterval;
 use DateTime;
 use Exception;
@@ -17,42 +18,76 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AdminController extends Controller
 {
+    /**
+     * 管理员登录
+     * @param Request $request
+     * @return string
+     */
+    public function login(Request $request)
+    {
+        if(env('AdminPass')!==$request->get('pass'))
+            return StandardFailJsonResponse("Admin pass wrong");
+
+        session(['is_admin' => true]);
+
+        return  StandardSuccessJsonResponse();
+    }
+
+    /**
+     * 管理员登出
+     * @param Request $request
+     * @return string
+     */
+    public function logout(Request $request)
+    {
+        $request->session()->forget('is_admin');
+        return  StandardSuccessJsonResponse();
+    }
+    /**
+     * 发送消息通知
+     * @param Request $request
+     * @return string
+     */
+    public function getTotalGroupStaticInfo(Request $request)
+    {
+
+    }
 
     /**
      * 发送消息通知
      * @param Request $request
      * @return string
      */
-    public function sendTmp(Request $request)
+    public function sendTestTmp(Request $request)
     {
         $ids = $request->get('ids');
         $ids = explode("\n", $ids);
         $users = User::find($ids);
         foreach ($users as $user) {
-            $d = WxTemplate::Test;
+            $d = WechatTemplate::Test;
             $d['keyword2'] = '你的队伍的出发时间是' . $user->created_at;
             $user->notify(new Wechat($d));
         }
         return '发送成功';
     }
 
-    public function GenYXGroupId(Request $request)
+    public function genWalkGroupId(Request $request)
     {
 
         $routes = WalkRoute::orderBy('id', 'asc')->get();
         foreach ($routes as $route) {
-            $groups = Group::where('is_submit', 1)->where('route_id', $route->id)->orderBy('logo', 'asc')->get();
+            $groups = Group::where('is_submit', 1)->where('route_id', $route->id)->inRandomOrder()->get();
             $i = 1;
             foreach ($groups as $group) {
                 $group->No = $route->type . sprintf("%03d", $i);
-                $i = $i + 1;
+                $i++;
                 $group->save();
             }
         }
 
     }
 
-    public function GenYXGroupTime(Request $request)
+    public function genWalkGroupTime(Request $request)
     {
         $groups = Group::where('is_submit', 1)->get();
         foreach ($groups as $group) {
@@ -62,31 +97,31 @@ class AdminController extends Controller
 
     }
 
-    public function SendResult(Request $request)
+    public function sendResult(Request $request)
     {
         $groups = Group::all();
 
         foreach ($groups as $group) {
-            Log::info($group->id);
+
             if ($group->is_submit) {
                 $mem = $group->members()->get();
                 foreach ($mem as $m) {
                     try {
-                        $d = WxTemplate::Success;
+                        $d = WechatTemplate::Success;
                         $d['keyword1'] = '你的队伍编号是' . $group->No;
                         $d['keyword2'] = '你的队伍的出发时间是' . $group->start_time;
                         $m->notify(new Wechat($d));
                     } catch (Exception $exception) {
-
+                        Log::info($group->id);
                     }
                 }
             } else {
                 $mem = $group->members()->get();
                 foreach ($mem as $m) {
                     try {
-                        $m->notify(new Wechat(WxTemplate::Failed));
+                        $m->notify(new Wechat(WechatTemplate::Failed));
                     } catch (Exception $exception) {
-
+                        Log::info($mem);
                     }
 
                 }
@@ -133,8 +168,12 @@ class AdminController extends Controller
 
     }
 
-    public function Download(Request $request)
+    public function DownloadGroupList(Request $request)
     {
         return Excel::download(new GroupExport(), '队伍名单.xlsx');
+    }
+    public function DownloadUserList(Request $request)
+    {
+        return Excel::download(new UsersExport(), '用户名单.xlsx');
     }
 }

@@ -8,7 +8,7 @@ services:
     image: nginx:stable-alpine
     container_name: walk-nginx
     ports:
-      - "8080:80"
+      - "80:80"
     volumes:
       - ./src:/var/www/html
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
@@ -22,12 +22,10 @@ services:
       DB_HOST: walk-mysql
 
   walk-mysql:
-    image: mysql:5.7.29
+    image: mysql:latest
     container_name: walk-mysql
     restart: unless-stopped
     tty: true
-    ports:
-      - "3306:3306"
     environment:
       MYSQL_DATABASE: walk
       MYSQL_USER: walk
@@ -36,7 +34,9 @@ services:
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql
     volumes:
-      - ./mysql:/var/lib/mysql
+      - ./mysql:/var/lib/mysql8
+    expose:
+      - "3306"
     networks:
       - walk-laravel
 
@@ -51,6 +51,7 @@ services:
       - "9000"
     networks:
       - walk-laravel
+
 
   walk-redis:
     image: redis
@@ -67,14 +68,6 @@ services:
       - walk-php
     networks:
       - walk-laravel
-
-  npm:
-    image: node:latest
-    container_name: npm
-    volumes:
-      - ./src:/var/www/html
-    working_dir: /var/www/html
-    entrypoint: ['npm']
 
   artisan:
     build:

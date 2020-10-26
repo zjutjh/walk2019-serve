@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Role;
 use App\Helpers\UserState;
 use App\Notifications\Wechat;
 use App\User;
 use App\Group;
 use App\WalkRoute;
-use App\WxTemplate;
+use App\WechatTemplate;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -26,6 +27,13 @@ class GroupController extends Controller
      */
     public function getGroupList(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'page_size' => 'integer'
+        ]);
+
+        if ($validator->fails())
+            return StandardFailJsonResponse('表单验证失败,请检查一下');//todo
+
         $pageSize = $request->get('page_size', 15);
         $groups = Group::orderBy('id', 'desc')->paginate($pageSize);
         return StandardSuccessJsonResponse($groups);
@@ -101,9 +109,8 @@ class GroupController extends Controller
             return StandardFailJsonResponse('你已经拥有队伍');
 
         $all['captain_id'] = $user->id;
-        $all['is_super'] = $user->identity == '校友' || $user->identity == '教职工';
 
-        DB::transaction(function () use ($all,$user) {
+        DB::transaction(function () use ($all, $user) {
             $group = Group::create($all);
             $user->group_id = $group->id;
             $user->state = UserState::captain;
@@ -210,7 +217,7 @@ class GroupController extends Controller
         $group = $user->group();
 
         if ($user->id !== $group->captain_id)
-            return StandardFailJsonResponse('你没有权限提交队伍');
+            return StandardFailJsonResponse('你不是队长，不能提交队伍');
 
         //校验: 人数达到需求
         $leastMembersCount = config("api.system.minGroupPeople");
@@ -218,28 +225,26 @@ class GroupController extends Controller
         if ($group->members < $leastMembersCount) //判断人数是否达到要求
             return StandardFailJsonResponse('只有到达' . $leastMembersCount . '人才可以提交哦');
 
-        // todo 加锁
-        //校验: 当前报名的线路是否还有余量
-        DB::transaction(function () use ($group) {
+        $route = WalkRoute::where('id', $group->route_id)->first();
+        $superUserCount = User::where('group_id', $group->id)->where('identity', Role::teacher)->count();
+        $superUserCount += User::where('group_id', $group->id)->where('identity', Role::alumni)->count();
+        $superUserCount += User::where('group_id', $group->id)->where('identity', Role::admin)->count();
 
-            $route = WalkRoute::where('id', $group->route_id)->first();
-            $submit = Group::where('is_submit', true)->where('route_id', $group->route_id)->where('is_super', false)->count();
+        if ($superUserCount >= 1)
+            $group->is_super = true;
+        else
+            $group->is_super = false;
 
-            $superCount = User::where('group_id', $group->id)->where('identity', '校友')->count();
-            $superCount = $superCount + User::where('group_id', $group->id)->where('identity', '教职工')->count();
-
-            if ($superCount >= 1)
-                $group->is_super = true;
-            else
-                $group->is_super = false;
-
-            if ($route->capacity <= $submit && !$group->is_super)
-                return StandardFailJsonResponse('今日人数已经满了,请明天再来');
+        DB::transaction(function () use ($group, $route) {
+            $submitCount = Group::where('is_submit', true)->where('route_id', $group->route_id)->where('is_super', false)->count();
+            if ($route->capacity <= $submitCount && !$group->is_super)
+                return StandardFailJsonResponse('今日人数已经满了');
 
             $group->is_submit = true;
             $group->save();
-            return StandardSuccessJsonResponse($superCount);
         });
+
+        return StandardSuccessJsonResponse($superUserCount);
 
     }
 
@@ -281,21 +286,20 @@ class GroupController extends Controller
 
         $user = User::current();
         $delete_id = $request->get('user_id');
-
-        $deleteUser = User::where('id', $delete_id)->first();
-
         $group = $user->group();
 
         if ($group->is_submit)
             return StandardFailJsonResponse('已提交队伍,不能踢人');
-        else if ($group->captain_id === $delete_id)
+        if ($group->captain_id === $delete_id)
             return StandardFailJsonResponse('你是队长，不能踢自己');
-        else if ($deleteUser === null)
+
+        $deleteUser = User::where('id', $delete_id)->first();
+        if ($deleteUser === null)
             return StandardFailJsonResponse('找不到该用户');
-        else if ($group->id !== $deleteUser->group_id)
+        if ($group->id !== $deleteUser->group_id)
             return StandardFailJsonResponse('找不到该用户');
 
-        $deleteUser->notify(new Wechat(WxTemplate::Knit));
+        $deleteUser->notify(new Wechat(WechatTemplate::Knit));
         $deleteUser->leaveGroup();
 
         return StandardSuccessJsonResponse();

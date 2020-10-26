@@ -11,6 +11,7 @@ return [
         'center' => 'http://user.zjut.com/api.php',
         'template' => 'https://server.wejh.imcr.me/api/notification/walk',
         'oauth' => 'https://craim.net/oauth/index.php?url=',
+        'accessToken'=>'https://server.wejh.imcr.me/api/wechat/accessToken?passport=2002jhwl',
         'serverUrl'=> env('APP_URL')
     ],
     'system' => [
@@ -18,6 +19,7 @@ return [
         'EndTime' => env('EndTime'),
         'IsEnd' => false,
         'minGroupPeople' => env("minGroupPeople"),
+        'maxGroupPeople' => env("maxGroupPeople"),
     ],
     'wx' => [
         'WECHAT_REDIRECT' => env('WECHAT_REDIRECT'),

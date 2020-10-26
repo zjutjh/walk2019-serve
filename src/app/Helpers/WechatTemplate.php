@@ -4,7 +4,7 @@
 namespace App;
 
 
-class  WxTemplate
+class  WechatTemplate
 {
     const  Test = [
         'first' => '你已经创建了一个队伍',

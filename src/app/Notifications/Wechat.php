@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\WxTemplate;
+use App\WechatTemplate;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -13,7 +13,7 @@ class Wechat extends Notification implements ShouldQueue
     use Queueable;
     private $data;
 
-    public function __construct($data = WxTemplate::Test)
+    public function __construct($data = WechatTemplate::Test)
     {
         $this->data = $data;
     }

@@ -7,7 +7,7 @@ use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-class WXLoginController extends Controller
+class WechatLoginController extends Controller
 {
     /**
      * 微信回调
@@ -28,16 +28,16 @@ class WXLoginController extends Controller
      * @return JsonResponse
      * @throws GuzzleException
      */
-    public function wxLogin(Request $request)
+    public function wechatLogin(Request $request)
     {
         $code = $request->get('code');
-        $openid = $this->getWxOpenid($code);
+        $openid = $this->getWechatOpenid($code);
 
         if (!isset($openid))
-            return StandardJsonResponse(0, '请在微信中打开');
+            return StandardFailJsonResponse('请在微信中打开');
 
         if (!$openid)
-            return StandardJsonResponse(0, '请在微信中打开');
+            return StandardFailJsonResponse('请在微信中打开');
         if (!CheckSubscription($openid))
             return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
 
@@ -50,7 +50,7 @@ class WXLoginController extends Controller
      * @return mixed
      * @throws GuzzleException
      */
-    public function getWxOpenid($code)
+    public function getWechatOpenid($code)
     {
         $response = (new Client())->request('GET',
             'https://api.weixin.qq.com/sns/oauth2/access_token?'
@@ -61,8 +61,7 @@ class WXLoginController extends Controller
 
         $data = json_decode($response->getBody(), true);
 
-        if (isset($data['openid']))
-            return $data['openid'];
+        if (isset($data['openid']))return $data['openid'];
 
         return null;
     }

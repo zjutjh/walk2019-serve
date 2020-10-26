@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Notifications\Wechat;
 use App\User;
 use App\WalkRoute;
-use App\WxTemplate;
+use App\WechatTemplate;
 use Illuminate\Http\Request;
 
 class ResultController extends Controller
@@ -22,11 +22,8 @@ class ResultController extends Controller
         if ($user->group_id === null)
             return StandardFailJsonResponse('你还没有加入');
 
-        $group = $user->group()->first();
-        $group['route'] = WalkRoute::find($group['route_id'])->name;
-        unset($group['route_id']);
-
-        return StandardJsonResponse(1, 'Success', $group);
+        $group = $user->group();
+        return StandardSuccessJsonResponse($group);
 
     }
 }
