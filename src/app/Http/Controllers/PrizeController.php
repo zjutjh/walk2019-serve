@@ -20,7 +20,7 @@ class PrizeController extends Controller
 
     public function getData(Request $request)
     {
-        return StandardJsonResponse(1, "获取成功", PrizePool::getData());
+        return StandardSuccessJsonResponse( PrizePool::getData());
     }
 
     public function verify(Request $request)

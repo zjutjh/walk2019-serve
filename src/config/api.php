@@ -12,11 +12,11 @@ return [
         'template' => 'https://server.wejh.imcr.me/api/notification/walk',
         'oauth' => 'https://craim.net/oauth/index.php?url=',
         'accessToken'=>'https://server.wejh.imcr.me/api/wechat/accessToken?passport=2002jhwl',
-        'serverUrl'=> env('APP_URL')
     ],
     'system' => [
         'BeginTime' => env('BeginTime'),
         'EndTime' => env('EndTime'),
+        'ServerUrl'=> env('APP_URL'),
         'IsEnd' => false,
         'minGroupPeople' => env("minGroupPeople"),
         'maxGroupPeople' => env("maxGroupPeople"),

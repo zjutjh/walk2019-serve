@@ -15,6 +15,7 @@ class User extends Model
 {
 
     use Notifiable;
+
     /**
      * The attributes that should be hidden for arrays.
      * @var array
@@ -25,7 +26,7 @@ class User extends Model
 
 
     protected $fillable = [
-        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid', 'logo', 'identity', 'height','pe_class'
+        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid', 'logo', 'identity', 'height', 'pe_class'
     ];
 
     protected $dates = [
@@ -89,7 +90,8 @@ class User extends Model
     {
         $this->attributes['sex'] = iidGetSex($value);
         $this->attributes['birthday'] = iidGetBirthday($value);
-        $this->attributes['id_card'] = encrypt_iid($value);
+        //$this->attributes['id_card'] = encrypt_iid($value);
+        $this->attributes['id_card'] = $value;
     }
 
     /**

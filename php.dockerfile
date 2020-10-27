@@ -9,6 +9,4 @@ RUN docker-php-ext-configure opcache --enable-opcache && docker-php-ext-install 
 
 RUN docker-php-ext-install pdo pdo_mysql bcmath
 
-RUN php artisan migrate
-
 

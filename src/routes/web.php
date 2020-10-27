@@ -20,21 +20,23 @@ Route::get('/prize','PrizeController@index');
 Route::post('/prize','PrizeController@indexPost');
 
 Route::group(['middleware' => ['check.admin']], function () {
-    Route::any('user/verify','UserController@verify');
+    Route::any('/user/verify','UserController@verify');
     Route::any('/prize/get_data','PrizeController@getData');
     Route::any('/prize/select', 'PrizeController@select');
     Route::any('/prize/verify', 'PrizeController@verify');
-    Route::any('/test', 'AdminController@sendTmp');
-    Route::any('/test2', 'AdminController@genWalkGroupId');
-    Route::any('/test3', 'AdminController@Download');
-    Route::any('/test4', 'AdminController@SendResult');
-    Route::any('/test5','AdminController@EncryptIid');
+
+    Route::any('/admin/group/download', 'AdminController@DownloadGroupList');
+    Route::any('/admin/user/download', 'AdminController@DownloadUserList');
+    Route::any('/admin/group/start', 'AdminController@GetStartTime');
+    Route::any('/admin/group/send', 'AdminController@sendResult');
+    Route::any('/admin/group/genTime', 'AdminController@genWalkGroupTime');
+    Route::any('/admin/group/genID','AdminController@genWalkGroupId');
+    Route::any('/admin/user/send','AdminController@sendTestTmp');
 });
 
 Route::group(['middleware' => ['check.wechat']], function () {
     Route::post('/user/info', 'UserController@getUserInfo');
     Route::post('/route/list', 'RouteController@getRouteList');
-    Route::post('/group/remain', 'GroupController@getRemainInfo');
     Route::post('/group/info', 'GroupController@getGroupInfo');
     Route::post('/group/members/list', 'GroupController@getGroupMembers');
 
@@ -51,6 +53,7 @@ Route::group(['middleware' => ['check.wechat']], function () {
         Route::post('/group/unsubmit', 'GroupController@unSubmitGroup');
         Route::post('/group/leave', 'GroupController@leaveGroup');
         Route::post('/apply/list', 'ApplyController@getApplyList');
+        Route::post('/apply/matching', 'ApplyController@doMatching');
         Route::post('/apply/agree', 'ApplyController@agreeMember');
         Route::post('/apply/refuse', 'ApplyController@refuseMember');
         Route::post('/apply/do', 'ApplyController@doApply');

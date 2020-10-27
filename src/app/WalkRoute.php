@@ -18,9 +18,18 @@ class WalkRoute extends Model
      * 可填充字段
      * @return int
      */
-    protected $fillable = ['name',  'capacity', 'campus', 'type'];
+    protected $fillable = ['name', 'capacity', 'campus', 'type'];
+
+    /**
+     * 追加字段
+     * @var array
+     */
+    protected $appends = ['remain'];
 
     public $timestamps = false;
 
-
+    public function getRemainAttribute()
+    {
+        return $this->capacity - Group::where('is_submit', true)->where('route_id', $this->id)->get()->count();
+    }
 }
