@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Enroll;
 
-use App\Helpers\VerifyCode;
+use App\Http\Controllers\Controller;
 use App\User;
 use App\Group;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +20,7 @@ class UserController extends Controller
         'qq' => 'digits_between:4,12',
         'identity' => 'required',
         'height' => 'integer|between:50,300',
-        'sid' => 'required_if:identity,学生|digits_between:10,14',
+        'sid' => 'exclude_if:identity,学生|required|digits_between:10,14',
         'school' => 'required_if:identity,学生'
     ];
 
@@ -83,7 +83,7 @@ class UserController extends Controller
         $user = User::current();
         $user->fill($all);
         $user->save();
-        return StandardSuccessJsonResponse();
+        return StandardSuccessJsonResponse("修改成功");
     }
 
 

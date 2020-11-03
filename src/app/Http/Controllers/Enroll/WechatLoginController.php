@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Enroll;
 
+use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
@@ -31,13 +32,13 @@ class WechatLoginController extends Controller
     public function wechatLogin(Request $request)
     {
         $code = $request->get('code');
+        if (!isset($code))
+            return StandardFailJsonResponse('请在微信中打开');
+
         $openid = $this->getWechatOpenid($code);
-
-        if (!isset($openid))
-            return StandardFailJsonResponse('请在微信中打开');
-
         if (!$openid)
-            return StandardFailJsonResponse('请在微信中打开');
+            return StandardFailJsonResponse('微信登录过期');
+
         if (!CheckSubscription($openid))
             return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
 

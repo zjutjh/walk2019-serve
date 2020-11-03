@@ -2,10 +2,7 @@
 
 namespace App\Exceptions;
 
-use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 
 class Handler extends ExceptionHandler
 {
@@ -29,26 +26,12 @@ class Handler extends ExceptionHandler
     ];
 
     /**
-     * Report or log an exception.
+     * Register the exception handling callbacks for the application.
      *
-     * @param Exception $exception
      * @return void
-     * @throws Exception
      */
-    public function report(Exception $exception)
+    public function register()
     {
-        parent::report($exception);
-    }
-
-    /**
-     * Render an exception into an HTTP response.
-     *
-     * @param  Request  $request
-     * @param Exception $exception
-     * @return Response
-     */
-    public function render($request, Exception $exception)
-    {
-        return parent::render($request, $exception);
+        //
     }
 }

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Enroll;
 
+use App\Http\Controllers\Controller;
 use App\User;
 use App\Apply;
 use App\Group;

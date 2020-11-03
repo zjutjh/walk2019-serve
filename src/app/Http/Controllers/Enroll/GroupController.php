@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Enroll;
 
 use App\Helpers\Role;
 use App\Helpers\UserState;
+use App\Http\Controllers\Controller;
 use App\Notifications\Wechat;
 use App\User;
 use App\Group;

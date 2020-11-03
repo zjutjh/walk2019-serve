@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin;
 
 use App\Exports\GroupExport;
 use App\Group;
+use App\Http\Controllers\Controller;
 use App\Notifications\Wechat;
 use App\User;
 use App\WalkRoute;

@@ -58,12 +58,11 @@ class IndexController extends Controller
 
         foreach ($route as $r) {
             array_push($res,
-                $r->name . ':' . $r->capacity - Group::where('is_submit', true)->where('route_id', $r->id)->get()->count());
+                $r->name + ':' + ($r->capacity - Group::where('is_submit', true)->where('route_id', $r->id)->get()->count()));
         }
 
         return StandardSuccessJsonResponse($res);
     }
-
 
 
 }

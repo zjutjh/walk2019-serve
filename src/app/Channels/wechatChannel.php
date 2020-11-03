@@ -5,6 +5,7 @@ namespace App\Channels;
 use Exception;
 use GuzzleHttp\Client;
 use Illuminate\Notifications\Notification;
+use Illuminate\Support\Facades\Log;
 
 class wechatChannel
 {
@@ -23,6 +24,7 @@ class wechatChannel
             $res = $client->post(config('api.jh.template'), [
                 'json' => $message
             ]);
+            Log::info($res);
         } catch (Exception $e) {
 
         }

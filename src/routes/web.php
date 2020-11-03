@@ -11,8 +11,15 @@
 |
 */
 
-Route::get('/oauth', 'WechatLoginController@oauth');
-Route::any('/wx/login', 'WechatLoginController@wechatLogin');
+use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Enroll\ApplyController;
+use App\Http\Controllers\Enroll\GroupController;
+use App\Http\Controllers\Enroll\RouteController;
+use App\Http\Controllers\Enroll\UserController;
+use App\Http\Controllers\Enroll\WechatLoginController;
+
+Route::get('/oauth', [WechatLoginController::class,'oauth']);
+Route::any('/wx/login',  [WechatLoginController::class,'wechatLogin']);
 
 Route::any('/index/info', 'IndexController@indexInfo');
 
@@ -20,41 +27,42 @@ Route::get('/prize','PrizeController@index');
 Route::post('/prize','PrizeController@indexPost');
 
 Route::group(['middleware' => ['check.admin']], function () {
-    Route::any('user/verify','UserController@verify');
+    Route::any('user/verify',[UserController::class,'verify']);
     Route::any('/prize/get_data','PrizeController@getData');
     Route::any('/prize/select', 'PrizeController@select');
     Route::any('/prize/verify', 'PrizeController@verify');
-    Route::any('/test', 'AdminController@sendTmp');
-    Route::any('/test2', 'AdminController@genWalkGroupId');
-    Route::any('/test3', 'AdminController@Download');
-    Route::any('/test4', 'AdminController@SendResult');
-    Route::any('/test5','AdminController@EncryptIid');
+    Route::any('/test', [AdminController::class,'sendTmp']);
+    Route::any('/test2', [AdminController::class,'genWalkGroupId']);
+    Route::any('/test3', [AdminController::class,'Download']);
+    Route::any('/test4', [AdminController::class,'SendResult']);
+    Route::any('/test5',[AdminController::class,'EncryptIid']);
 });
 
 Route::group(['middleware' => ['check.wechat']], function () {
-    Route::post('/user/info', 'UserController@getUserInfo');
-    Route::post('/route/list', 'RouteController@getRouteList');
-    Route::post('/group/remain', 'GroupController@getRemainInfo');
-    Route::post('/group/info', 'GroupController@getGroupInfo');
-    Route::post('/group/members/list', 'GroupController@getGroupMembers');
+    Route::post('/user/info', [UserController::class,'getUserInfo']);
+    Route::post('/route/list', [RouteController::class,'getRouteList']);
+    Route::post('/group/remain', [GroupController::class,'getRemainInfo']);
+    Route::post('/group/info', [GroupController::class,'getGroupInfo']);
+    Route::post('/group/members/list', [GroupController::class,'getGroupMembers']);
 
     Route::group(['middleware' => ['check.finish']], function () {
-        Route::post('/user/register', 'UserController@register');
-        Route::post('/user/update', 'UserController@updateInfo');
-        Route::post('/group/list', 'GroupController@groupLists');
-        Route::post('/group/create', 'GroupController@createGroup');
-        Route::post('/group/break', 'GroupController@breakGroup');
-        Route::post('/group/submit', 'GroupController@submitGroup');
-        Route::post('/group/search', 'GroupController@searchTeam');
-        Route::post('/group/members/delete', 'GroupController@deleteMember');
-        Route::post('/group/update', 'GroupController@updateGroupInfo');
-        Route::post('/group/unsubmit', 'GroupController@unSubmitGroup');
-        Route::post('/group/leave', 'GroupController@leaveGroup');
-        Route::post('/apply/list', 'ApplyController@getApplyList');
-        Route::post('/apply/agree', 'ApplyController@agreeMember');
-        Route::post('/apply/refuse', 'ApplyController@refuseMember');
-        Route::post('/apply/do', 'ApplyController@doApply');
-        Route::post('/apply/delete', 'ApplyController@deleteApply');
-        Route::post('/apply/count', 'ApplyController@getApplyCount');
+        Route::post('/user/register',  [UserController::class,'register']);
+        Route::post('/user/update',  [UserController::class,'updateInfo']);
+        Route::post('/group/list', [GroupController::class,'groupLists']);
+        Route::post('/group/create', [GroupController::class,'createGroup']);
+        Route::post('/group/break', [GroupController::class,'breakGroup']);
+        Route::post('/group/submit', [GroupController::class,'submitGroup']);
+        Route::post('/group/search', [GroupController::class,'searchGroup']);
+        Route::post('/group/members/delete', [GroupController::class,'deleteMember']);
+        Route::post('/group/update', [GroupController::class,'updateGroupInfo']);
+        Route::post('/group/unsubmit', [GroupController::class,'unSubmitGroup']);
+        Route::post('/group/leave', [GroupController::class,'leaveGroup']);
+        Route::post('/apply/matching', [ApplyController::class,'doMatching']);
+        Route::post('/apply/list',  [ApplyController::class,'getApplicantList']);
+        Route::post('/apply/agree',  [ApplyController::class,'agreeMember']);
+        Route::post('/apply/refuse',  [ApplyController::class,'refuseMember']);
+        Route::post('/apply/do',  [ApplyController::class,'doApply']);
+        Route::post('/apply/delete',  [ApplyController::class,'deleteApply']);
+        Route::post('/apply/count',  [ApplyController::class,'getApplyCount']);
     });
 });

@@ -5,10 +5,9 @@ namespace App;
 
 use App\Notifications\Wechat;
 use Exception;
+use App\Helpers\WechatTemplate;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Helpers\UserState;
-use Route;
 
 /**
  * @property mixed id
@@ -19,7 +18,7 @@ class Group extends Model
 {
     protected $fillable = [
         'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id',
-        'prize_id', 'prize_get'
+        'prize_id', 'prize_get','allow_matching'
     ];
 
     /**
