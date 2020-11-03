@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Enroll;
 
 use App\Helpers\SystemSettings;
 use GuzzleHttp\Client;

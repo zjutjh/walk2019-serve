@@ -30,6 +30,6 @@ class WalkRoute extends Model
 
     public function getRemainAttribute()
     {
-        return $this->capacity - Group::where('is_submit', true)->where('route_id', $this->id)->get()->count();
+        return $this->capacity - Group::where([['is_submit', true], ['route_id', $this->id], ['is_super', false]])->count();
     }
 }
