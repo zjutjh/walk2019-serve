@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Group;
+use App\Helpers\SystemSettings;
 use App\User;
 use Illuminate\Http\JsonResponse;
 
@@ -18,8 +19,8 @@ class IndexController extends Controller
     public function indexInfo()
     {
 
-        $begin = config("api.system.BeginTime");
-        $end = config("api.system.EndTime");
+        $begin = SystemSettings::getSetting(SystemSettings::EventStartTime);
+        $end = SystemSettings::getSetting(SystemSettings::EventEndTime);
         $now = date('Y-m-d-H:i:s', time());
 
         if ($begin == null || $end == null)
@@ -46,23 +47,8 @@ class IndexController extends Controller
     }
 
 
-    /**
-     * [√通过测试]
-     * 返回线路剩余容量
-     * @return JsonResponse
-     */
-    public function getRouteRemainCounts()
-    {
-        $route = Route::all();
-        $res = [];
 
-        foreach ($route as $r) {
-            array_push($res,
-                $r->name + ':' + ($r->capacity - Group::where('is_submit', true)->where('route_id', $r->id)->get()->count()));
-        }
 
-        return StandardSuccessJsonResponse($res);
-    }
 
 
 }

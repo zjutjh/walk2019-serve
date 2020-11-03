@@ -90,6 +90,7 @@ class User extends Model
     {
         $this->attributes['sex'] = iidGetSex($value);
         $this->attributes['birthday'] = iidGetBirthday($value);
+        //$this->attributes['id_card'] = encrypt_iid($value);
         $this->attributes['id_card'] = $value;
     }
 
