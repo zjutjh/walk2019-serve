@@ -84,6 +84,7 @@ class GroupController extends Controller
         return StandardSuccessJsonResponse($members);
     }
 
+
     /**
      * [√通过测试]
      * 创建队伍

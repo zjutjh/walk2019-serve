@@ -21,12 +21,12 @@ class User extends Model
      * @var array
      */
     protected $hidden = [
-        'openid', 'sex', 'id_card', 'birthday'
+        'openid', 'id_card', 'birthday'
     ];
 
 
     protected $fillable = [
-        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid', 'logo', 'identity', 'height', 'pe_class'
+        'name', 'id_card', 'email', 'sex', 'qq', 'wx_id', 'height', 'birthday', 'phone', 'campus', 'school', 'sid', 'logo', 'identity', 'pe_class'
     ];
 
     protected $dates = [

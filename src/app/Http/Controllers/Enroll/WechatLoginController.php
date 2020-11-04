@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Enroll;
 
 use App\Helpers\SystemSettings;
+use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\JsonResponse;
@@ -16,7 +17,7 @@ class WechatLoginController extends Controller
     public function oauth()
     {
         return redirect('https://open.weixin.qq.com/connect/oauth2/authorize?appid='
-            . SystemSettings::getSetting(SystemSettings::WechatAppID )
+            . SystemSettings::getSetting(SystemSettings::WechatAppID)
             . '&redirect_uri='
             . urlencode(config('api.jh.oauth'))
             . urlencode(SystemSettings::getSetting(SystemSettings::WechatRedirect))
@@ -32,15 +33,15 @@ class WechatLoginController extends Controller
     public function wechatLogin(Request $request)
     {
         $code = $request->get('code');
+
+        if (!isset($code))
+            return StandardJsonResponse(-1, "err", '请在微信中打开');
         $openid = $this->getWechatOpenid($code);
 
-        if (!isset($openid))
-            return StandardFailJsonResponse('请在微信中打开');
-
         if (!$openid)
-            return StandardFailJsonResponse('请在微信中打开');
+            return StandardJsonResponse(-2, 'err', '请在微信中打开');
         if (!CheckSubscription($openid))
-            return StandardFailJsonResponse('请先关注浙江工业大学精弘网络公众号');
+            return StandardJsonResponse(-3, 'err', '请先关注浙江工业大学精弘网络公众号');
 
         session(['openid' => $openid]);
         return StandardSuccessJsonResponse();
@@ -55,14 +56,14 @@ class WechatLoginController extends Controller
     {
         $response = (new Client())->request('GET',
             'https://api.weixin.qq.com/sns/oauth2/access_token?'
-            . 'appid=' . SystemSettings::getSetting(SystemSettings::WechatAppID )
+            . 'appid=' . SystemSettings::getSetting(SystemSettings::WechatAppID)
             . '&secret=' . SystemSettings::getSetting(SystemSettings::WechatSecret)
             . '&code=' . $code
             . '&grant_type=authorization_code', ['verify' => false]);
 
         $data = json_decode($response->getBody(), true);
 
-        if (isset($data['openid']))return $data['openid'];
+        if (isset($data['openid'])) return $data['openid'];
 
         return null;
     }

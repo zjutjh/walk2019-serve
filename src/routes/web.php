@@ -33,7 +33,8 @@ Route::group(['middleware' => ['check.admin']], function () {
     Route::any('/prize/verify', 'PrizeController@verify');
     Route::any('/test', [AdminController::class,'sendTmp']);
     Route::any('/test2', [AdminController::class,'genWalkGroupId']);
-    Route::any('/test3', [AdminController::class,'Download']);
+    Route::any('/test3', [AdminController::class,'DownloadGroupList']);
+    Route::any('/test6', [AdminController::class,'DownloadUserList']);
     Route::any('/test4', [AdminController::class,'SendResult']);
     Route::any('/test5',[AdminController::class,'EncryptIid']);
 });

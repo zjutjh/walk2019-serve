@@ -27,6 +27,7 @@ class Group extends Model
      */
     protected $appends = ['members', 'route', 'captain_name'];
 
+
     /**
      * 获得当前用户
      * @return Group|null
@@ -56,6 +57,7 @@ class Group extends Model
     {
         return WalkRoute::where('id', $this->route_id)->first()->name;
     }
+
 
     /**
      *  获取队长姓名
