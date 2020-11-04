@@ -18,15 +18,14 @@ class Group extends Model
 {
     protected $fillable = [
         'name', 'logo', 'capacity', 'description', 'captain_id', 'route_id',
-        'prize_id', 'prize_get','allow_matching'
+        'prize_id', 'prize_get', 'allow_matching'
     ];
 
     /**
      * 追加字段
      * @var array
      */
-    protected $appends = ['members', 'route', 'captain_name'];
-
+    protected $appends = ['member_list', 'members', 'route', 'captain_name'];
 
     /**
      * 获得当前用户
@@ -58,6 +57,22 @@ class Group extends Model
         return WalkRoute::where('id', $this->route_id)->first()->name;
     }
 
+    /**
+     *  获取所有组员
+     * @return HasMany
+     */
+    public function getMemberListAttribute()
+    {
+        $members = $this->members()->get();
+        $new_mems = array();
+        foreach ($members as $m) {
+            $mem = array();
+            $mem['name'] = $m->name;
+            $mem['sex'] = $m->sex;
+            array_push($new_mems, $mem);
+        }
+        return $new_mems;
+    }
 
     /**
      *  获取队长姓名

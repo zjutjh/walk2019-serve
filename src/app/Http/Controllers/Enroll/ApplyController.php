@@ -52,7 +52,11 @@ class ApplyController extends Controller
         if ($user->group_id !== null)
             return StandardFailJsonResponse('你已经拥有队伍，无法匹配');
 
-        $groups = Group::where([['allow_matching', true], ['is_submit', false]])->inRandomOrder()->get();
+        $routeId = $request->get('route_id');
+        if ($routeId === null)
+            return StandardFailJsonResponse('参数错误');
+
+        $groups = Group::where([['allow_matching', true], ['is_submit', false], ['route_id', $routeId]])->inRandomOrder()->get();
         $selectedGroup = null;
         foreach ($groups as $group)
             if ($group->members < $group->capacity) {

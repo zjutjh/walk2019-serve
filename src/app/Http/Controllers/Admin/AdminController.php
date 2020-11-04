@@ -133,14 +133,14 @@ class AdminController extends Controller
     public function GetStartTime($group)
     {
         if ($group->route_id === 1) {
-            $date = new DateTime('2019-11-16 6:40:00');
+            $date = new DateTime('2020-12-5 6:40:00');
             for ($i = 0; $i < (intval($group->No) / 90) && $i < 5; $i = $i + 1)
                 $date = $date->add((new DateInterval('PT20M')));
 
             return $date;
         }
         if ($group->route_id === 2) {
-            $date = new DateTime('2019-11-16 8:00:00');
+            $date = new DateTime('2020-12-5 8:00:00');
             for ($i = 0; $i < ((intval($group->No) - 1000) / 90) && $i < 5; $i = $i + 1)
                 $date = $date->add((new DateInterval('PT20M')));
 
@@ -148,7 +148,7 @@ class AdminController extends Controller
         }
 
         if ($group->route_id === 3) {
-            $date = new DateTime('2019-11-16 7:30:00');
+            $date = new DateTime('2020-12-5 7:30:00');
             $No = (intval($group->No) - 2000);
 
             if ($No <= 75)
