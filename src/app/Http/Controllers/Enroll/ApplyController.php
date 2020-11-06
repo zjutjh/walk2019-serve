@@ -65,7 +65,7 @@ class ApplyController extends Controller
             }
 
         if (!!!$selectedGroup)
-            return StandardFailJsonResponse('匹配失败');
+            return StandardFailJsonResponse('哎呀，没有找到可以匹配的队伍');
 
 
         DB::transaction(function () use ($user, $selectedGroup) {
@@ -116,7 +116,7 @@ class ApplyController extends Controller
      * @param Request $request
      * @return JsonResponse
      */
-    public function deleteApply(Request $request)
+      public function deleteApply(Request $request)
     {
         $user = User::current();
 
@@ -127,10 +127,11 @@ class ApplyController extends Controller
         if ($apply) {
             $apply->delete();
         }
-        $user->state !== UserState::no_entered;
+        $user->state = UserState::no_entered;
         $user->save();
         return StandardSuccessJsonResponse();
     }
+
 
     /**
      * 同意加入

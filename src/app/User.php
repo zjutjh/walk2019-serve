@@ -5,7 +5,6 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 use App\Helpers\UserState;
-use ZipStream\Exception;
 
 /**
  * @property mixed openid
@@ -90,10 +89,7 @@ class User extends Model
     public function setIdCardAttribute($value)
     {
         //$this->attributes['sex'] = iidGetSex($value);
-
-       //$this->attributes['birthday'] = iidGetBirthday($value);
-
-
+        //$this->attributes['birthday'] = iidGetBirthday($value);
         //$this->attributes['id_card'] = encrypt_iid($value);
         $this->attributes['id_card'] = $value;
     }

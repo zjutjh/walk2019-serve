@@ -9,7 +9,7 @@ use App\Notifications\Wechat;
 use App\User;
 use App\Group;
 use App\WalkRoute;
-use App\Helpers\WechatTemplate;
+use App\WechatTemplate;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -252,7 +252,7 @@ class GroupController extends Controller
         }else{
             return StandardFailJsonResponse('今日人数已经满了');
         }
-
+       
 
     }
 

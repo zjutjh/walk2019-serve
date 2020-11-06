@@ -11,8 +11,8 @@ use Maatwebsite\Excel\Concerns\WithMapping;
 class UsersExport implements FromCollection, WithMapping, WithHeadings
 {
     /**
-     * @return \Illuminate\Support\Collection
-     */
+    * @return \Illuminate\Support\Collection
+    */
     public function collection()
     {
         $user = User::all();
@@ -28,22 +28,22 @@ class UsersExport implements FromCollection, WithMapping, WithHeadings
     {
 
         $group = Group::find($user->group_id);
-
+      
         return [
-            $user->id,
-            $user->name,
-            $user->sex,
-            $user->campus,
-            !$group ? '未组队' : $group->select_route,
-            $user->height,
-            $user->birthday,
-            $user->identity,
-            $user->sid,
-            $user->phone,
-            $user->wx_id,
-            $user->qq,
-            $user->group_id,
-            isset($group->is_submit)? $group->is_submit:''
+          $user->id,
+          $user->name,
+          $user->sex,
+          $user->campus,
+          !$group ? '未组队' : $group->select_route,
+          $user->height,
+          $user->birthday,
+          $user->identity,
+          $user->sid,
+          $user->phone,
+          $user->wx_id,
+          $user->qq,
+          $user->group_id,
+          isset($group->is_submit)? $group->is_submit:''
         ];
     }
 

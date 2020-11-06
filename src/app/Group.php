@@ -61,7 +61,7 @@ class Group extends Model
      *  获取所有组员
      * @return HasMany
      */
-    public function getMemberListAttribute()
+ public function getMemberListAttribute()
     {
         $members = $this->members()->get();
         $new_mems = array();
@@ -74,6 +74,7 @@ class Group extends Model
         }
         return $new_mems;
     }
+
 
     /**
      *  获取队长姓名
