@@ -20,7 +20,7 @@ class UserController extends Controller
         'qq' => 'digits_between:4,12',
         'identity' => 'required',
         'height' => 'integer|between:50,300',
-        'sid' => 'exclude_if:identity,学生|required|digits_between:10,14',
+        'sid' => 'exclude_if:identity,学生|required|alpha_dash|between:10,14',
         'school' => 'required_if:identity,学生'
     ];
 

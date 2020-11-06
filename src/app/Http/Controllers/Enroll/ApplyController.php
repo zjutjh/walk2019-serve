@@ -8,7 +8,7 @@ use App\Notifications\Wechat;
 use App\User;
 use App\Apply;
 use App\Group;
-use App\WechatTemplate;
+use App\Helpers\WechatTemplate;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -124,8 +124,11 @@ class ApplyController extends Controller
             return StandardFailJsonResponse('你的申请已经处理');
 
         $apply = Apply::where('apply_id', $user->id)->first();
-
-        $apply->delete();
+        if ($apply) {
+            $apply->delete();
+        }
+        $user->state !== UserState::no_entered;
+        $user->save();
         return StandardSuccessJsonResponse();
     }
 

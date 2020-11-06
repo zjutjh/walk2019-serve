@@ -69,6 +69,7 @@ class Group extends Model
             $mem = array();
             $mem['name'] = $m->name;
             $mem['sex'] = $m->sex;
+            $mem['logo'] = $m->logo;
             array_push($new_mems, $mem);
         }
         return $new_mems;

@@ -9,7 +9,7 @@ use App\Notifications\Wechat;
 use App\User;
 use App\Group;
 use App\WalkRoute;
-use App\WechatTemplate;
+use App\Helpers\WechatTemplate;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -237,16 +237,22 @@ class GroupController extends Controller
         else
             $group->is_super = false;
 
+        $is_success = false;
         DB::transaction(function () use ($group, $route) {
             $submitCount = Group::where('is_submit', true)->where('route_id', $group->route_id)->where('is_super', false)->count();
-            if ($route->capacity <= $submitCount && !$group->is_super)
-                return StandardFailJsonResponse('今日人数已经满了');
-
+            if ($route->capacity <= $submitCount && !$group->is_super) {
+                $is_success = true;
+                return;
+            }
             $group->is_submit = true;
             $group->save();
         });
+        if ($is_success) {
+            return StandardSuccessJsonResponse($superUserCount);
+        }else{
+            return StandardFailJsonResponse('今日人数已经满了');
+        }
 
-        return StandardSuccessJsonResponse($superUserCount);
 
     }
 

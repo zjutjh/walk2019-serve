@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Notifications\Wechat;
 use App\User;
 use App\WalkRoute;
-use App\WechatTemplate;
+use App\Helpers\WechatTemplate;
 use Illuminate\Http\Request;
 
 class ResultController extends Controller

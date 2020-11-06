@@ -8,7 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Notifications\Wechat;
 use App\User;
 use App\WalkRoute;
-use App\WechatTemplate;
+use App\Helpers\WechatTemplate;
 use DateInterval;
 use DateTime;
 use Exception;
