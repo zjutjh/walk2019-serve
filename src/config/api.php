@@ -16,6 +16,7 @@ return [
     'system' => [
         'BeginTime' => env('BeginTime'),
         'EndTime' => env('EndTime'),
+        'SubmitBeginTime'=>env('SubmitBeginTime'),
         'ServerUrl'=> env('APP_URL'),
         'IsEnd' => false,
         'minGroupPeople' => env("minGroupPeople"),

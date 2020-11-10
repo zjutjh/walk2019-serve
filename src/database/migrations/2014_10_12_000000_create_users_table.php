@@ -29,14 +29,16 @@ class CreateUsersTable extends Migration
             $table->string('birthday')->nullable()->comment('出生年月');
             $table->string('sid')->nullable()->comment('学生学号');
             $table->string('school')->nullable()->comment('学生学院');
+            $table->string('healthycode')->nullable()->comment('健康码');
+            $table->string('healthycode_base64')->nullable()->comment('健康码');
             //$table->string('pe_class')->nullable()->comment('学生体育课');
             $table->integer('group_id')->nullable()->comment('队伍编号');
             $table->tinyInteger('state')->default(0)->comment('0 未报名 1已经报名未组队 2 正在申请队伍 3 有队伍（队长）4 有队伍（队员）5 未填写信息');
-            $table->tinyInteger('verify_code')->default(0)->comment('刷卡状态 0未刷卡 1出发 2未完成 3正常完成');
-            $table->tinyInteger('is_start')->nullable()->default(0);
-            $table->tinyInteger('is_end')->nullable()->default(0);
-            $table->timestamp('start_at')->nullable()->comment('开始刷卡时间');
-            $table->timestamp('end_at')->nullable()->comment('结束刷卡时间');
+//            $table->tinyInteger('verify_code')->default(0)->comment('刷卡状态 0未刷卡 1出发 2未完成 3正常完成');
+//            $table->tinyInteger('is_start')->nullable()->default(0);
+//            $table->tinyInteger('is_end')->nullable()->default(0);
+//            $table->timestamp('start_at')->nullable()->comment('开始刷卡时间');
+//            $table->timestamp('end_at')->nullable()->comment('结束刷卡时间');
             $table->timestamps();
         });
     }

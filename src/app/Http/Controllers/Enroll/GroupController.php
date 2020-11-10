@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Enroll;
 
 use App\Helpers\Role;
+use App\Helpers\SystemSettings;
 use App\Helpers\UserState;
 use App\Http\Controllers\Controller;
 use App\Notifications\Wechat;
@@ -215,6 +216,12 @@ class GroupController extends Controller
      */
     public function submitGroup(Request $request)
     {
+        $begin = SystemSettings::getSetting(SystemSettings::SubmitStartTime);
+        $now = date('Y-m-d-H:i:s', time());
+        if($begin>$now){
+            return StandardFailJsonResponse('现在还不能提交队伍呢');
+        }
+
         $user = User::current();
         $group = $user->group();
 
@@ -252,7 +259,7 @@ class GroupController extends Controller
         }else{
             return StandardFailJsonResponse('今日人数已经满了');
         }
-       
+
 
     }
 

@@ -12,6 +12,7 @@
 */
 
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\IDCardReaderController;
 use App\Http\Controllers\Enroll\ApplyController;
 use App\Http\Controllers\Enroll\GroupController;
 use App\Http\Controllers\Enroll\RouteController;
@@ -37,6 +38,12 @@ Route::group(['middleware' => ['check.admin']], function () {
     Route::any('/test6', [AdminController::class,'DownloadUserList']);
     Route::any('/test4', [AdminController::class,'SendResult']);
     Route::any('/test5',[AdminController::class,'EncryptIid']);
+
+
+    Route::any('/reader/group', [IDCardReaderController::class,'getIDCardGroupInfo']);
+    Route::any('/reader/recode',[IDCardReaderController::class,'recodeIDCard']);
+
+
 });
 
 Route::group(['middleware' => ['check.wechat']], function () {

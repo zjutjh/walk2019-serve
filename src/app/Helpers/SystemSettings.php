@@ -8,6 +8,7 @@ class SystemSettings
 {
     const EventStartTime = 'api.system.BeginTime';
     const EventEndTime = 'api.system.EndTime';
+    const SubmitStartTime ='api.system.SubmitBeginTime';
     const WechatAppID = 'api.wx.WECHAT_APPID';
     const WechatRedirect ='api.wx.WECHAT_REDIRECT';
     const WechatSecret ='api.wx.WECHAT_SECRET';
