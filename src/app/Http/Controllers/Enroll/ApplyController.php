@@ -75,7 +75,7 @@ class ApplyController extends Controller
         });
 
         User::where('id', $selectedGroup->captain_id)->first()->notify(new Wechat(WechatTemplate::Apply));
-        return StandardSuccessJsonResponse();
+        return StandardSuccessJsonResponse($selectedGroup);
     }
 
     /**

@@ -17,6 +17,6 @@ class Apply extends Model
     ];
     public function user()
     {
-        return $this->belongsTo('App/User','apply_id');
+        return User::Where('id',$this->apply_id)->first();
     }
 }

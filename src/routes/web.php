@@ -42,6 +42,7 @@ Route::group(['middleware' => ['check.admin']], function () {
 
     Route::any('/reader/group', [IDCardReaderController::class,'getIDCardGroupInfo']);
     Route::any('/reader/recode',[IDCardReaderController::class,'recodeIDCard']);
+    Route::any('/reader/user',[IDCardReaderController::class,'getUserInfo']);
 
 
 });

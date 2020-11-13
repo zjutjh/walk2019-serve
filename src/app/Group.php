@@ -111,7 +111,7 @@ class Group extends Model
     public function delete()
     {
         $members = $this->members()->get();
-        $applies = Apply::with('user')->where('apply_team_id', $this->id)->get();
+        $applies = Apply::Where('apply_team_id', $this->id)->get();
 
 
         foreach ($applies as $apply) {

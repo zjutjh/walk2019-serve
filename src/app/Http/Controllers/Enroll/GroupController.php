@@ -245,12 +245,13 @@ class GroupController extends Controller
             $group->is_super = false;
 
         $is_success = false;
-        DB::transaction(function () use ($group, $route) {
+        DB::transaction(function () use ($group, $route,$is_success) {
             $submitCount = Group::where('is_submit', true)->where('route_id', $group->route_id)->where('is_super', false)->count();
             if ($route->capacity <= $submitCount && !$group->is_super) {
-                $is_success = true;
+
                 return;
             }
+            $is_success = true;
             $group->is_submit = true;
             $group->save();
         });

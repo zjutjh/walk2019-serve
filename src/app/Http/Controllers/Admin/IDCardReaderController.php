@@ -20,7 +20,15 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class IDCardReaderController extends Controller
 {
+    public function getUserInfo(Request $request)
+    {
+        $idCardNumber = $request->get("idcard");
+        $user = User::where('id_card', $idCardNumber)->get()->first();
+        if ($user === null)
+            return StandardJsonResponse(-1, '该用户不存在');
 
+        return StandardSuccessJsonResponse($user);
+    }
     public function getIDCardGroupInfo(Request $request)
     {
         $idCardNumber = $request->get("idcard");
@@ -36,24 +44,28 @@ class IDCardReaderController extends Controller
         if ($group->is_submit == 0)
             return StandardJsonResponse(-1, '该队伍没有成功报名', null);
 
-        $members = $group->members();
-
+        $members = $group->members()->get();
+        $response = array();
         $new_mems = array();
         foreach ($members as $m) {
             $mem = array();
             $mem['name'] = $m->name;
-            $mem['state'] = IDCardReaderRecode::where([['idcard', $m->id_card], ['mode', $mode]]);
+            $mem['state'] = IDCardReaderRecode::where([['idcard', $m->id_card], ['mode', $mode]])->count();
             $mem['logo'] = $m->logo;
             array_push($new_mems, $mem);
         }
-        $group->member_list = $new_mems;
-        return $group;
+        $response['member_list'] = $new_mems;
+        $response['name']=$group->name;
+        $response['route']=$group->route;
+        $response['groupId']=$group->No;
+
+        return StandardSuccessJsonResponse($response);
     }
 
     public function recodeIDCard(Request $request)
     {
         $idCardNumber = $request->get("idcard");
-
+        $mode = $request->get("mode");
         $user = User::where('id_card', $idCardNumber)->get()->first();
         if ($user === null)
             return StandardJsonResponse(-1, '该用户不存在');
@@ -65,13 +77,13 @@ class IDCardReaderController extends Controller
         if ($group->is_submit == 0)
             return StandardJsonResponse(-1, '该队伍没有成功报名', null);
 
-        $recode = IDCardReaderRecode::where([['idcard', $idCardNumber], ['mode', '<>', 0]])->first();
+        $recode = IDCardReaderRecode::where([['idcard', $idCardNumber], ['mode', $mode]])->first();
         if (!$recode && $request->get("mode") === 0) {
             IDCardReaderRecode::create($request->all());
         } else if ($request->get("mode") !== 0) {
             return StandardJsonResponse(-1, '该成员没有出发', null);
         } else {
-            $recode->fill($recode->all());
+            $recode->fill($request->all());
         }
 
         return StandardSuccessJsonResponse();
